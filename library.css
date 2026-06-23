@@ -1,0 +1,251 @@
+@font-face {
+    font-family: "Bookerly";
+    src: url("fonts/Bookerly.ttf");
+}
+
+:root{
+    --bg:#f6f4fb;
+    --card:#ffffff;
+    --primary:#7c5cff;
+    --primary-soft:#efe9ff;
+    --text:#1f1f29;
+    --muted:#8a8a9a;
+    --border:#ece9f5;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:"Bookerly", serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+.app-layout{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:260px;
+    background:white;
+    border-right:1px solid var(--border);
+    padding:30px;
+}
+
+.logo{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    margin-bottom:40px;
+}
+
+.logo-icon{
+    font-size:32px;
+}
+
+.logo h2{
+    font-size:28px;
+}
+
+.logo p{
+    color:var(--muted);
+}
+
+.sidebar nav{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.sidebar nav a{
+    text-decoration:none;
+    color:#444;
+    padding:14px 16px;
+    border-radius:14px;
+    transition:.2s;
+}
+
+.sidebar nav a:hover{
+    background:#f3f0ff;
+}
+
+.sidebar nav a.active{
+    background:#efe9ff;
+    color:var(--primary);
+    font-weight:bold;
+}
+
+.content{
+    flex:1;
+    padding:40px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:30px;
+}
+
+.topbar h1{
+    font-size:48px;
+    margin-bottom:8px;
+}
+
+.topbar p{
+    color:var(--muted);
+}
+
+.topbar input{
+    width:320px;
+    padding:14px 18px;
+    border:none;
+    border-radius:16px;
+    background:white;
+    font-size:16px;
+}
+
+.continue-reading{
+    background:linear-gradient(
+        135deg,
+        #faf7ff,
+        #efe9ff
+    );
+
+    border-radius:28px;
+
+    padding:30px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:40px;
+}
+
+.continue-content{
+    display:flex;
+    gap:24px;
+    align-items:center;
+}
+
+.hero-cover{
+    width:120px;
+    height:180px;
+    object-fit:cover;
+    border-radius:18px;
+
+    box-shadow:
+        0 15px 30px rgba(0,0,0,.12);
+}
+
+.section-label{
+    color:var(--primary);
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.continue-content h2{
+    margin-bottom:10px;
+}
+
+.hero-progress{
+    width:320px;
+    height:8px;
+    background:white;
+    border-radius:999px;
+    margin:18px 0;
+}
+
+.hero-progress-fill{
+    width:0%;
+    height:100%;
+    background:var(--primary);
+    border-radius:999px;
+}
+
+.read-now-btn{
+    display:inline-block;
+    padding:12px 20px;
+    background:var(--primary);
+    color:white;
+    text-decoration:none;
+    border-radius:12px;
+}
+
+.hero-art{
+    font-size:90px;
+    opacity:.25;
+}
+
+.section-header{
+    margin-bottom:24px;
+}
+
+.section-header h2{
+    font-size:34px;
+}
+
+.book-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fill,minmax(260px,1fr));
+
+    gap:24px;
+}
+
+.library-book-card{
+    background:white;
+    border-radius:22px;
+    padding:18px;
+
+    transition:.2s;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.04);
+}
+
+.library-book-card:hover{
+    transform:translateY(-4px);
+}
+
+.library-cover{
+    width:100%;
+    aspect-ratio:2/3;
+    object-fit:cover;
+    border-radius:16px;
+    margin-bottom:16px;
+}
+
+.library-book-info h3{
+    margin-bottom:8px;
+}
+
+.author{
+    color:var(--muted);
+    margin-bottom:6px;
+}
+
+.chapter-count{
+    color:var(--muted);
+    font-size:14px;
+}
+
+.progress{
+    margin-top:16px;
+    height:6px;
+    background:#ececec;
+    border-radius:999px;
+}
+
+.progress-fill{
+    width:0%;
+    height:100%;
+    background:var(--primary);
+    border-radius:999px;
+}

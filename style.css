@@ -81,3 +81,83 @@ body{
 .chapter-body p{
     margin: 0 0 1.5em 0;
 }
+
+/* ===== BOOK PAGE ===== */
+
+.book {
+    background: white;
+    padding: 32px;
+    border-radius: 24px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.05);
+}
+
+.book-header {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.cover {
+    width: 220px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.12);
+}
+
+.book-meta {
+    flex: 1;
+}
+
+.book-meta h1 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.author {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.review {
+    background: #f8f5ff;
+    padding: 16px;
+    border-radius: 12px;
+    line-height: 1.8;
+}
+
+.chapter-list {
+    margin-top: 30px;
+}
+
+.chapter-item {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 14px 18px;
+
+    margin-bottom: 10px;
+
+    background: white;
+
+    border: 1px solid #ececec;
+
+    border-radius: 12px;
+
+    transition: .2s;
+}
+
+.chapter-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,.08);
+}
+
+.chapter-item a {
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+}
+
+.chapter-number {
+    color: #7c3aed;
+    font-weight: bold;
+}

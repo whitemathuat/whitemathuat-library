@@ -1,56 +1,197 @@
 
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>white đọc gây</title>
+<html lang="vi">
 
-<link rel="stylesheet" href="style.css">
+<head>
+
+<meta charset="utf-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+>
+
+<title>White Đọc Gây</title>
+
+<link rel="stylesheet" href="library.css">
 
 </head>
+
 <body>
 
-<h1>📚 white đọc gây</h1>
+<div class="app-layout">
 
+    <aside class="sidebar">
 
-    <div class="book-card">
+        <div class="logo">
 
-        <img src="novels/cao-va-cho/cover.jpg">
+            <div class="logo-icon">📖</div>
 
-        <div class="book-info">
+            <div>
 
-            <h2>Cáo và Chó</h2>
+                <h2>white đọc gây</h2>
 
-            <p>Tác giả: Lăng Y</p>
+                <p>Thư viện của bạn</p>
 
-            <a class="read-btn"
-               href="novels/cao-va-cho/">
-               Đọc truyện
-            </a>
+            </div>
+
+        </div>
+
+        <nav>
+
+            <a class="active" href="#">Thư viện</a>
+            <a href="#">Đang đọc</a>
+            <a href="#">Đã đọc</a>
+            <a href="#">Yêu thích</a>
+            <a href="#">Tất cả truyện</a>
+
+        </nav>
+
+    </aside>
+
+    <main class="content">
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>Chào mừng trở lại!</h1>
+
+                <p>
+                    Hôm nay bạn muốn khám phá
+                    câu chuyện nào?
+                </p>
+
+            </div>
+
+            <input
+                type="search"
+                placeholder="Tìm truyện..."
+            >
+
+        </header>
+
+        
+    <section class="continue-reading">
+
+        <div class="continue-content">
+
+            <img
+                src="novels/cao-va-cho/cover.jpg"
+                class="hero-cover"
+            >
+
+            <div>
+
+                <div class="section-label">
+                    Tiếp tục đọc
+                </div>
+
+                <h2>Cáo và Chó</h2>
+
+                <p>Chương 1 · Bắt đầu đọc</p>
+
+                <div class="hero-progress">
+                    <div class="hero-progress-fill"></div>
+                </div>
+
+                <a
+                    class="read-now-btn"
+                    href="novels/cao-va-cho/"
+                >
+                    Đọc tiếp
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="hero-art">
+            📚
+        </div>
+
+    </section>
+    
+
+        <section class="library-section">
+
+            <div class="section-header">
+
+                <h2>Thư viện của bạn</h2>
+
+            </div>
+
+            <div class="book-grid">
+
+                
+    <div class="library-book-card">
+
+        <a href="novels/cao-va-cho/">
+            <img
+                class="library-cover"
+                src="novels/cao-va-cho/cover.jpg"
+                alt="Cáo và Chó"
+            >
+        </a>
+
+        <div class="library-book-info">
+
+            <h3>Cáo và Chó</h3>
+
+            <p class="author">
+                Lăng Y
+            </p>
+
+            <p class="chapter-count">
+                54 chương
+            </p>
+
+            <div class="progress">
+                <div class="progress-fill"></div>
+            </div>
 
         </div>
 
     </div>
     
-    <div class="book-card">
+    <div class="library-book-card">
 
-        <img src="novels/mai-tang-tuoi-18/cover.jpg">
+        <a href="novels/mai-tang-tuoi-18/">
+            <img
+                class="library-cover"
+                src="novels/mai-tang-tuoi-18/cover.jpg"
+                alt="Mai Táng Tuổi 18"
+            >
+        </a>
 
-        <div class="book-info">
+        <div class="library-book-info">
 
-            <h2>Mai Táng Tuổi 18</h2>
+            <h3>Mai Táng Tuổi 18</h3>
 
-            <p>Tác giả: Kỳ Thanh Nguyệt</p>
+            <p class="author">
+                Kỳ Thanh Nguyệt
+            </p>
 
-            <a class="read-btn"
-               href="novels/mai-tang-tuoi-18/">
-               Đọc truyện
-            </a>
+            <p class="chapter-count">
+                14 chương
+            </p>
+
+            <div class="progress">
+                <div class="progress-fill"></div>
+            </div>
 
         </div>
 
     </div>
     
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
 
 </body>
 </html>

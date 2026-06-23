@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ncx version="2005-1" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+	<head>
+		<meta name="dtb:uid" content="fanficfare-uid:www.wattpad.com-uzzzwtd-s164305525"/>
+		<meta name="dtb:depth" content="1"/>
+		<meta name="dtb:totalPageCount" content="0"/>
+		<meta name="dtb:maxPageNumber" content="0"/>
+	</head>
+	<docTitle>
+		<text>Mai Táng Tuổi 18</text>
+	</docTitle>
+	<navMap>
+		<navPoint id="title_page" playOrder="0">
+			<navLabel>
+				<text>Title Page</text>
+			</navLabel>
+			<content src="OEBPS/title_page.xhtml"/>
+		</navPoint>
+		<navPoint id="file0001" playOrder="1">
+			<navLabel>
+				<text>Chương 1</text>
+			</navLabel>
+			<content src="OEBPS/file0001.xhtml"/>
+		</navPoint>
+		<navPoint id="file0002" playOrder="2">
+			<navLabel>
+				<text>Chương 2</text>
+			</navLabel>
+			<content src="OEBPS/file0002.xhtml"/>
+		</navPoint>
+		<navPoint id="file0003" playOrder="3">
+			<navLabel>
+				<text>Chương 3</text>
+			</navLabel>
+			<content src="OEBPS/file0003.xhtml"/>
+		</navPoint>
+		<navPoint id="file0004" playOrder="4">
+			<navLabel>
+				<text>Chương 4</text>
+			</navLabel>
+			<content src="OEBPS/file0004.xhtml"/>
+		</navPoint>
+		<navPoint id="file0005" playOrder="5">
+			<navLabel>
+				<text>Chương 5</text>
+			</navLabel>
+			<content src="OEBPS/file0005.xhtml"/>
+		</navPoint>
+		<navPoint id="file0006" playOrder="6">
+			<navLabel>
+				<text>Chương 6</text>
+			</navLabel>
+			<content src="OEBPS/file0006.xhtml"/>
+		</navPoint>
+		<navPoint id="file0007" playOrder="7">
+			<navLabel>
+				<text>Chương 7</text>
+			</navLabel>
+			<content src="OEBPS/file0007.xhtml"/>
+		</navPoint>
+		<navPoint id="file0008" playOrder="8">
+			<navLabel>
+				<text>Chương 8</text>
+			</navLabel>
+			<content src="OEBPS/file0008.xhtml"/>
+		</navPoint>
+		<navPoint id="file0009" playOrder="9">
+			<navLabel>
+				<text>Chương 9</text>
+			</navLabel>
+			<content src="OEBPS/file0009.xhtml"/>
+		</navPoint>
+		<navPoint id="file0010" playOrder="10">
+			<navLabel>
+				<text>Chương 10 [ Hoàn Chính Văn ]</text>
+			</navLabel>
+			<content src="OEBPS/file0010.xhtml"/>
+		</navPoint>
+		<navPoint id="file0011" playOrder="11">
+			<navLabel>
+				<text>Chương 11: Phiên ngoại - Sở Chi An (1)</text>
+			</navLabel>
+			<content src="OEBPS/file0011.xhtml"/>
+		</navPoint>
+		<navPoint id="file0012" playOrder="12">
+			<navLabel>
+				<text>Chương 12: Phiên ngoại - Sở Chi An (2)</text>
+			</navLabel>
+			<content src="OEBPS/file0012.xhtml"/>
+		</navPoint>
+		<navPoint id="file0013" playOrder="13">
+			<navLabel>
+				<text>Chương 13: Phiên ngoại - Sở Chi An (3)</text>
+			</navLabel>
+			<content src="OEBPS/file0013.xhtml"/>
+		</navPoint>
+	</navMap>
+</ncx>
