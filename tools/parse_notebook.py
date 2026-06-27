@@ -3,24 +3,7 @@ from bs4 import BeautifulSoup
 import json
 import re
 
-
-def extract_location(text):
-    m = re.search(r"Location\s+(\d+)", text)
-
-    if m:
-        return int(m.group(1))
-
-    return None
-
-
-def extract_color(element):
-    span = element.find("span")
-
-    if span:
-        return span.get_text(strip=True)
-
-    return None
-
+PAIR_DISTANCE = 3
 
 novels_dir = Path("novels")
 
@@ -29,115 +12,301 @@ for book_dir in novels_dir.iterdir():
     if not book_dir.is_dir():
         continue
 
-    notebook_file = book_dir / "notebook.html"
+    notebook = book_dir / "notebook.html"
 
-    if not notebook_file.exists():
+    if not notebook.exists():
         continue
 
-    print(f"Processing {book_dir.name}")
-
     soup = BeautifulSoup(
-        notebook_file.read_text(
-            encoding="utf-8"
-        ),
+        notebook.read_text(encoding="utf-8"),
         "html.parser"
     )
 
-    title = soup.select_one(
-        ".bookTitle"
-    ).get_text(strip=True)
-
-    author = soup.select_one(
-        ".authors"
-    ).get_text(strip=True)
+    title = soup.select_one(".bookTitle").get_text(strip=True)
+    author = soup.select_one(".authors").get_text(strip=True)
 
     sections = []
+
     current_section = None
 
-    elements = soup.select(
-        ".bodyContainer > div"
+    events = []
+
+    nodes = soup.select(
+        ".sectionHeading, .noteHeading, .noteText"
     )
 
     i = 0
 
-    while i < len(elements):
+    while i < len(nodes):
 
-        element = elements[i]
-        classes = element.get("class", [])
+        node = nodes[i]
+
+        classes = node.get("class", [])
+
+        # -------------------------
+        # Chapter
+        # -------------------------
 
         if "sectionHeading" in classes:
 
+            if current_section:
+
+                current_section["entries"] = []
+
+                # -------------------------
+                # Pair highlight + note
+                # -------------------------
+
+                j = 0
+
+                while j < len(events):
+
+                    event = events[j]
+
+                    # highlight
+
+                    if event["type"] == "highlight":
+
+                        paired = False
+
+                        if j + 1 < len(events):
+
+                            nxt = events[j + 1]
+
+                            if (
+                                nxt["type"] == "note"
+                                and
+                                0 <= nxt["location"] - event["location"] <= PAIR_DISTANCE
+                            ):
+
+                                current_section["entries"].append({
+
+                                    "type": "pair",
+
+                                    "highlight": event["text"],
+
+                                    "note": nxt["text"],
+
+                                    "color": event["color"],
+
+                                    "location": event["location"]
+
+                                })
+
+                                paired = True
+
+                                j += 2
+
+                        if not paired:
+
+                            current_section["entries"].append({
+
+                                "type": "highlight",
+
+                                "text": event["text"],
+
+                                "color": event["color"],
+
+                                "location": event["location"]
+
+                            })
+
+                            j += 1
+
+                    else:
+
+                        current_section["entries"].append({
+
+                            "type": "note",
+
+                            "text": event["text"],
+
+                            "location": event["location"]
+
+                        })
+
+                        j += 1
+
+                sections.append(current_section)
+
             current_section = {
-                "title": element.get_text(strip=True),
-                "entries": []
+
+                "title": node.get_text(strip=True)
+
             }
 
-            sections.append(current_section)
+            events = []
 
-        elif "noteHeading" in classes:
+            i += 1
 
-            heading_text = element.get_text(
-                " ",
-                strip=True
+            continue
+
+        # -------------------------
+        # Highlight / Note
+        # -------------------------
+
+        if "noteHeading" in classes:
+
+            heading = node.get_text(" ", strip=True)
+
+            if i + 1 >= len(nodes):
+
+                break
+
+            text = nodes[i + 1].get_text(" ", strip=True)
+
+            location_match = re.search(
+                r"Location\s+(\d+)",
+                heading
             )
 
-            entry_type = None
+            if not location_match:
 
-            if heading_text.startswith("Highlight"):
-                entry_type = "highlight"
+                i += 2
 
-            elif heading_text.startswith("Note"):
-                entry_type = "note"
+                continue
 
-            if (
-                entry_type
-                and current_section
-                and i + 1 < len(elements)
-            ):
+            location = int(location_match.group(1))
 
-                next_element = elements[i + 1]
+            if heading.startswith("Highlight"):
 
-                if (
-                    "noteText"
-                    in next_element.get("class", [])
-                ):
+                color_match = re.search(
+                    r"\((.*?)\)",
+                    heading
+                )
 
-                    current_section[
-                        "entries"
-                    ].append(
-                        {
-                            "type": entry_type,
-                            "text": next_element.get_text(
-                                strip=True
-                            ),
-                            "location": extract_location(
-                                heading_text
-                            ),
-                            "color": extract_color(
-                                element
-                            )
-                        }
-                    )
+                color = (
+                    color_match.group(1)
+                    if color_match
+                    else "yellow"
+                )
 
-                    i += 1
+                events.append({
+
+                    "type": "highlight",
+
+                    "text": text,
+
+                    "color": color,
+
+                    "location": location
+
+                })
+
+            else:
+
+                events.append({
+
+                    "type": "note",
+
+                    "text": text,
+
+                    "location": location
+
+                })
+
+            i += 2
+
+            continue
 
         i += 1
 
-    data = {
+    # last section
+
+    if current_section:
+
+        current_section["entries"] = []
+
+        j = 0
+
+        while j < len(events):
+
+            event = events[j]
+
+            if event["type"] == "highlight":
+
+                paired = False
+
+                if j + 1 < len(events):
+
+                    nxt = events[j + 1]
+
+                    if (
+                        nxt["type"] == "note"
+                        and
+                        0 <= nxt["location"] - event["location"] <= PAIR_DISTANCE
+                    ):
+
+                        current_section["entries"].append({
+
+                            "type": "pair",
+
+                            "highlight": event["text"],
+
+                            "note": nxt["text"],
+
+                            "color": event["color"],
+
+                            "location": event["location"]
+
+                        })
+
+                        paired = True
+
+                        j += 2
+
+                if not paired:
+
+                    current_section["entries"].append({
+
+                        "type": "highlight",
+
+                        "text": event["text"],
+
+                        "color": event["color"],
+
+                        "location": event["location"]
+
+                    })
+
+                    j += 1
+
+            else:
+
+                current_section["entries"].append({
+
+                    "type": "note",
+
+                    "text": event["text"],
+
+                    "location": event["location"]
+
+                })
+
+                j += 1
+
+        sections.append(current_section)
+
+    output = {
+
         "title": title,
+
         "author": author,
+
         "sections": sections
+
     }
 
-    output_file = book_dir / "notes.json"
+    (book_dir / "notes.json").write_text(
 
-    output_file.write_text(
         json.dumps(
-            data,
+            output,
             ensure_ascii=False,
             indent=2
         ),
+
         encoding="utf-8"
+
     )
 
-    print(f"Created {output_file}")
+    print(f"Parsed {book_dir.name}")

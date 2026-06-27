@@ -1,4 +1,16 @@
-<!doctype html>
+from pathlib import Path
+
+# Xác định vị trí thư mục gốc của dự án (đi ngược lên 1 cấp từ thư mục tools)
+ROOT_DIR = Path(__file__).parent.parent
+
+def count_books():
+    novels_dir = ROOT_DIR / "novels"
+    if not novels_dir.exists():
+        return 0
+    # Đếm thực tế tất cả các thư mục con nằm trong thư mục novels
+    return sum(1 for p in novels_dir.iterdir() if p.is_dir())
+
+HTML_TEMPLATE = """<!doctype html>
 <html lang="vi">
 <head>
     <meta charset="utf-8">
@@ -36,7 +48,7 @@
                 <a href="books/index.html" class="cat-card">
                     <div class="cat-icon">📚</div>
                     <div class="cat-name">Sách</div>
-                    <div class="cat-count c-book">2</div>
+                    <div class="cat-count c-book">{book_count}</div>
                     <div class="cat-label">tác phẩm</div>
                 </a>
                 
@@ -74,3 +86,19 @@
 
 </body>
 </html>
+"""
+
+def main():
+    # Tiến hành đếm số sách thật trong thư mục novels
+    current_books = count_books()
+    
+    # Điền số lượng vào mẫu HTML
+    output_html = HTML_TEMPLATE.format(book_count=current_books)
+    
+    # Ghi dữ liệu ra file index.html ở thư mục ngoài cùng
+    output_file = ROOT_DIR / "index.html"
+    output_file.write_text(output_html, encoding="utf-8")
+    print(f"Đã tạo thành công {output_file} (Số lượng thực tế: {current_books} truyện)")
+
+if __name__ == "__main__":
+    main()

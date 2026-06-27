@@ -1,245 +1,134 @@
 from pathlib import Path
 import json
-import xml.etree.ElementTree as ET
+import html
 
+NOVELS_DIR = Path("novels")
+BOOKS_DIR = Path("books")
 
-def count_chapters(book_dir):
+def escape(text):
+    if text is None:
+        return ""
+    return html.escape(str(text))
 
-    toc_file = book_dir / "toc.ncx"
+def count_stats(data):
+    highlights = 0
+    notes = 0
+    for section in data.get("sections", []):
+        for entry in section.get("entries", []):
+            t = entry.get("type")
+            if t == "pair":
+                highlights += 1
+                notes += 1
+            elif t == "highlight":
+                highlights += 1
+            elif t == "note":
+                notes += 1
+    return highlights, notes
 
-    if not toc_file.exists():
-        return 0
+def get_book_data(book_dir):
+    notes_file = book_dir / "notes.json"
+    if not notes_file.exists():
+        return None
+    
+    try:
+        data = json.loads(notes_file.read_text(encoding="utf-8"))
+        highlights, notes = count_stats(data)
+        return {
+            "slug": book_dir.name,
+            "title": data.get("title", "Unknown Title"),
+            "author": data.get("author", "Unknown Author"),
+            "cover": f"../novels/{book_dir.name}/cover.jpg",
+            "highlights": highlights,
+            "notes": notes
+        }
+    except Exception as e:
+        print(f"Error reading {notes_file}: {e}")
+        return None
 
-    ns = {
-        "ncx": "http://www.daisy.org/z3986/2005/ncx/"
-    }
-
-    tree = ET.parse(toc_file)
-    root = tree.getroot()
-
-    navpoints = root.findall(
-        ".//ncx:navPoint",
-        ns
-    )
-
-    return len(navpoints)
-
-
-root = Path(__file__).parent.parent
-novels_dir = root / "novels"
-
-books = []
-
-for book_dir in novels_dir.iterdir():
-
-    if not book_dir.is_dir():
-        continue
-
-    meta_file = book_dir / "metadata.json"
-
-    if not meta_file.exists():
-        continue
-
-    meta = json.loads(meta_file.read_text(encoding="utf-8"))
-
-    chapter_count = count_chapters(book_dir)
-
-    books.append({
-        "slug": book_dir.name,
-        "title": meta["title"],
-        "author": meta["author"],
-        "review": meta.get("review", ""),
-        "chapters": chapter_count
-    })
-
-books.sort(key=lambda x: x["title"])
-
-cards = ""
-
-for book in books:
-
-    cards += f"""
-    <div class="library-book-card">
-
-        <a href="novels/{book['slug']}/">
-            <img
-                class="library-cover"
-                src="novels/{book['slug']}/cover.jpg"
-                alt="{book['title']}"
-            >
-        </a>
-
-        <div class="library-book-info">
-
-            <h3>{book['title']}</h3>
-
-            <p class="author">
-                {book['author']}
-            </p>
-
-            <p class="chapter-count">
-                {book['chapters']} chương
-            </p>
-
-            <div class="progress">
-                <div class="progress-fill"></div>
-            </div>
-
-        </div>
-
-    </div>
-    """
-
-hero = ""
-
-if books:
-
-    first = books[0]
-
-    hero = f"""
-    <section class="continue-reading">
-
-        <div class="continue-content">
-
-            <img
-                src="novels/{first['slug']}/cover.jpg"
-                class="hero-cover"
-            >
-
-            <div>
-
-                <div class="section-label">
-                    Tiếp tục đọc
-                </div>
-
-                <h2>{first['title']}</h2>
-
-                <p>Chương 1 · Bắt đầu đọc</p>
-
-                <div class="hero-progress">
-                    <div class="hero-progress-fill"></div>
-                </div>
-
-                <a
-                    class="read-now-btn"
-                    href="novels/{first['slug']}/"
-                >
-                    Đọc tiếp
-                </a>
-
-            </div>
-
-        </div>
-
-        <div class="hero-art">
-            📚
-        </div>
-
-    </section>
-    """
-
-html = f"""
-<!DOCTYPE html>
-<html lang="vi">
-
+# Template based on layout from build_detail.py but adapted for library
+HTML_TEMPLATE = """<!doctype html>
+<html>
 <head>
-
-<meta charset="utf-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
->
-
-<title>White Đọc Gây</title>
-
-<link rel="stylesheet" href="library.css">
-
+    <meta charset="utf-8">
+    <title>Thư viện - white đọc gây</title>
+    <link rel="stylesheet" href="../detail.css">
+    <link rel="stylesheet" href="../library.css">
 </head>
-
 <body>
-
-<div class="app-layout">
-
-    <aside class="sidebar">
-
-        <div class="logo">
-
-            <div class="logo-icon">📖</div>
-
-            <div>
-
-                <h2>white đọc gây</h2>
-
-                <p>Thư viện của bạn</p>
-
-            </div>
-
-        </div>
-
-        <nav>
-
-            <a class="active" href="#">Thư viện</a>
-            <a href="#">Đang đọc</a>
-            <a href="#">Đã đọc</a>
-            <a href="#">Yêu thích</a>
-            <a href="#">Tất cả truyện</a>
-
+<div class="layout">
+    <aside class="app-sidebar">
+        <div class="app-logo">📖 white đọc gây</div>
+        <div class="app-section">THƯ VIỆN</div>
+        <nav class="app-nav">
+            <a href="../index.html">🏠 Trang chủ</a>
+            <a href="index.html" class="active">📚 Thư viện</a>
+            <a href="#">📖 Đang đọc</a>
+            <a href="#">🤍 Yêu thích</a>
+            <a href="#">📝 Ghi chú</a>
+            <a href="#">🗂️ Tất cả truyện</a>
         </nav>
-
+        <div class="app-section">CÀI ĐẶT</div>
+        <nav class="app-nav">
+            <a href="#">⚙️ Giao diện</a>
+            <a href="#">⚙️ Cài đặt</a>
+        </nav>
+        <div class="app-footer">© white đọc gây</div>
     </aside>
 
-    <main class="content">
-
+    <main class="page">
         <header class="topbar">
-
             <div>
-
-                <h1>Chào mừng trở lại!</h1>
-
-                <p>
-                    Hôm nay bạn muốn khám phá
-                    câu chuyện nào?
-                </p>
-
+                <h1>Thư viện của tôi</h1>
+                <p>Khám phá kho tàng kiến thức về các bộ nhiễm sắc thể XY</p>
             </div>
-
-            <input
-                type="search"
-                placeholder="Tìm truyện..."
-            >
-
+        
         </header>
 
-        {hero}
-
-        <section class="library-section">
-
-            <div class="section-header">
-
-                <h2>Thư viện của bạn</h2>
-
-            </div>
-
-            <div class="book-grid">
-
-                {cards}
-
-            </div>
-
-        </section>
-
+        <div class="book-grid">
+            {content}
+        </div>
     </main>
-
 </div>
-
 </body>
 </html>
 """
 
-(root / "index.html").write_text(
-    html,
-    encoding="utf-8"
-)
+def render_book_card(book):
+    return f'''
+    <a href="../novels/{book['slug']}/index.html" style="text-decoration: none; color: inherit;">
+        <div class="library-book-card">
+            <img src="{book['cover']}" alt="{escape(book['title'])}" class="library-cover">
+            <div class="library-book-info">
+                <h3>{escape(book['title'])}</h3>
+                <p class="author">{escape(book['author'])}</p>
+                <div class="chapter-count">
+                    {book['highlights']} highlights • {book['notes']} ghi chú
+                </div>
+            </div>
+        </div>
+    </a>
+    '''
 
-print("Done")
+def main():
+    if not NOVELS_DIR.exists():
+        print("novels folder not found.")
+        return
+
+    BOOKS_DIR.mkdir(exist_ok=True)
+
+    books = []
+    for book_dir in sorted(NOVELS_DIR.iterdir()):
+        if not book_dir.is_dir():
+            continue
+        data = get_book_data(book_dir)
+        if data:
+            books.append(data)
+
+    cards_html = "".join([render_book_card(b) for b in books])
+    output_html = HTML_TEMPLATE.format(content=cards_html)
+
+    (BOOKS_DIR / "index.html").write_text(output_html, encoding="utf-8")
+    print(f"Created {BOOKS_DIR / 'index.html'} with {len(books)} books.")
+
+if __name__ == "__main__":
+    main()

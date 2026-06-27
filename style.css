@@ -1,163 +1,335 @@
+/* Khai báo Font Bookerly hệ thống */
 @font-face {
     font-family: "Bookerly";
     src: url("fonts/Bookerly.ttf") format("truetype");
 }
-
 @font-face {
     font-family: "Bookerly";
     src: url("fonts/Bookerly Bold.ttf") format("truetype");
     font-weight: bold;
 }
 
-body{
+:root {
+    --bg: #fcfbfe; /* Màu nền sáng hơn một chút để nổi bật thẻ */
+    --card: #ffffff;
+    --primary: #7c5cff;
+    --primary-soft: #efe9ff;
+    --text: #1f1f29;
+    --muted: #8a8a9a;
+    --border: #f0edf6;
+    
+    /* Màu sắc riêng cho các danh mục */
+    --color-book: #7c5cff;
+    --color-movie: #ff4785;
+    --color-anime: #3b82f6;
+    --color-manga: #10b981;
+    --color-game: #f59e0b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
     font-family: "Bookerly", serif;
-    max-width:900px;
-    margin:auto;
-    padding:30px;
-    background:#f5f5f5;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
 }
 
-.book{
-    background:white;
-    padding:30px;
-    border-radius:12px;
+/* Layout chính */
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 32px 64px 32px;
 }
 
-.cover{
-    width:220px;
-    border-radius:10px;
-}
-
-.chapter-list a{
-    display:block;
-    padding:12px;
-    margin:6px 0;
-    background:white;
-    border-radius:8px;
-    text-decoration:none;
-}
-
-.book-card{
-    display:flex;
-    gap:20px;
-
-    background:white;
-
-    padding:20px;
-    margin:20px 0;
-
-    border-radius:12px;
-
-    align-items:flex-start;
-}
-
-.book-card img{
-    width:140px;
-    border-radius:8px;
-    flex-shrink:0;
-}
-
-.book-info{
-    flex:1;
-}
-
-.read-btn{
-    display:inline-block;
-
-    padding:10px 20px;
-
-    background:#4f46e5;
-    color:white;
-
-    border-radius:8px;
-    text-decoration:none;
-}
-
-.chapter-body{
-    line-height: 2;
-    font-size: 1.15rem;
-}
-
-.chapter-body p{
-    margin: 0 0 1.5em 0;
-}
-
-/* ===== BOOK PAGE ===== */
-
-.book {
-    background: white;
-    padding: 32px;
-    border-radius: 24px;
-    box-shadow: 0 8px 30px rgba(0,0,0,.05);
-}
-
-.book-header {
-    display: flex;
-    gap: 30px;
-    align-items: flex-start;
-    margin-bottom: 30px;
-}
-
-.cover {
-    width: 220px;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,.12);
-}
-
-.book-meta {
-    flex: 1;
-}
-
-.book-meta h1 {
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-.author {
-    color: #666;
-    margin-bottom: 20px;
-}
-
-.review {
-    background: #f8f5ff;
-    padding: 16px;
-    border-radius: 12px;
-    line-height: 1.8;
-}
-
-.chapter-list {
-    margin-top: 30px;
-}
-
-.chapter-item {
+/* --- TOP NAVBAR --- */
+.top-nav {
     display: flex;
     justify-content: space-between;
-
-    padding: 14px 18px;
-
-    margin-bottom: 10px;
-
-    background: white;
-
-    border: 1px solid #ececec;
-
-    border-radius: 12px;
-
-    transition: .2s;
+    align-items: center;
+    padding: 24px 0;
+    margin-bottom: 40px;
 }
-
-.chapter-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,.08);
-}
-
-.chapter-item a {
-    text-decoration: none;
-    color: inherit;
-    width: 100%;
-}
-
-.chapter-number {
-    color: #7c3aed;
+.nav-brand {
+    font-size: 20px;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+    text-decoration: none;
+}
+.nav-search {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 8px 16px;
+    width: 320px;
+}
+.nav-search input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-family: inherit;
+    font-size: 14px;
+}
+.nav-search .shortcut {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--muted);
+}
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-soft);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+/* --- HERO SECTION --- */
+.hero {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1100px;
+    width: 100%;
+    min-height: 320px;
+    margin: 0 auto 64px auto;
+    background: #ece7ff;
+    border-radius: 28px;
+    padding: 40px 32px 0 48px;
+    gap: 24px;
+    align-items: stretch;
+    overflow: hidden;
+}
+
+.hero-content {
+    flex: 1;
+    text-align: left;
+    padding-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero h1 {
+    font-size: 42px; 
+    margin-bottom: 12px;
+    line-height: 1.2;
+}
+
+.hero h1 span {
+    position: relative;
+}
+
+.hero h1 span::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: #d4c8ff;
+    border-radius: 4px;
+    z-index: -1;
+}
+
+.hero p {
+    color: #5a5a6b;
+    font-size: 20px;
+    padding-right: 77px; 
+}
+
+.hero-image {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    
+    /* 5. LỆNH QUAN TRỌNG: ĐẨY ẢNH XUỐNG SÁT ĐÁY */
+    align-items: flex-end; 
+    margin-left: auto;
+}
+
+.hero-image img {
+    width: 250px; 
+    height: auto;
+    object-fit: contain;
+    
+    /* 6. XÓA KHOẢNG TRẮNG THỪA MẶC ĐỊNH CỦA TRÌNH DUYỆT BÊN DƯỚI ẢNH */
+    display: block; 
+}
+
+/* --- SECTION HEADERS --- */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+}
+.section-header h2 {
+    font-size: 22px;
+}
+.section-header a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* --- CATEGORIES GRID --- */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+}
+.cat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px 20px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text);
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.cat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+.cat-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+.cat-name {
+    font-size: 16px;
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+.cat-count {
+    font-size: 26px;
+    font-weight: bold;
+}
+.cat-label {
+    font-size: 13px;
+    color: var(--muted);
+}
+/* Màu chữ số lượng */
+.c-book { color: var(--color-book); }
+.c-movie { color: var(--color-movie); }
+.c-anime { color: var(--color-anime); }
+.c-manga { color: var(--color-manga); }
+.c-game { color: var(--color-game); }
+
+/* --- QUOTE BANNER --- */
+.quote-banner {
+    background: var(--primary-soft);
+    border-radius: 20px;
+    padding: 32px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Đẩy các phần tử ra 2 góc */
+    gap: 30px;
+    margin-bottom: 64px;
+    position: relative;
+    overflow: hidden;
+}
+.quote-icon {
+    font-size: 64px;
+    color: #d1c4ff; /* Màu tím nhạt cho dấu nháy */
+    font-family: serif;
+    line-height: 0;
+    margin-top: 30px;
+}
+.quote-text {
+    flex: 1;
+    font-size: 18px;
+    color: var(--primary);
+    font-weight: bold;
+    font-style: italic;
+}
+.quote-image img {
+    height: 120px;
+    width: auto;
+    object-fit: contain;
+    /* Dịch ảnh xuống đáy banner một chút cho giống thiết kế */
+    margin-bottom: -32px; 
+}
+
+/* --- RECENT NOTES --- */
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+.note-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 180px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.note-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    width: fit-content;
+}
+.note-tag.t-book { background: #efe9ff; color: var(--color-book); }
+.note-tag.t-movie { background: #ffe6f0; color: var(--color-movie); }
+.note-tag.t-anime { background: #e5f0ff; color: var(--color-anime); }
+.note-tag.t-manga { background: #e6fcf4; color: var(--color-manga); }
+.note-tag.t-game { background: #fff5e5; color: var(--color-game); }
+
+.note-text {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.note-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* Tìm đoạn này ở cuối file style.css và sửa thành chữ .cat-card giống bên dưới: */
+
+/* .cat-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;  --Khóa không cho click
+}
+
+.cat-card.disabled:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    border-color: var(--border);
+} */
+
+.cat-card.disabled {
+    display: none; /* Dòng này sẽ ẩn hoàn toàn các thẻ khỏi màn hình */
 }

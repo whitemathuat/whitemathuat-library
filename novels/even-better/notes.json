@@ -6,16 +6,11 @@
       "title": "00 – Trước khi bầu trời sáng rõ",
       "entries": [
         {
-          "type": "highlight",
-          "text": "Nhưng câu nói ấy vô dụng với anh.",
-          "location": 89,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "chất",
-          "location": 89,
-          "color": null
+          "type": "pair",
+          "highlight": "Nhưng câu nói ấy vô dụng với anh.",
+          "note": "chất",
+          "color": " yellow ",
+          "location": 89
         }
       ]
     },
@@ -23,100 +18,60 @@
       "title": "01 – Trước khi hơi ấm của nắng trở nên gần gũi",
       "entries": [
         {
-          "type": "highlight",
-          "text": "Thật lòng mà nói, trong đời chiến binh của tôi, tôi đã trải qua không biết bao trận chiến trên giường, nhưng lần này tôi bị thương thật rồi.",
-          "location": 170,
-          "color": "yellow"
+          "type": "pair",
+          "highlight": "Thật lòng mà nói, trong đời chiến binh của tôi, tôi đã trải qua không biết bao trận chiến trên giường, nhưng lần này tôi bị thương thật rồi.",
+          "note": "😩",
+          "color": " yellow ",
+          "location": 170
         },
         {
-          "type": "note",
-          "text": "😩",
-          "location": 170,
-          "color": null
+          "type": "pair",
+          "highlight": "One-night stand mà, ai dậy trước thì về trước.",
+          "note": "hjx",
+          "color": " yellow ",
+          "location": 189
         },
         {
-          "type": "highlight",
-          "text": "One-night stand mà, ai dậy trước thì về trước.",
-          "location": 189,
-          "color": "yellow"
+          "type": "pair",
+          "highlight": "Giống như hôm nay mày ăn omakase mười nghìn baht một set, mai phải ăn sushi 500 baht một miếng, nó nhạt nhẽo hẳn luôn T_T.”",
+          "note": "so sánh cc",
+          "color": " yellow ",
+          "location": 196
         },
         {
-          "type": "note",
-          "text": "hjx",
-          "location": 189,
-          "color": null
+          "type": "pair",
+          "highlight": "Ôi trời ơi, tôi như bị sét đánh.",
+          "note": "tk này nghiện vãi",
+          "color": " yellow ",
+          "location": 206
         },
         {
-          "type": "highlight",
-          "text": "Giống như hôm nay mày ăn omakase mười nghìn baht một set, mai phải ăn sushi 500 baht một miếng, nó nhạt nhẽo hẳn luôn T_T.”",
-          "location": 196,
-          "color": "yellow"
+          "type": "pair",
+          "highlight": "Nghiêm túc đấy. Đây là lần đầu tôi muốn làm quen với người mà tôi đã ngủ cùng.",
+          "note": "định 1 đêm đứng nhưng mê như điếu đổ",
+          "color": " pink ",
+          "location": 213
         },
         {
-          "type": "note",
-          "text": "so sánh cc",
-          "location": 196,
-          "color": null
+          "type": "pair",
+          "highlight": "Nó đang cởi áo thun ra để thay áo hai dây, dù đang không mặc bra",
+          "note": "tbh thái open minded dzz",
+          "color": " aqua ",
+          "location": 235
         },
         {
-          "type": "highlight",
-          "text": "Ôi trời ơi, tôi như bị sét đánh.",
-          "location": 206,
-          "color": "yellow"
+          "type": "pair",
+          "highlight": "Tôi biết thừa dùng cách nào thì cuộc trò chuyện mới mềm lòng. Phlapphlueng hay bảo tôi khéo ve vãn…",
+          "note": "dụ thụ ha",
+          "color": " pink ",
+          "location": 334
         },
         {
-          "type": "note",
-          "text": "tk này nghiện vãi",
-          "location": 206,
-          "color": null
-        },
-        {
-          "type": "highlight",
-          "text": "Nghiêm túc đấy. Đây là lần đầu tôi muốn làm quen với người mà tôi đã ngủ cùng.",
-          "location": 213,
-          "color": "pink"
-        },
-        {
-          "type": "note",
-          "text": "định 1 đêm đứng nhưng mê như điếu đổ",
-          "location": 213,
-          "color": null
-        },
-        {
-          "type": "highlight",
-          "text": "Nó đang cởi áo thun ra để thay áo hai dây, dù đang không mặc bra",
-          "location": 235,
-          "color": "aqua"
-        },
-        {
-          "type": "note",
-          "text": "tbh thái open minded dzz",
-          "location": 235,
-          "color": null
-        },
-        {
-          "type": "highlight",
-          "text": "Tôi biết thừa dùng cách nào thì cuộc trò chuyện mới mềm lòng. Phlapphlueng hay bảo tôi khéo ve vãn…",
-          "location": 334,
-          "color": "pink"
-        },
-        {
-          "type": "note",
-          "text": "dụ thụ ha",
-          "location": 334,
-          "color": null
-        },
-        {
-          "type": "highlight",
-          "text": "Tao chỉ muốn làm quen thôi chứ chưa phải kiểu thích thích kiểu thích chết mê chết mệt đâu.”",
-          "location": 388,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "?",
-          "location": 388,
-          "color": null
+          "type": "pair",
+          "highlight": "Tao chỉ muốn làm quen thôi chứ chưa phải kiểu thích thích kiểu thích chết mê chết mệt đâu.”",
+          "note": "?",
+          "color": " yellow ",
+          "location": 388
         }
       ]
     },
@@ -124,34 +79,24 @@
       "title": "02 – Trước khi hoa nở",
       "entries": [
         {
-          "type": "highlight",
-          "text": "“Từ cái hôm sex với cậu, tôi cảm giác như mấy thằng khác toàn hàng dởm hết.”",
-          "location": 637,
-          "color": "pink"
+          "type": "pair",
+          "highlight": "“Từ cái hôm sex với cậu, tôi cảm giác như mấy thằng khác toàn hàng dởm hết.”",
+          "note": "cũng thích dồiii",
+          "color": " pink ",
+          "location": 637
         },
         {
-          "type": "note",
-          "text": "cũng thích dồiii",
-          "location": 637,
-          "color": null
-        },
-        {
-          "type": "highlight",
-          "text": "Vì khi đã biết 100 rồi mà chỉ chạm được 99 là nó sẽ không còn đủ nữa. Giờ phải 100 mới chịu.",
-          "location": 641,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "hay",
-          "location": 641,
-          "color": null
+          "type": "pair",
+          "highlight": "Vì khi đã biết 100 rồi mà chỉ chạm được 99 là nó sẽ không còn đủ nữa. Giờ phải 100 mới chịu.",
+          "note": "hay",
+          "color": " yellow ",
+          "location": 641
         },
         {
           "type": "highlight",
           "text": "“Ừ… không yêu.”",
-          "location": 657,
-          "color": "pink"
+          "color": " pink ",
+          "location": 657
         }
       ]
     },
@@ -159,52 +104,37 @@
       "title": "03 – Trước giấc mơ ngọt ngào ấy",
       "entries": [
         {
-          "type": "highlight",
-          "text": "Ừ thì extrovert mà.",
-          "location": 810,
-          "color": "yellow"
+          "type": "pair",
+          "highlight": "Ừ thì extrovert mà.",
+          "note": "nể",
+          "color": " yellow ",
+          "location": 810
         },
         {
-          "type": "note",
-          "text": "nể",
-          "location": 810,
-          "color": null
+          "type": "pair",
+          "highlight": "“Anh thích em mà.”",
+          "note": "là lào dcm",
+          "color": " pink ",
+          "location": 829
         },
         {
-          "type": "highlight",
-          "text": "“Anh thích em mà.”",
-          "location": 829,
-          "color": "pink"
-        },
-        {
-          "type": "note",
-          "text": "là lào dcm",
-          "location": 829,
-          "color": null
-        },
-        {
-          "type": "highlight",
-          "text": "“Tất cả mọi thứ.”",
-          "location": 842,
-          "color": "pink"
-        },
-        {
-          "type": "note",
-          "text": "hẹ hẹ",
-          "location": 842,
-          "color": null
+          "type": "pair",
+          "highlight": "“Tất cả mọi thứ.”",
+          "note": "hẹ hẹ",
+          "color": " pink ",
+          "location": 842
         },
         {
           "type": "highlight",
           "text": "Tao thích Jamie, thích lắm luôn.”",
-          "location": 847,
-          "color": "pink"
+          "color": " pink ",
+          "location": 847
         },
         {
           "type": "highlight",
           "text": "“But the point is you don’t, right?”",
-          "location": 882,
-          "color": "pink"
+          "color": " pink ",
+          "location": 882
         }
       ]
     },
@@ -214,32 +144,27 @@
         {
           "type": "highlight",
           "text": "Mình sắp thành thằng cuồng si tình như con bọ thật hả?",
-          "location": 979,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 979
         },
         {
-          "type": "highlight",
-          "text": "Không yêu đâu!",
-          "location": 980,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "hehehe",
-          "location": 980,
-          "color": null
+          "type": "pair",
+          "highlight": "Không yêu đâu!",
+          "note": "hehehe",
+          "color": " yellow ",
+          "location": 980
         },
         {
           "type": "highlight",
           "text": "“Hay như con bọ ấy, nhìn kìa, nó hạnh phúc từng giây từng phút. Tao hiểu không phải ai cũng may mắn gặp được tình yêu đẹp, nhưng ít nhất khi đã được sinh ra thì mình cứ yêu thật lòng một người nào đó thôi, được không?”",
-          "location": 1047,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1047
         },
         {
           "type": "highlight",
           "text": "Vì nếu Jamie nghe mà vui, thì mình cũng vui.]",
-          "location": 1100,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1100
         }
       ]
     },
@@ -247,46 +172,31 @@
       "title": "05 – Trước khi cuộc đời nhận ra giá trị của chính nó",
       "entries": [
         {
-          "type": "highlight",
-          "text": "Ngoan vcl luôn ấy.",
-          "location": 1156,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "me",
-          "location": 1156,
-          "color": null
+          "type": "pair",
+          "highlight": "Ngoan vcl luôn ấy.",
+          "note": "me",
+          "color": " yellow ",
+          "location": 1156
         },
         {
           "type": "highlight",
           "text": "Nói thật, giờ chỉ còn cuộc đời tôi là thứ anh có thể lấy đi được thôi.",
-          "location": 1241,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1241
         },
         {
-          "type": "highlight",
-          "text": "“Vậy tối nay gọi tôi là Daddy nhé, deal không?”",
-          "location": 1244,
-          "color": "yellow"
+          "type": "pair",
+          "highlight": "“Vậy tối nay gọi tôi là Daddy nhé, deal không?”",
+          "note": "?",
+          "color": " yellow ",
+          "location": 1244
         },
         {
-          "type": "note",
-          "text": "?",
-          "location": 1244,
-          "color": null
-        },
-        {
-          "type": "highlight",
-          "text": "Cậu giống như một chú cún to xác.",
-          "location": 1336,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "nienha",
-          "location": 1336,
-          "color": null
+          "type": "pair",
+          "highlight": "Cậu giống như một chú cún to xác.",
+          "note": "nienha",
+          "color": " yellow ",
+          "location": 1336
         }
       ]
     },
@@ -296,26 +206,26 @@
         {
           "type": "highlight",
           "text": "“Tao nghĩ ‘thích nhiều’ của loại như mày phải là kiểu tự lừa mình: không thích đến thế đâu, không yêu đâu, đồ ngu, tao điên rồi. Cuối cùng cứ chạy trốn cảm xúc của chính mình mãi.”",
-          "location": 1398,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1398
         },
         {
           "type": "highlight",
           "text": "yêu nhiều đến mức nếu biết có một ngày mình không mang lại hạnh phúc, thoải mái hay tình yêu nữa thì mình muốn Duang dành thời gian còn lại với ai đó có thể thay thế vị trí ấy.”",
-          "location": 1437,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1437
         },
         {
           "type": "highlight",
           "text": "“Em sợ mình không thể yêu ai một cách trọn vẹn, sợ làm mọi thứ tệ hơn, sợ một ngày có người nói thẳng mặt là ‘xin lỗi’ rồi biến mất. Em lhông muốn trở thành nỗi khó chịu hay điều tệ trong đời ai cả.”",
-          "location": 1578,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1578
         },
         {
           "type": "highlight",
           "text": "Và vẫn luôn chờ ngày nó được định nghĩa.",
-          "location": 1602,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1602
         }
       ]
     },
@@ -323,22 +233,17 @@
       "title": "07 – Trước khi người như tôi hết pin",
       "entries": [
         {
-          "type": "highlight",
-          "text": "“Nói nó cũng thế thôi cậu Qin ơi, nó ngu như bò ấy.”",
-          "location": 1784,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "?",
-          "location": 1784,
-          "color": null
+          "type": "pair",
+          "highlight": "“Nói nó cũng thế thôi cậu Qin ơi, nó ngu như bò ấy.”",
+          "note": "?",
+          "color": " yellow ",
+          "location": 1784
         },
         {
           "type": "highlight",
           "text": "“Hôm nay cũng không nghĩ sẽ yêu ai nhiều hơn hôm qua… vậy mà lại làm được rồi. Giờ biết làm sao đây?”",
-          "location": 1808,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1808
         }
       ]
     },
@@ -348,20 +253,20 @@
         {
           "type": "highlight",
           "text": "“Chuyện bảo sẽ không yêu ấy.”",
-          "location": 1854,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1854
         },
         {
           "type": "highlight",
           "text": "đang “làm gì đó” với chị hàng xóm hồi lớp 11",
-          "location": 1855,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1855
         },
         {
           "type": "highlight",
           "text": "Giây phút đó, Marvis thực sự nhận ra Jettana chính là người đàn ông đáng yêu nhất trên thế giới của mình.",
-          "location": 1979,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 1979
         }
       ]
     },
@@ -369,34 +274,29 @@
       "title": "09 – Cho đến khi tình yêu của em ghé đến",
       "entries": [
         {
-          "type": "highlight",
-          "text": "cứ thế vác cái mông to đùng hậm hực đi quanh.",
-          "location": 2082,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "nghien mong to",
-          "location": 2082,
-          "color": null
+          "type": "pair",
+          "highlight": "cứ thế vác cái mông to đùng hậm hực đi quanh.",
+          "note": "nghien mong to",
+          "color": " yellow ",
+          "location": 2082
         },
         {
           "type": "highlight",
           "text": "Giờ tôi mới hiểu cái cảm giác khi phải nói với người khác mình là gì của nhau nó đáng sợ thế nào vì chính mình cũng không biết đối với người ta, mình là cái gì.",
-          "location": 2120,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2120
         },
         {
           "type": "highlight",
           "text": "Tôi thở dốc, để thời gian trôi qua hòng nghe em cất lời cầu xin.",
-          "location": 2254,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2254
         },
         {
           "type": "highlight",
           "text": "Cậu ấy, người cứ thế bước vào trái tim tôi mỗi ngày một gần hơn.",
-          "location": 2307,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2307
         }
       ]
     },
@@ -406,50 +306,40 @@
         {
           "type": "highlight",
           "text": "ôm anh từ phía sau, vùi mặt vào hõm cổ",
-          "location": 2326,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2326
         },
         {
-          "type": "highlight",
-          "text": "Tim tôi đập mạnh đến mức tai ù đi trong thoáng chốc. Nhưng đừng ai nói cho anh biết nhé, tôi cũng ngại khi phải thừa nhận lắm T_T.",
-          "location": 2376,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "drunk in love cmnr",
-          "location": 2378,
-          "color": null
+          "type": "pair",
+          "highlight": "Tim tôi đập mạnh đến mức tai ù đi trong thoáng chốc. Nhưng đừng ai nói cho anh biết nhé, tôi cũng ngại khi phải thừa nhận lắm T_T.",
+          "note": "drunk in love cmnr",
+          "color": " yellow ",
+          "location": 2376
         },
         {
           "type": "highlight",
           "text": "Tôi thích anh chết mất thôi.",
-          "location": 2378,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2378
         },
         {
-          "type": "highlight",
-          "text": "“Vậy nếu tôi cầu hôn…",
-          "location": 2395,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "?",
-          "location": 2395,
-          "color": null
+          "type": "pair",
+          "highlight": "“Vậy nếu tôi cầu hôn…",
+          "note": "?",
+          "color": " yellow ",
+          "location": 2395
         },
         {
           "type": "highlight",
           "text": "Jettana này chắc chắn sẽ đặt chân lên sao Hỏa vào một ngày nào đó cho xem.",
-          "location": 2418,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2418
         },
         {
           "type": "highlight",
           "text": "lần đầu tiên trong đời tôi chấp nhận không say vì bận ghen với người khác đấy.",
-          "location": 2502,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2502
         }
       ]
     },
@@ -459,62 +349,47 @@
         {
           "type": "highlight",
           "text": "Tôi thích cậu ấy nhiều quá mất rồi.",
-          "location": 2552,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2552
         },
         {
-          "type": "highlight",
-          "text": "Tôi đi tới ôm lấy cậu ấy, người đang dang tay đón tôi như thể biết thừa tôi sắp nhõng nhẽo. Tôi tựa mặt vào bờ vai rộng, cậu ấy vỗ vỗ mông tôi như dỗ trẻ con.",
-          "location": 2575,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "uaaaaaa",
-          "location": 2575,
-          "color": null
+          "type": "pair",
+          "highlight": "Tôi đi tới ôm lấy cậu ấy, người đang dang tay đón tôi như thể biết thừa tôi sắp nhõng nhẽo. Tôi tựa mặt vào bờ vai rộng, cậu ấy vỗ vỗ mông tôi như dỗ trẻ con.",
+          "note": "uaaaaaa",
+          "color": " yellow ",
+          "location": 2575
         },
         {
           "type": "highlight",
           "text": "mỗi lần làm chuyện đó, cậu ấy gần như gặm nhấm cả đôi chân tôi luôn.",
-          "location": 2593,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2593
         },
         {
-          "type": "highlight",
-          "text": "tôi cực kỳ thích hôn má cậu ấy và cậu ấy trông lúc nào cũng ngượng nghịu mỗi khi tôi làm vậy.",
-          "location": 2603,
-          "color": "yellow"
+          "type": "pair",
+          "highlight": "tôi cực kỳ thích hôn má cậu ấy và cậu ấy trông lúc nào cũng ngượng nghịu mỗi khi tôi làm vậy.",
+          "note": "cute vl doc cu cuoi thoi",
+          "color": " yellow ",
+          "location": 2603
         },
         {
-          "type": "note",
-          "text": "cute vl doc cu cuoi thoi",
-          "location": 2603,
-          "color": null
-        },
-        {
-          "type": "highlight",
-          "text": "vì nó có giỏi cái gì ngoài việc yêu cậu Qin như một con trâu đâu.”",
-          "location": 2619,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "?",
-          "location": 2619,
-          "color": null
+          "type": "pair",
+          "highlight": "vì nó có giỏi cái gì ngoài việc yêu cậu Qin như một con trâu đâu.”",
+          "note": "?",
+          "color": " yellow ",
+          "location": 2619
         },
         {
           "type": "highlight",
           "text": "“Hay đi mua bảo hiểm cho chân anh nhỉ?",
-          "location": 2668,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2668
         },
         {
           "type": "highlight",
           "text": "“Nhưng tôi là chồng.”",
-          "location": 2728,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2728
         }
       ]
     },
@@ -522,46 +397,36 @@
       "title": "12 – Cho đến khi tình yêu trở thành lòng thương",
       "entries": [
         {
-          "type": "highlight",
-          "text": "“Bạn trai thì đứng ngoài hành lang nói chuyện, ăn cơm thì ra quán.”",
-          "location": 2851,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "ko danh phan ma du v bay",
-          "location": 2851,
-          "color": null
+          "type": "pair",
+          "highlight": "“Bạn trai thì đứng ngoài hành lang nói chuyện, ăn cơm thì ra quán.”",
+          "note": "ko danh phan ma du v bay",
+          "color": " yellow ",
+          "location": 2851
         },
         {
           "type": "highlight",
           "text": "Liệu tôi có sống nổi không nếu thiếu anh không?",
-          "location": 2921,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2921
         },
         {
-          "type": "highlight",
-          "text": "“I love you, Marvis.”",
-          "location": 2943,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "e m",
-          "location": 2943,
-          "color": null
+          "type": "pair",
+          "highlight": "“I love you, Marvis.”",
+          "note": "e m",
+          "color": " yellow ",
+          "location": 2943
         },
         {
           "type": "highlight",
           "text": "“Tôi sẽ làm anh yêu tôi được thôi.”",
-          "location": 2972,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2972
         },
         {
           "type": "highlight",
           "text": "Và có vẻ như tôi chẳng thể ngừng yêu anh dù chỉ một giây.",
-          "location": 2981,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 2981
         }
       ]
     },
@@ -571,26 +436,26 @@
         {
           "type": "highlight",
           "text": "cuồng yêu đến mức này mà để tụi nó biết thì chỉ có nước bị trêu đến chết.",
-          "location": 3005,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 3005
         },
         {
           "type": "highlight",
           "text": "anh ấy giỏi lắm, tự tin lắm, tự đứng vững được. Em biết dù anh ấy có yêu em nhiều đến đâu, anh ấy vẫn có thể không chọn em.”",
-          "location": 3158,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 3158
         },
         {
           "type": "highlight",
           "text": "[Đang ôm đây nè.]",
-          "location": 3202,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 3202
         },
         {
           "type": "highlight",
           "text": "Marvis cười nhẹ nhìn người trên màn hình, nhưng sâu bên trong muốn khóc òa.",
-          "location": 3221,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 3221
         }
       ]
     },
@@ -598,64 +463,49 @@
       "title": "14 – Trên thế gian khắc nghiệt… đến cùng cực",
       "entries": [
         {
-          "type": "highlight",
-          "text": "Và khi ở một mình, anh càng nhận ra rằng tình yêu vẫn không cần thiết như trước đây.",
-          "location": 3319,
-          "color": "pink"
+          "type": "pair",
+          "highlight": "Và khi ở một mình, anh càng nhận ra rằng tình yêu vẫn không cần thiết như trước đây.",
+          "note": "là lào dcm",
+          "color": " pink ",
+          "location": 3319
         },
         {
-          "type": "note",
-          "text": "là lào dcm",
-          "location": 3319,
-          "color": null
-        },
-        {
-          "type": "highlight",
-          "text": "Nhưng Jamie… Lại thực sự cần thiết đối với trái tim anh.",
-          "location": 3321,
-          "color": "pink"
-        },
-        {
-          "type": "note",
-          "text": "à",
-          "location": 3321,
-          "color": null
+          "type": "pair",
+          "highlight": "Nhưng Jamie… Lại thực sự cần thiết đối với trái tim anh.",
+          "note": "à",
+          "color": " pink ",
+          "location": 3321
         },
         {
           "type": "highlight",
           "text": "“Maybe he is my one and only exception, i guess.”",
-          "location": 3331,
-          "color": "pink"
+          "color": " pink ",
+          "location": 3331
         },
         {
-          "type": "highlight",
-          "text": "Tin không, cả ngày tôi chỉ nghĩ đến việc về phòng để Facetime với anh thôi đấy.",
-          "location": 3387,
-          "color": "pink"
-        },
-        {
-          "type": "note",
-          "text": "đê mê vcl",
-          "location": 3387,
-          "color": null
+          "type": "pair",
+          "highlight": "Tin không, cả ngày tôi chỉ nghĩ đến việc về phòng để Facetime với anh thôi đấy.",
+          "note": "đê mê vcl",
+          "color": " pink ",
+          "location": 3387
         },
         {
           "type": "highlight",
           "text": "tôi nhớ anh đến phát điên luôn. Chắc tôi còn cuồng yêu hơn cả thằng Duang rồi cũng nên.",
-          "location": 3392,
-          "color": "pink"
+          "color": " pink ",
+          "location": 3392
         },
         {
           "type": "highlight",
           "text": "Tính luôn cả tao vào cái hội gà mờ đó luôn đi T_T.",
-          "location": 3424,
-          "color": "pink"
+          "color": " pink ",
+          "location": 3424
         },
         {
           "type": "highlight",
           "text": "Anh ấy khẳng định rất rõ ràng là ảnh không muốn có người yêu, anh ấy tự sống tốt được.",
-          "location": 3467,
-          "color": "pink"
+          "color": " pink ",
+          "location": 3467
         }
       ]
     },
@@ -663,40 +513,30 @@
       "title": "15 – Cả linh hồn lẫn trái tim đều để anh chiếm lấy hết",
       "entries": [
         {
-          "type": "highlight",
-          "text": "“Mà em nói cái gì thế này không biết? Em biết là không nên nhưng em lo cho nó quá.",
-          "location": 3554,
-          "color": "yellow"
+          "type": "pair",
+          "highlight": "“Mà em nói cái gì thế này không biết? Em biết là không nên nhưng em lo cho nó quá.",
+          "note": "riu fren",
+          "color": " yellow ",
+          "location": 3554
         },
         {
-          "type": "note",
-          "text": "riu fren",
-          "location": 3554,
-          "color": null
-        },
-        {
-          "type": "highlight",
-          "text": "Vâng, cậu Qin là bồ mày thật, nhưng cậu ấy cũng có thể làm chồng của bất kỳ ai.",
-          "location": 3600,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "vkl",
-          "location": 3600,
-          "color": null
+          "type": "pair",
+          "highlight": "Vâng, cậu Qin là bồ mày thật, nhưng cậu ấy cũng có thể làm chồng của bất kỳ ai.",
+          "note": "vkl",
+          "color": " yellow ",
+          "location": 3600
         },
         {
           "type": "highlight",
           "text": "“Anh chẳng chuẩn bị gì để yêu em cả.”",
-          "location": 3618,
-          "color": "pink"
+          "color": " pink ",
+          "location": 3618
         },
         {
           "type": "highlight",
           "text": "“Kiểu người như anh thì chỉ cần ở yên đó để tôi yêu là đủ rồi.”",
-          "location": 3707,
-          "color": "pink"
+          "color": " pink ",
+          "location": 3707
         }
       ]
     },
@@ -706,20 +546,15 @@
         {
           "type": "highlight",
           "text": "Nếu anh nhà mà bảo bên trái là bên phải, chắc cậu cũng đứng ra chỉ mặt mắng tất cả những ai bảo bên trái là bên trái mất.",
-          "location": 3999,
-          "color": "pink"
+          "color": " pink ",
+          "location": 3999
         },
         {
-          "type": "highlight",
-          "text": "“Mie uống sữa ai thì người đó đều sẽ là mẹ Mie hết.",
-          "location": 4124,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "?",
-          "location": 4124,
-          "color": null
+          "type": "pair",
+          "highlight": "“Mie uống sữa ai thì người đó đều sẽ là mẹ Mie hết.",
+          "note": "?",
+          "color": " yellow ",
+          "location": 4124
         }
       ]
     },
@@ -729,26 +564,21 @@
         {
           "type": "highlight",
           "text": "Tao yêu thương và thờ phụng người yêu tao lắm nhé.",
-          "location": 4298,
-          "color": "pink"
+          "color": " pink ",
+          "location": 4298
         },
         {
-          "type": "highlight",
-          "text": "Tại sao người phải thấy cái ảnh chụp màn hình lúc người yêu nó đang ngồi hở hang, còn có một cái khung hình nhỏ xíu ở góc phải quay cảnh nó đang “tự sướng” lại là tao cơ chứ? Dù chỉ là ảnh nhỏ vì chưa ấn vào xem nhưng nó lại nằm chình ình ngay giữa màn hình chính.",
-          "location": 4306,
-          "color": "yellow"
-        },
-        {
-          "type": "note",
-          "text": "cười ỉa",
-          "location": 4306,
-          "color": null
+          "type": "pair",
+          "highlight": "Tại sao người phải thấy cái ảnh chụp màn hình lúc người yêu nó đang ngồi hở hang, còn có một cái khung hình nhỏ xíu ở góc phải quay cảnh nó đang “tự sướng” lại là tao cơ chứ? Dù chỉ là ảnh nhỏ vì chưa ấn vào xem nhưng nó lại nằm chình ình ngay giữa màn hình chính.",
+          "note": "cười ỉa",
+          "color": " yellow ",
+          "location": 4306
         },
         {
           "type": "highlight",
           "text": "“Muốn ở bên cạnh, muốn được ôm, muốn mỗi sáng thức dậy đều được nhìn thấy em ấy.”",
-          "location": 4399,
-          "color": "pink"
+          "color": " pink ",
+          "location": 4399
         }
       ]
     },
@@ -758,8 +588,8 @@
         {
           "type": "highlight",
           "text": "“Trong thiên hà này ấy, không ai yêu anh bằng anh Mie đâu.”",
-          "location": 4545,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 4545
         }
       ]
     },
@@ -769,8 +599,8 @@
         {
           "type": "highlight",
           "text": "tôi lườm lại từng đứa một.",
-          "location": 5246,
-          "color": "yellow"
+          "color": " yellow ",
+          "location": 5246
         }
       ]
     },
@@ -780,20 +610,15 @@
         {
           "type": "highlight",
           "text": "[Cậu có đang nghe em nói không đấy?]",
-          "location": 5430,
-          "color": "pink"
+          "color": " pink ",
+          "location": 5430
         },
         {
-          "type": "highlight",
-          "text": "“Em yêu anh Mie lắm đó nhaaa.”",
-          "location": 5527,
-          "color": "pink"
-        },
-        {
-          "type": "note",
-          "text": "quả xưng hô của thái ác thật chứ",
-          "location": 5527,
-          "color": null
+          "type": "pair",
+          "highlight": "“Em yêu anh Mie lắm đó nhaaa.”",
+          "note": "quả xưng hô của thái ác thật chứ",
+          "color": " pink ",
+          "location": 5527
         }
       ]
     }
