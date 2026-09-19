@@ -1,29 +1,7 @@
-from pathlib import Path
 import json
-import html
+from utils import ROOT_DIR, NOVELS_DIR, escape, count_stats, render_app_sidebar
 
-NOVELS_DIR = Path("novels")
-BOOKS_DIR = Path("books")
-
-def escape(text):
-    if text is None:
-        return ""
-    return html.escape(str(text))
-
-def count_stats(data):
-    highlights = 0
-    notes = 0
-    for section in data.get("sections", []):
-        for entry in section.get("entries", []):
-            t = entry.get("type")
-            if t == "pair":
-                highlights += 1
-                notes += 1
-            elif t == "highlight":
-                highlights += 1
-            elif t == "note":
-                notes += 1
-    return highlights, notes
+BOOKS_DIR = ROOT_DIR / "books"
 
 def get_book_data(book_dir):
     notes_file = book_dir / "notes.json"
@@ -44,54 +22,6 @@ def get_book_data(book_dir):
     except Exception as e:
         print(f"Error reading {notes_file}: {e}")
         return None
-
-# Template based on layout from build_detail.py but adapted for library
-HTML_TEMPLATE = """<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Thư viện - white đọc gây</title>
-    <link rel="stylesheet" href="../detail.css">
-    <link rel="stylesheet" href="../library.css">
-</head>
-<body>
-<div class="layout">
-    <aside class="app-sidebar">
-        <div class="app-logo">📖 white đọc gây</div>
-        <div class="app-section">THƯ VIỆN</div>
-        <nav class="app-nav">
-            <a href="../index.html">🏠 Trang chủ</a>
-            <a href="index.html" class="active">📚 Thư viện</a>
-            <a href="#">📖 Đang đọc</a>
-            <a href="#">🤍 Yêu thích</a>
-            <a href="#">📝 Ghi chú</a>
-            <a href="#">🗂️ Tất cả truyện</a>
-        </nav>
-        <div class="app-section">CÀI ĐẶT</div>
-        <nav class="app-nav">
-            <a href="#">⚙️ Giao diện</a>
-            <a href="#">⚙️ Cài đặt</a>
-        </nav>
-        <div class="app-footer">© white đọc gây</div>
-    </aside>
-
-    <main class="page">
-        <header class="topbar">
-            <div>
-                <h1>Thư viện của tôi</h1>
-                <p>Khám phá kho tàng kiến thức về các bộ nhiễm sắc thể XY</p>
-            </div>
-        
-        </header>
-
-        <div class="book-grid">
-            {content}
-        </div>
-    </main>
-</div>
-</body>
-</html>
-"""
 
 def render_book_card(book):
     return f'''
@@ -124,8 +54,19 @@ def main():
         if data:
             books.append(data)
 
+# Bắt đầu sửa từ đoạn này trong hàm main():
     cards_html = "".join([render_book_card(b) for b in books])
-    output_html = HTML_TEMPLATE.format(content=cards_html)
+    
+    # 1. Đọc khuôn HTML
+    template_path = ROOT_DIR / "templates" / "library.html"
+    html_template = template_path.read_text(encoding="utf-8")
+    
+    # 2. Đổ dữ liệu vào khuôn
+    # Tạo sidebar với độ sâu "../" và tab đang mở là 'library'
+    sidebar_html = render_app_sidebar('library', '../')
+
+    # Đổ cả sidebar và content vào khuôn
+    output_html = html_template.format(sidebar=sidebar_html, content=cards_html)
 
     (BOOKS_DIR / "index.html").write_text(output_html, encoding="utf-8")
     print(f"Created {BOOKS_DIR / 'index.html'} with {len(books)} books.")

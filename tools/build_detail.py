@@ -1,39 +1,7 @@
-from pathlib import Path
 import json
-import html
-import re
-import os                                 # Thêm dòng này
+import os
 from datetime import datetime
-
-ROOT_DIR = Path(__file__).parent.parent
-NOVELS_DIR = ROOT_DIR / "novels"
-
-def slugify(text: str) -> str:
-    text = text.lower()
-    text = text.replace("–", "-")
-    text = re.sub(r"[^a-z0-9]+", "-", text)
-    text = re.sub(r"-+", "-", text)
-    return text.strip("-")
-
-def escape(text):
-    if text is None:
-        return ""
-    return html.escape(str(text))
-
-def count_stats(data):
-    highlights = 0
-    notes = 0
-    for section in data.get("sections", []):
-        for entry in section.get("entries", []):
-            t = entry.get("type")
-            if t == "pair":
-                highlights += 1
-                notes += 1
-            elif t == "highlight":
-                highlights += 1
-            elif t == "note":
-                notes += 1
-    return highlights, notes
+from utils import ROOT_DIR, NOVELS_DIR, slugify, escape, count_stats, render_app_sidebar
 
 # --- HÀM MỚI: ĐỌC VÀ XỬ LÝ FILE REVIEW.MD ---
 def parse_review(book_dir):
@@ -41,14 +9,14 @@ def parse_review(book_dir):
     if not review_file.exists():
         return None
     
-    # Lấy ngày cập nhật thật của file review.md (Yêu cầu 4)
     mtime = os.path.getmtime(review_file)
     real_date = datetime.fromtimestamp(mtime).strftime("%d/%m/%Y")
     
     content = review_file.read_text(encoding="utf-8")
     parts = content.split("---", 1)
     
-    meta = {}
+    # Khởi tạo list chứa các link
+    meta = {'links': []} 
     text = ""
     
     if len(parts) == 2:
@@ -56,11 +24,20 @@ def parse_review(book_dir):
         for line in meta_text.strip().split('\n'):
             if ':' in line:
                 k, v = line.split(':', 1)
-                meta[k.strip()] = v.strip()
+                k = k.strip()
+                v = v.strip()
+                
+                # Nếu từ khóa là 'link', tách URL và Text bằng dấu '|'
+                if k == 'link':
+                    link_parts = v.split('|', 1)
+                    url = link_parts[0].strip()
+                    link_text = link_parts[1].strip() if len(link_parts) > 1 else "Nguồn"
+                    meta['links'].append({'url': url, 'text': link_text})
+                else:
+                    meta[k] = v
     else:
         text = parts[0]
         
-    # Ghi đè ngày thật vào meta
     meta['date'] = real_date
         
     return {"meta": meta, "text": text.strip()}
@@ -89,30 +66,38 @@ def render_header(title, author, highlights, notes):
 
 def render_info_tab(review_data):
     if not review_data:
-        return '<div id="tab-info" class="tab-content active"><p>Chưa có thông tin review.</p></div>'
+        return '<div id="tab-info" class="tab-content"><p>Chưa có thông tin review.</p></div>'
     
     meta = review_data['meta']
     text = review_data['text']
     
-    # Xử lý logic hiển thị Nguồn đọc (Yêu cầu 1)
-    if 'read_link' in meta:
-        source_html = f'<a href="{escape(meta["read_link"])}" class="btn-action btn-primary-outline" target="_blank"><span class="icon">↗</span> Nguồn</a>'
-    elif 'no_link' in meta:
-        source_html = f'<div class="no-link-text">{escape(meta["no_link"])}</div>'
-    else:
-        source_html = ''
+    source_html_parts = []
+    
+    # 1. Có link thì in các link dàn ngang
+    if meta.get('links'):
+        source_html_parts.append('<div class="source-flex" style="margin-bottom: 0; flex-wrap: wrap; gap: 12px;">')
+        for link in meta['links']:
+            source_html_parts.append(f'<a href="{escape(link["url"])}" class="btn-action btn-primary-outline" target="_blank"><span class="icon">↗</span> {escape(link["text"])}</a>')
+        source_html_parts.append('</div>')
+        
+    # 2. Có text thì in text (bất kể ở trên có link hay không)
+    if 'note_text' in meta:
+        # Nếu có link ở trên rồi thì đẩy text cách xuống một chút (16px), không có link thì ko cần khoảng cách
+        margin_top = "16px" if meta.get('links') else "0"
+        source_html_parts.append(f'<div class="no-link-text" style="margin-top: {margin_top};">{escape(meta["note_text"])}</div>')
+        
+    source_html = "".join(source_html_parts)
 
     return f"""
-<div id="tab-info" class="tab-content active">
+<div id="tab-info" class="tab-content">
     
     <div class="info-card">
         <div class="info-header">
             <span class="icon">📖</span> Đọc truyện
         </div>
         
-        <div class="source-flex" style="margin-bottom: 0;">
-            {source_html}
-        </div>
+        {source_html}
+        
     </div>
 
     <div class="info-card">
@@ -195,10 +180,10 @@ def render_page(data, review_data):
     # Cụm điều hướng Tab mới (có hàm onclick của JS)
     html_parts.append("""
 <div class="tabs">
-    <button class="tab active" onclick="switchTab(event, 'tab-info')">
+    <button class="tab" onclick="switchTab(event, 'tab-info')">
         <span style="color:var(--primary); margin-right:6px;">ⓘ</span> Thông tin
     </button>
-    <button class="tab" onclick="switchTab(event, 'tab-annotation')">
+    <button class="tab active" onclick="switchTab(event, 'tab-annotation')">
         <span style="color:var(--primary); margin-right:6px;">💬</span> Annotation
     </button>
 </div>
@@ -214,7 +199,7 @@ def render_page(data, review_data):
     html_parts.append(render_info_tab(review_data))
     
     # NỘI DUNG TAB 2: Annotation (Ghi chú cũ)
-    html_parts.append('<div id="tab-annotation" class="tab-content">')
+    html_parts.append('<div id="tab-annotation" class="tab-content active">')
     for section in data.get("sections", []):
         html_parts.append(render_section(section))
     html_parts.append('</div>') # Đóng tab-annotation
@@ -263,39 +248,6 @@ window.onload = function() {
     return "".join(html_parts)
 
 
-HTML_TEMPLATE = """<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="../../detail.css">
-</head>
-<body>
-<div class="layout">
-    <aside class="app-sidebar">
-        <div class="app-logo">📖 white đọc gây</div>
-        <div class="app-section">THƯ VIỆN</div>
-        <nav class="app-nav">
-            <a href="../../index.html">🏠 Trang chủ</a>
-            <a href="../../books/index.html">📚 Thư viện</a>
-            <a href="#">📖 Đang đọc</a>
-            <a href="#">🤍 Yêu thích</a>
-            <a href="#" class="active">📝 Annotation</a> <a href="#">🗂️ Tất cả truyện</a>
-        </nav>
-        <div class="app-section">CÀI ĐẶT</div>
-        <nav class="app-nav">
-            <a href="#">⚙️ Giao diện</a>
-            <a href="#">⚙️ Cài đặt</a>
-        </nav>
-        <div class="app-footer">© white đọc gây</div>
-    </aside>
-    <main class="page">
-        {content}
-    </main>
-</div>
-</body>
-</html>
-"""
-
 def build_book(book_dir):
     notes_file = book_dir / "notes.json"
     if not notes_file.exists():
@@ -307,7 +259,17 @@ def build_book(book_dir):
     review_data = parse_review(book_dir)
 
     page_html = render_page(data, review_data)
-    output = HTML_TEMPLATE.format(content=page_html)
+    
+    # 1. Đọc khuôn HTML từ thư mục templates
+    template_path = ROOT_DIR / "templates" / "detail.html"
+    html_template = template_path.read_text(encoding="utf-8")
+    
+    # 2. Đổ dữ liệu vào khuôn
+    # Tạo sidebar với độ sâu "../../" và tab đang mở là 'annotation'
+    sidebar_html = render_app_sidebar('annotation', '../../')
+
+    # Đổ cả sidebar và content vào khuôn
+    output = html_template.format(sidebar=sidebar_html, content=page_html)
 
     output_file = book_dir / "index.html"
     output_file.write_text(output, encoding="utf-8")
