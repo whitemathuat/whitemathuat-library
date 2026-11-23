@@ -8,8 +8,10 @@ Rules in force (short summary) + numbered decisions below, max ~5 lines each. Wh
 - Book data: one folder per book in `novels/`, notes from the Kindle export, review in `review.md` (1).
 - Online behind a browser login (`USERNAME` / `PASSWORD` Cloudflare variables) (1).
 - Every push to GitHub `main` goes live automatically; tag `online` = live commit (2).
+- Daily work on branch `dev`; `main` changes only through `/len-mang` (3).
 
 ## Decisions
 
 1. **Taken over with /du-an-cu (2026-11-24).** Notes added (CLAUDE.md, PROGRESS.md, DECISIONS.md, IDEAS.md, .gitignore), no code changed. Local copy matched GitHub `main` exactly; history kept. User: it is online on Cloudflare, this is the newest copy, next wishes = phone-friendly look + cleaner code.
 2. **Push = deploy (2026-11-24, found).** Cloudflare Pages project `whitemathuat-library` is linked to the GitHub repo, so pushing `main` publishes the site. Notes-only pushes are harmless (files sit behind the password). Before code changes, decide with the user: keep it, or work on another branch and merge to `main` only with `/len-mang`.
+3. **Work on a `dev` branch (2026-11-24, user chose).** Commits and pushes go to `dev` (backup on GitHub, Cloudflare makes only a preview). `main` stays = live site and moves only with `/len-mang` (merge `dev` → `main`, push, move tag `online`). Why: phone-layout work must not break the live site halfway.

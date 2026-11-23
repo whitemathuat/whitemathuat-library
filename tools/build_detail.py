@@ -38,8 +38,10 @@ def parse_review(book_dir):
     else:
         text = parts[0]
         
-    meta['date'] = real_date
-        
+    # Ngày "Cập nhật": ưu tiên dòng "date: dd/mm/yyyy" trong review.md
+    # (giữ nguyên khi chuyển máy). Không có thì lấy ngày sửa file.
+    meta.setdefault('date', real_date)
+
     return {"meta": meta, "text": text.strip()}
 
 def render_header(title, author, highlights, notes):

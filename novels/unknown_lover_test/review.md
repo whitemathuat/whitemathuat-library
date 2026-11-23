@@ -2,6 +2,7 @@
 link: https://text-compare.com/
 note_text: test thử
 rating: x
+date: 29/06/2026
 ---
 cả 2 tk làm t điên đầu rồi nha.
 
