@@ -1,0 +1,21 @@
+# Khóa bí mật khi chạy thử trên máy - KHÔNG BAO GIỜ đưa lên Git
+.dev.vars
+.env
+.env.*
+
+# Dữ liệu tạm của Cloudflare / thư viện tải về (nếu sau này dùng)
+node_modules/
+dist/
+.wrangler/
+
+# Cài đặt riêng của Claude trên máy này
+.claude/settings.local.json
+
+# File tạm do Python tạo ra (tạo lại được)
+__pycache__/
+*.pyc
+
+# File rác của hệ điều hành / trình soạn thảo
+.DS_Store
+Thumbs.db
+*.log
