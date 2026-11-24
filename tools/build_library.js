@@ -1,67 +1,55 @@
-// Tạo trang thư viện: templates/library.html -> books/index.html (thẻ từng cuốn sách).
+// Tạo trang thư viện: templates/library.html -> books/index.html
+// Mỗi cuốn sách một thẻ giấy (bìa, điểm, tên, tác giả, số liệu), mới cập nhật đứng đầu.
+// Sau đó là các kệ "sắp có" (Phim, Anime, Manga, Game), chưa bấm được.
 import fs from "node:fs";
 import path from "node:path";
-import {
-  ROOT_DIR, NOVELS_DIR, readText, writeText, listDirs, fillTemplate,
-  escape, countStats, renderAppSidebar,
-} from "./utils.js";
+import { ROOT_DIR, readText, writeText, fillTemplate, escape } from "./utils.js";
+import { readBooks } from "./books.js";
+import { renderNav, renderFooter } from "./layout.js";
 
 const BOOKS_DIR = path.join(ROOT_DIR, "books");
+const SOON_SHELVES = ["Phim", "Anime", "Manga", "Game"];
 
-// Đọc thông tin một cuốn sách từ notes.json (không có hoặc hỏng thì bỏ qua).
-function getBookData(slug) {
-  const notesFile = path.join(NOVELS_DIR, slug, "notes.json");
-  if (!fs.existsSync(notesFile)) return null;
-  try {
-    const data = JSON.parse(readText(notesFile));
-    const { highlights, notes } = countStats(data);
-    return {
-      slug,
-      title: data.title ?? "Unknown Title",
-      author: data.author ?? "Unknown Author",
-      cover: `../novels/${slug}/cover.jpg`,
-      highlights,
-      notes,
-    };
-  } catch (e) {
-    console.log(`Lỗi đọc ${notesFile}: ${e.message}`);
-    return null;
-  }
+// Điểm chấm trong review.md ("rating: 8"). Không phải số thì ghi "chưa chấm".
+function renderRating(rating) {
+  const score = Number(rating);
+  if (rating === "" || !Number.isFinite(score)) return `<span class="rating none">chưa chấm</span>`;
+  return `<span class="rating">★ ${escape(rating)} / 10</span>`;
 }
 
 function renderBookCard(book) {
-  return `
-    <a href="../novels/${book.slug}/index.html" style="text-decoration: none; color: inherit;">
-        <div class="library-book-card">
-            <img src="${book.cover}" alt="${escape(book.title)}" class="library-cover">
-            <div class="library-book-info">
-                <h3>${escape(book.title)}</h3>
-                <p class="author">${escape(book.author)}</p>
-                <div class="chapter-count">
-                    ${book.highlights} highlights • ${book.notes} ghi chú
-                </div>
-            </div>
-        </div>
-    </a>
-    `;
+  return `<a class="card" href="../novels/${book.slug}/index.html">
+  <div class="card-cover"><img src="../novels/${book.slug}/cover.jpg" alt="Bìa ${escape(book.title)}" loading="lazy"></div>
+  ${renderRating(book.rating)}
+  <h3>${escape(book.title)}</h3>
+  <p class="author">${escape(book.author)}</p>
+  <p class="card-stats"><span><b>${book.highlights}</b> highlight</span><span><b>${book.notes}</b> ghi chú</span><span><b>${book.chapters}</b> chương</span></p>
+  <span class="tag">Sách</span>
+</a>`;
+}
+
+function renderSoonCard(name) {
+  return `<div class="card soon">
+  <div class="card-cover"><span>${name}</span></div>
+  <h3>${name}</h3>
+  <p class="author">Kệ này sắp có</p>
+  <span class="tag">Sắp có</span>
+</div>`;
 }
 
 export function buildLibrary() {
-  if (!fs.existsSync(NOVELS_DIR)) {
-    console.log("Không thấy thư mục novels.");
-    return;
-  }
-  fs.mkdirSync(BOOKS_DIR, { recursive: true });
-
-  const books = listDirs(NOVELS_DIR).map(getBookData).filter(Boolean);
-  const cards = books.map(renderBookCard).join("");
+  const books = readBooks(); // mới nhất đứng đầu
+  const cards = [...books.map(renderBookCard), ...SOON_SHELVES.map(renderSoonCard)].join("\n");
 
   const template = readText(path.join(ROOT_DIR, "templates", "library.html"));
   const html = fillTemplate(template, {
-    sidebar: renderAppSidebar("library", "../"),
-    content: cards,
+    nav: renderNav("library", "../"),
+    footer: renderFooter("../"),
+    book_count: books.length,
+    cards,
   });
 
+  fs.mkdirSync(BOOKS_DIR, { recursive: true });
   writeText(path.join(BOOKS_DIR, "index.html"), html);
   console.log(`Đã tạo books/index.html (${books.length} cuốn)`);
 }

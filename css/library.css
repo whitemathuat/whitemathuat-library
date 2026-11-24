@@ -1,224 +1,43 @@
-.app-layout{
-    display:flex;
-    min-height:100vh;
-}
+/* Trang thư viện, kiểu 2a: tiêu đề to trên nền trời, bên dưới là lưới thẻ giấy,
+   mỗi thẻ một cuốn sách (bìa, điểm, tên, tác giả, số highlight/ghi chú/chương).
+   Các kệ "sắp có" (Phim, Anime...) hiện mờ, chưa bấm được. Màu lấy từ theme.css. */
 
-.sidebar{
-    width:260px;
-    background:white;
-    border-right:1px solid var(--border);
-    padding:30px;
-}
+.library { max-width: 1180px; margin: 0 auto; padding: 30px 24px 20px; }
 
-.logo{
-    display:flex;
-    gap:14px;
-    align-items:center;
-    margin-bottom:40px;
-}
+/* Đầu trang */
+.page-head h1 { font: 500 110px/.9 var(--tall); letter-spacing: -1px; color: var(--title); }
+.page-head .script { margin-top: 6px; font: italic 500 21px/1.5 var(--hand); color: var(--script); }
+.page-head .count { display: inline-block; margin: 24px 0 28px; padding-bottom: 4px; border-bottom: 1px solid; font: 500 11px var(--mono); letter-spacing: 2px; text-transform: uppercase; }
 
-.logo-icon{
-    font-size:32px;
-}
+/* Lưới thẻ: tự chia cột theo bề ngang màn hình */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
 
-.logo h2{
-    font-size:28px;
-}
+/* Thẻ giấy một cuốn sách, nhích lên nhẹ khi rê chuột */
+.card { display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--paper); color: var(--ink); border-radius: 16px; box-shadow: var(--shadow); transition: transform .25s; }
+a.card:hover { transform: translateY(-4px) rotate(-.5deg); }
+.card-cover { aspect-ratio: 4/5; overflow: hidden; border-radius: 8px; background: var(--line); }
+.card-cover img { width: 100%; height: 100%; object-fit: cover; }
+.card h3 { font: 600 30px/1 var(--tall); overflow-wrap: anywhere; }
+.author { font: italic 500 16px var(--hand); color: var(--muted); }
+.rating { font: 400 11px var(--mono); letter-spacing: 1px; color: var(--navy); }
+.rating.none { color: var(--muted); }
+.card-stats { display: flex; flex-wrap: wrap; gap: 2px 12px; padding-top: 8px; border-top: 1px dashed var(--line); font: 400 11px var(--mono); color: var(--muted); }
+.card-stats b { color: var(--ink); }
+.tag { align-self: flex-start; padding: 2px 8px; border: 1px solid var(--line); border-radius: 99px; font: 500 10px var(--mono); letter-spacing: 2px; text-transform: uppercase; }
 
-.logo p{
-    color:var(--muted);
-}
+/* Kệ "sắp có": bìa sọc chéo, chữ hồng, cả thẻ mờ đi */
+.card.soon { opacity: .75; }
+.soon .card-cover { display: grid; place-items: center; font: 500 52px var(--tall); color: var(--pink);
+  background: repeating-linear-gradient(-45deg, var(--paper-hover) 0 8px, var(--line) 8px 16px); }
 
-.sidebar nav{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.sidebar nav a{
-    text-decoration:none;
-    color:#444;
-    padding:14px 16px;
-    border-radius:14px;
-    transition:.2s;
-}
-
-.sidebar nav a:hover{
-    background:#f3f0ff;
-}
-
-.sidebar nav a.active{
-    background:#efe9ff;
-    color:var(--primary);
-    font-weight:bold;
-}
-
-.content{
-    flex:1;
-    padding:40px;
-}
-
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    margin-bottom:30px;
-}
-
-.topbar h1{
-    font-size:48px;
-    margin-bottom:8px;
-}
-
-.topbar p{
-    color:var(--muted);
-}
-
-.topbar input{
-    width:320px;
-    padding:14px 18px;
-    border:none;
-    border-radius:16px;
-    background:white;
-    font-size:16px;
-}
-
-.continue-reading{
-    background:linear-gradient(
-        135deg,
-        #faf7ff,
-        #efe9ff
-    );
-
-    border-radius:28px;
-
-    padding:30px;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    margin-bottom:40px;
-}
-
-.continue-content{
-    display:flex;
-    gap:24px;
-    align-items:center;
-}
-
-.hero-cover{
-    width:120px;
-    height:180px;
-    object-fit:cover;
-    border-radius:18px;
-
-    box-shadow:
-        0 15px 30px rgba(0,0,0,.12);
-}
-
-.section-label{
-    color:var(--primary);
-    font-weight:bold;
-    margin-bottom:10px;
-}
-
-.continue-content h2{
-    margin-bottom:10px;
-}
-
-.hero-progress{
-    width:320px;
-    height:8px;
-    background:white;
-    border-radius:999px;
-    margin:18px 0;
-}
-
-.hero-progress-fill{
-    width:0%;
-    height:100%;
-    background:var(--primary);
-    border-radius:999px;
-}
-
-.read-now-btn{
-    display:inline-block;
-    padding:12px 20px;
-    background:var(--primary);
-    color:white;
-    text-decoration:none;
-    border-radius:12px;
-}
-
-.hero-art{
-    font-size:90px;
-    opacity:.25;
-}
-
-.section-header{
-    margin-bottom:24px;
-}
-
-.section-header h2{
-    font-size:34px;
-}
-
-.book-grid{
-    display:grid;
-    grid-template-columns:
-        repeat(auto-fill,minmax(260px,1fr));
-
-    gap:24px;
-}
-
-.library-book-card{
-    background:white;
-    border-radius:22px;
-    padding:18px;
-
-    transition:.2s;
-
-    box-shadow:
-        0 8px 20px rgba(0,0,0,.04);
-}
-
-.library-book-card:hover{
-    transform:translateY(-4px);
-}
-
-.library-cover{
-    width:100%;
-    aspect-ratio:2/3;
-    object-fit:cover;
-    border-radius:16px;
-    margin-bottom:16px;
-}
-
-.library-book-info h3{
-    margin-bottom:8px;
-}
-
-.author{
-    color:var(--muted);
-    margin-bottom:6px;
-}
-
-.chapter-count{
-    color:var(--muted);
-    font-size:14px;
-}
-
-.progress{
-    margin-top:16px;
-    height:6px;
-    background:#ececec;
-    border-radius:999px;
-}
-
-.progress-fill{
-    width:0%;
-    height:100%;
-    background:var(--primary);
-    border-radius:999px;
+/* Điện thoại: tiêu đề nhỏ lại, 2 thẻ một hàng */
+@media (max-width: 760px) {
+  .library { padding: 20px 16px 10px; }
+  .page-head h1 { font-size: 72px; }
+  .page-head .script { font-size: 18px; }
+  .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card { padding: 10px; gap: 8px; }
+  .card h3 { font-size: 24px; }
+  .author { font-size: 14px; }
+  .soon .card-cover { font-size: 36px; }
 }

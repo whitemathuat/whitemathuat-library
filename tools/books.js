@@ -58,7 +58,7 @@ export function parseReview(bookDir) {
 }
 
 // Tất cả sách có notes.json, mới cập nhật nhất đứng đầu.
-// Mỗi cuốn: slug (tên thư mục), title, author, highlights, notes, chapters, date, data (cả notes.json).
+// Mỗi cuốn: slug (tên thư mục), title, author, highlights, notes, chapters, date, rating, data (cả notes.json).
 export function readBooks() {
   const books = [];
   for (const slug of listDirs(NOVELS_DIR)) {
@@ -80,6 +80,7 @@ export function readBooks() {
       ...countStats(data),
       chapters: (data.sections ?? []).length,
       date: review?.meta.date ?? "",
+      rating: review?.meta.rating ?? "",
       data,
     });
   }

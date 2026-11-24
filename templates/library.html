@@ -1,28 +1,24 @@
 <!doctype html>
-<html>
+<html lang="vi">
 <head>
-    <meta charset="utf-8">
-    <title>Thư viện - white đọc gây</title>
-    <link rel="stylesheet" href="../css/global.css">
-    <link rel="stylesheet" href="../css/library.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thư viện - white đọc gây</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/library.css">
 </head>
 <body>
-<div class="layout">
-
-    {sidebar}
-
-    <main class="page">
-        <header class="topbar">
-            <div>
-                <h1>Thư viện của tôi</h1>
-                <p>Khám phá kho tàng kiến thức từ các ghi chú đọc sách</p>
-            </div>
-        </header>
-
-        <div class="book-grid">
-            {content}
-        </div>
-    </main>
+{nav}
+<main class="library">
+<header class="page-head">
+  <h1>thư viện.</h1>
+  <p class="script">mỗi cuốn là một xấp ghi chú nhỏ.</p>
+  <p class="count">Tất cả · {book_count} cuốn</p>
+</header>
+<div class="grid">
+{cards}
 </div>
+</main>
+{footer}
 </body>
 </html>
