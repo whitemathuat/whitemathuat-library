@@ -8,25 +8,24 @@ Status and next steps: PROGRESS.md. Rules in force + decisions: DECISIONS.md. Id
 Taken over 2026-11-24 with `/du-an-cu` (notes only, no code changed).
 
 ## Older AI rule files (still in force)
-`README_PROJECT.md` and `PROJECT_STRUCTURE.md` were written for an AI before this setup. Follow them (small focused changes, CSS first → template → Python, list files to change and wait for OK on big changes); they agree with the shared rules.
-Out of date in `PROJECT_STRUCTURE.md`: `build_index.py` does not exist (it is `build_home.py` + `build_library.py`); `note.json` is really `novels/<book>/notes.json` (one per book).
+`README_PROJECT.md` and `PROJECT_STRUCTURE.md` were written for an AI before this setup. Follow them (small focused changes, CSS first → template → generator script, list files to change and wait for OK on big changes); they agree with the shared rules.
+Out of date in both files: the generator is now JavaScript, not Python (DECISIONS 4), so "Python" there means the `.js` scripts in `tools/`; `build_index.py` is `build_home.js` + `build_library.js`; `note.json` is really `novels/<book>/notes.json` (one per book).
 
 ## Tech stack (as found)
-- Static site: plain HTML + CSS (`css/global.css` + one CSS per page), font Bookerly (`fonts/`). No JavaScript framework, no npm, no `package.json`.
-- Generator: Python scripts in `tools/` fill the templates in `templates/` and write the pages:
+- Static site: plain HTML + CSS (`css/global.css` + one CSS per page), font Bookerly (`fonts/`). No JavaScript framework, no npm libraries (`package.json` holds only scripts).
+- Generator: Node.js scripts in `tools/` (plain JS, no libraries) fill the templates in `templates/` and write the pages:
   - `templates/home.html` → `index.html` (book count), `templates/library.html` → `books/index.html`, `templates/detail.html` → `novels/<book>/index.html`.
-  - `tools/parse_notebook.py`: `novels/<book>/notebook.html` (Kindle export) → `notes.json`. Needs the extra library BeautifulSoup (`bs4`) and must be run from the project root.
-  - Shared helpers: `tools/utils.py` (left sidebar, counts, slug).
-- Generated pages ARE committed (Cloudflare serves the folder as is, no build step). Edit templates/CSS/Python, then rebuild; never hand-edit generated `index.html` files.
+  - `tools/parse_notebook.js`: `novels/<book>/notebook.html` (Kindle export) → `notes.json`.
+  - Shared helpers: `tools/utils.js` (left sidebar, counts, slug).
+- Generated pages ARE committed (Cloudflare serves the folder as is, no build step). Edit templates/CSS/`tools/`, then rebuild; never hand-edit generated `index.html` files.
 - One book = one folder `novels/<slug>/`: `notebook.html`, `notes.json`, `cover.jpg`, `review.md` (header lines `link: URL | text`, `note_text:`, `rating:`, then `---`, then the review text).
 - Password gate online: `functions/_middleware.js` (browser login box, Cloudflare variables `USERNAME` and `PASSWORD`; no secret in code).
 
 ## Commands
 - View locally: double-click `index.html` (opens in the browser, no server needed; no password locally). No dev server, no port.
-- Moving from Python to JS (DECISIONS 4, steps in PROGRESS). Rebuild pages: `npm run build` (JS, `tools/build_all.js`). `npm run compare` = temporary check that JS and Python make the same pages. The Python lines below stay valid until step 4.
-- Old Python rebuild: `python tools/build_all.py` (from the project root). Add a book: put `notebook.html` + `cover.jpg` (+ `review.md`) in `novels/<slug>/`, run `python tools/parse_notebook.py`, then `build_all.py`.
-- Python 3.15 is installed at `C:\Users\Admin\AppData\Local\Programs\Python\Python315\python.exe`. It may not be on PATH (`python` may hit the Windows Store shortcut), so call it by full path. BeautifulSoup is NOT installed yet: only `parse_notebook.py` (adding a book) needs it, so install it when the first new book comes.
-- Checks: `npm run check` (JS, `tools/check.js`) rebuilds all pages, then checks that each book has its files and that no link (HTML href/src, CSS url) is broken. Rebuilding must leave the committed pages unchanged unless a template/CSS/generator change was intended.
+- Rebuild pages: `npm run build` (`tools/build_all.js`).
+- Add a book: put `notebook.html` + `cover.jpg` (+ `review.md`) in `novels/<slug>/`, run `npm run parse` (makes `notes.json`), then `npm run build`.
+- Checks: `npm run check` (`tools/check.js`) rebuilds all pages, then checks that each book has its files, that `notes.json` matches `notebook.html`, and that no link (HTML href/src, CSS url) is broken. Rebuilding must leave the committed pages unchanged unless a template/CSS/generator change was intended.
 - `review.md` may hold `date: dd/mm/yyyy` (the "Cập nhật" date); without it the file's modified time is used, which changes when files move to another PC.
 - GitHub: https://github.com/whitemathuat/whitemathuat-library. Work on branch `dev` (commit + push there after each task); `main` = what is live.
 - Online: https://whitemathuat-library.pages.dev (Cloudflare Pages project `whitemathuat-library`, password-protected).

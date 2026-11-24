@@ -11,10 +11,6 @@ dist/
 # Cài đặt riêng của Claude trên máy này
 .claude/settings.local.json
 
-# File tạm do Python tạo ra (tạo lại được)
-__pycache__/
-*.pyc
-
 # File rác của hệ điều hành / trình soạn thảo
 .DS_Store
 Thumbs.db

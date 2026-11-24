@@ -1,7 +1,7 @@
 // Lệnh kiểm tra toàn bộ web. Chạy: npm run check
 // Làm 3 việc:
 // 1. Tạo lại tất cả các trang (như npm run build) -> báo lỗi nếu code hỏng.
-// 2. Mỗi cuốn sách trong novels/ phải có đủ notes.json (đọc được), cover.jpg, index.html.
+// 2. Mỗi cuốn sách trong novels/ phải có đủ notes.json (đọc được, khớp notebook.html), cover.jpg, index.html.
 // 3. Mọi đường link trong các trang (href/src) và trong CSS (url(...)) phải trỏ tới
 //    file có thật; link "#chuong-x" phải có mục tương ứng trên trang.
 // Kết thúc bằng "TẤT CẢ ĐỀU ỔN" hoặc danh sách lỗi (mã thoát 1).
@@ -9,6 +9,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { ROOT_DIR, NOVELS_DIR, listDirs, readText } from "./utils.js";
 import { buildAll } from "./build_all.js";
+import { parseNotebook } from "./parse_notebook.js";
 
 const errors = [];
 
@@ -44,6 +45,16 @@ function checkBooks() {
         JSON.parse(readText(notes));
       } catch (e) {
         errors.push(`Sách '${book}': notes.json hỏng (${e.message})`);
+      }
+    }
+    // notes.json phải khớp với file Kindle (notebook.html), nếu không là quên chạy npm run parse
+    const notebook = path.join(dir, "notebook.html");
+    if (fs.existsSync(notebook) && fs.existsSync(notes)) {
+      try {
+        const fresh = JSON.stringify(parseNotebook(readText(notebook)), null, 2);
+        if (fresh !== readText(notes)) errors.push(`Sách '${book}': notes.json cũ, hãy chạy npm run parse`);
+      } catch (e) {
+        errors.push(`Sách '${book}': đọc notebook.html bị lỗi (${e.message})`);
       }
     }
   }

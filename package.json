@@ -5,6 +5,6 @@
   "scripts": {
     "build": "node tools/build_all.js",
     "check": "node tools/check.js",
-    "compare": "node tests/compare_python_js.js"
+    "parse": "node tools/parse_notebook.js"
   }
 }
