@@ -10,6 +10,7 @@ Rules in force (short summary) + numbered decisions below, max ~5 lines each. Wh
 - Every push to GitHub `main` goes live automatically; tag `online` = live commit (2).
 - Daily work on branch `dev`; `main` changes only through `/len-mang` (3).
 - Look: design 2a (sky blue-violet, pink clouds, navy + cream paper cards); colours only in `css/theme.css`, fonts stored locally in `fonts/` (5).
+- Covers: `cover.jpg` at most 600 px wide / 300 KB; `npm run covers` shrinks them (8).
 
 ## Decisions
 
@@ -20,3 +21,4 @@ Rules in force (short summary) + numbered decisions below, max ~5 lines each. Wh
 5. **Look = trial design 2a "Nhìn lên × Bầu trời" (2026-11-24, user chose).** Picked from the trials in `thu-giao-dien/` (never committed; deleted 2026-11-24 after all 3 pages were done). Shared look in `css/theme.css` (colours as variables) + `tools/layout.js` (top menu, footer, icons); fonts (Barlow Condensed, Lora italic, JetBrains Mono, Be Vietnam Pro) stored in `fonts/` with `css/fonts.css`, not loaded from Google. All 3 pages moved over by 2026-11-24; Bookerly, `global.css` and the old left sidebar were removed. Book page: chapter links use `#chuong-N` (unique, unlike the old title slugs). Home: "câu của hôm nay" changes daily in the browser, so rebuilds stay identical. Book data for all pages: `tools/books.js`.
 6. **Home hero: open-book drawing instead of book covers (2026-11-24, user chose).** Covers were too specific and would not scale to many books. Four trials shown (open book with pages turning into birds / stack of books / tea + glasses / empty); user picked the open book. Drawing: `assets/open-book.svg` (palette colours, no text); `build_home.js` no longer picks covers.
 7. **Home quote pinned + site icon (2026-11-24, user asked).** Home shows one fixed highlight ("32: Don’t Make Me Beg" — "cháy quần", Unknown Lover) instead of a daily pick: `PINNED_QUOTE` in `tools/build_home.js` (set to `null` to go back to daily). Browser-tab icon: `assets/icon.png`, a 192 px square copy of the user's picture, linked in all 3 templates.
+8. **Covers 600 px wide, shrunk with a Windows tool (2026-11-25, user OK'd).** Covers were 1–1.7 MB, shown at most ~300 px wide. `npm run covers` (`tools/shrink_covers.ps1`, built-in Windows drawing, no library; Node cannot resize JPEG alone) shrinks any `cover.jpg` wider than 600 px (JPEG quality 85). `npm run check` fails if a cover is over 300 KB. Originals stay in Git history.

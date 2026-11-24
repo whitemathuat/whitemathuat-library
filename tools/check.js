@@ -1,7 +1,8 @@
 // Lệnh kiểm tra toàn bộ web. Chạy: npm run check
 // Làm 3 việc:
 // 1. Tạo lại tất cả các trang (như npm run build) -> báo lỗi nếu code hỏng.
-// 2. Mỗi cuốn sách trong novels/ phải có đủ notes.json (đọc được, khớp notebook.html), cover.jpg, index.html.
+// 2. Mỗi cuốn sách trong novels/ phải có đủ notes.json (đọc được, khớp notebook.html), cover.jpg, index.html;
+//    cover.jpg không quá nặng (nếu nặng: chạy npm run covers).
 // 3. Mọi đường link trong các trang (href/src) và trong CSS (url(...)) phải trỏ tới
 //    file có thật; link "#chuong-x" phải có mục tương ứng trên trang.
 // Kết thúc bằng "TẤT CẢ ĐỀU ỔN" hoặc danh sách lỗi (mã thoát 1).
@@ -12,6 +13,7 @@ import { buildAll } from "./build_all.js";
 import { parseNotebook } from "./parse_notebook.js";
 
 const errors = [];
+const MAX_COVER_KB = 300; // ảnh bìa nặng hơn mức này là chưa thu nhỏ
 
 // Đường dẫn ngắn cho dễ đọc, ví dụ "novels/even-better/index.html"
 const short = (file) => path.relative(ROOT_DIR, file).replace(/\\/g, "/");
@@ -38,6 +40,11 @@ function checkBooks() {
     const dir = path.join(NOVELS_DIR, book);
     for (const name of ["notes.json", "cover.jpg", "index.html"]) {
       if (!fs.existsSync(path.join(dir, name))) errors.push(`Sách '${book}' thiếu file ${name}`);
+    }
+    // Ảnh bìa quá nặng làm trang mở chậm trên điện thoại -> nhắc chạy npm run covers
+    const cover = path.join(dir, "cover.jpg");
+    if (fs.existsSync(cover) && fs.statSync(cover).size > MAX_COVER_KB * 1024) {
+      errors.push(`Sách '${book}': cover.jpg nặng hơn ${MAX_COVER_KB} KB, hãy chạy npm run covers`);
     }
     const notes = path.join(dir, "notes.json");
     if (fs.existsSync(notes)) {

@@ -5,6 +5,7 @@
   "scripts": {
     "build": "node tools/build_all.js",
     "check": "node tools/check.js",
-    "parse": "node tools/parse_notebook.js"
+    "parse": "node tools/parse_notebook.js",
+    "covers": "powershell -NoProfile -ExecutionPolicy Bypass -File tools/shrink_covers.ps1"
   }
 }

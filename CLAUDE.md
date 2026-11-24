@@ -24,8 +24,8 @@ Out of date in both files: the generator is now JavaScript, not Python (DECISION
 ## Commands
 - View locally: double-click `index.html` (opens in the browser, no server needed; no password locally). No dev server, no port.
 - Rebuild pages: `npm run build` (`tools/build_all.js`).
-- Add a book: put `notebook.html` + `cover.jpg` (+ `review.md`) in `novels/<slug>/`, run `npm run parse` (makes `notes.json`), then `npm run build`.
-- Checks: `npm run check` (`tools/check.js`) rebuilds all pages, then checks that each book has its files, that `notes.json` matches `notebook.html`, and that no link (HTML href/src, CSS url) is broken. Rebuilding must leave the committed pages unchanged unless a template/CSS/generator change was intended.
+- Add a book: put `notebook.html` + `cover.jpg` (+ `review.md`) in `novels/<slug>/`, run `npm run parse` (makes `notes.json`), `npm run covers` (shrinks `cover.jpg` to 600 px wide), then `npm run build`.
+- Checks: `npm run check` (`tools/check.js`) rebuilds all pages, then checks that each book has its files, that `notes.json` matches `notebook.html`, that no cover is over 300 KB, and that no link (HTML href/src, CSS url) is broken. Rebuilding must leave the committed pages unchanged unless a template/CSS/generator change was intended.
 - `review.md` may hold `date: dd/mm/yyyy` (the "Cập nhật" date); without it the file's modified time is used, which changes when files move to another PC.
 - GitHub: https://github.com/whitemathuat/whitemathuat-library. Work on branch `dev` (commit + push there after each task); `main` = what is live.
 - Online: https://whitemathuat-library.pages.dev (Cloudflare Pages project `whitemathuat-library`, password-protected).
