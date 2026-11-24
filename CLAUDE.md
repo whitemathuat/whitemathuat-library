@@ -23,7 +23,8 @@ Out of date in `PROJECT_STRUCTURE.md`: `build_index.py` does not exist (it is `b
 
 ## Commands
 - View locally: double-click `index.html` (opens in the browser, no server needed; no password locally). No dev server, no port.
-- Rebuild pages: `python tools/build_all.py` (from the project root). Add a book: put `notebook.html` + `cover.jpg` (+ `review.md`) in `novels/<slug>/`, run `python tools/parse_notebook.py`, then `build_all.py`.
+- Moving from Python to JS (DECISIONS 4, steps in PROGRESS). Rebuild pages: `npm run build` (JS, `tools/build_all.js`). `npm run compare` = temporary check that JS and Python make the same pages. The Python lines below stay valid until step 4.
+- Old Python rebuild: `python tools/build_all.py` (from the project root). Add a book: put `notebook.html` + `cover.jpg` (+ `review.md`) in `novels/<slug>/`, run `python tools/parse_notebook.py`, then `build_all.py`.
 - Python 3.15 is installed at `C:\Users\Admin\AppData\Local\Programs\Python\Python315\python.exe`. It may not be on PATH (`python` may hit the Windows Store shortcut), so call it by full path. BeautifulSoup is NOT installed yet: only `parse_notebook.py` (adding a book) needs it, so install it when the first new book comes.
 - Checks: `python tools/check.py` rebuilds all pages, then checks that each book has its files and that no link (HTML href/src, CSS url) is broken. Rebuilding must leave the committed pages unchanged unless a template/CSS/Python change was intended.
 - `review.md` may hold `date: dd/mm/yyyy` (the "Cập nhật" date); without it the file's modified time is used, which changes when files move to another PC.

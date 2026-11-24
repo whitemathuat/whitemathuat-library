@@ -1,0 +1,9 @@
+{
+  "name": "whitemathuat-library",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build_all.js",
+    "compare": "node tests/compare_python_js.js"
+  }
+}
