@@ -1,19 +1,51 @@
 <!doctype html>
-<html>
+<html lang="vi">
 <head>
-    <meta charset="utf-8">
-    <title>white đọc gây</title>
-    <link rel="stylesheet" href="../../css/global.css">
-    <link rel="stylesheet" href="../../css/detail.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title} - white đọc gây</title>
+<link rel="stylesheet" href="../../css/theme.css">
+<link rel="stylesheet" href="../../css/detail.css">
 </head>
 <body>
-<div class="layout">
-
-    {sidebar}
-
-    <main class="page">
-        {content}
-    </main>
-</div>
+{nav}
+<main class="book">
+<section class="book-head">
+  <div class="book-cover"><img src="cover.jpg" alt="Bìa {title}"></div>
+  <div class="book-meta">
+    <p class="kicker">sổ tay đọc</p>
+    <h1>{title}</h1>
+    <p class="author">{author}</p>
+    {rating}
+    <ul class="stats">
+      <li><b>{highlight_count}</b><span>highlight</span></li>
+      <li><b>{note_count}</b><span>ghi chú</span></li>
+      <li><b>{chapter_count}</b><span>chương</span></li>
+    </ul>
+    <div class="tabs"><button data-tab="tab-notes" class="active">Annotation</button><button data-tab="tab-info">Thông tin</button></div>
+  </div>
+</section>
+<section class="tab-panel reading" id="tab-notes">
+  <aside class="chapters"><p class="label">Theo chương</p><nav>
+{chapter_links}
+  </nav></aside>
+  <div class="notes">
+{chapters}
+  </div>
+</section>
+<section class="tab-panel info" id="tab-info" hidden>
+{info}
+</section>
+</main>
+{footer}
+<script>
+// Bấm nút tab: tô nút được bấm, hiện phần của nút đó, ẩn phần còn lại
+document.querySelectorAll("[data-tab]").forEach(function (btn) {{
+  btn.addEventListener("click", function () {{
+    document.querySelectorAll("[data-tab]").forEach(function (b) {{ b.classList.toggle("active", b === btn); }});
+    document.querySelectorAll(".tab-panel").forEach(function (p) {{ p.hidden = p.id !== btn.dataset.tab; }});
+  }});
+}});
+</script>
 </body>
 </html>

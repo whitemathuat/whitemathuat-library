@@ -1,231 +1,90 @@
 // Tạo trang từng cuốn sách: templates/detail.html -> novels/<sách>/index.html
-// Trang có 2 tab: "Thông tin" (từ review.md) và "Annotation" (từ notes.json).
-import fs from "node:fs";
+// Trang có 2 tab: "Annotation" (ghi chú theo chương, từ notes.json) và "Thông tin" (từ review.md).
 import path from "node:path";
-import {
-  ROOT_DIR, NOVELS_DIR, readText, writeText, listDirs, fillTemplate,
-  slugify, escape, countStats, renderAppSidebar,
-} from "./utils.js";
-import { parseReview } from "./books.js";
+import { ROOT_DIR, NOVELS_DIR, readText, writeText, fillTemplate, escape } from "./utils.js";
+import { readBooks, parseReview } from "./books.js";
+import { renderNav, renderFooter, renderRating } from "./layout.js";
 
-function renderHeader(title, author, highlights, notes) {
-  return `
-<div class="book-header">
-    <div class="book-cover-wrap">
-        <img src="cover.jpg" class="book-cover" alt="${escape(title)}">
-    </div>
-    <div class="book-meta">
-        <h1>${escape(title)}</h1>
-        <p>${escape(author)}</p>
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number">${highlights}</div>
-                <div class="stat-label">Highlights</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">${notes}</div>
-                <div class="stat-label">Annotation</div> </div>
-        </div>
-    </div>
-</div>
-`;
+// Mã của chương i (dùng cho link "Theo chương" nhảy tới chương đó)
+const chapterId = (i) => `chuong-${i + 1}`;
+
+// Cột "Theo chương": tên chương + số ghi chú
+function renderChapterLinks(sections) {
+  return sections
+    .map((s, i) => `<a href="#${chapterId(i)}"><span>${escape(s.title)}</span><b>${(s.entries ?? []).length}</b></a>`)
+    .join("\n");
 }
 
-function renderInfoTab(review) {
-  if (!review) {
-    return '<div id="tab-info" class="tab-content"><p>Chưa có thông tin review.</p></div>';
-  }
-  const { meta, text } = review;
-  const parts = [];
-
-  // 1. Có link thì in các nút link dàn ngang
-  if (meta.links.length) {
-    parts.push('<div class="source-flex" style="margin-bottom: 0; flex-wrap: wrap; gap: 12px;">');
-    for (const link of meta.links) {
-      parts.push(`<a href="${escape(link.url)}" class="btn-action btn-primary-outline" target="_blank"><span class="icon">↗</span> ${escape(link.text)}</a>`);
-    }
-    parts.push("</div>");
-  }
-
-  // 2. Có dòng note_text thì in ra (có link ở trên thì cách xuống 16px)
-  if ("note_text" in meta) {
-    const marginTop = meta.links.length ? "16px" : "0";
-    parts.push(`<div class="no-link-text" style="margin-top: ${marginTop};">${escape(meta.note_text)}</div>`);
-  }
-
-  const sourceHtml = parts.join("");
-
-  return `
-<div id="tab-info" class="tab-content">
-
-    <div class="info-card">
-        <div class="info-header">
-            <span class="icon">📖</span> Đọc truyện
-        </div>
-
-        ${sourceHtml}
-
-    </div>
-
-    <div class="info-card">
-        <div class="review-header">
-            <div class="info-header" style="margin-bottom:0;">
-                <span class="icon">✏️</span> Đôi lời muốn lói
-            </div>
-            <div class="rating-badge">
-                <span>⭐</span> ${escape(meta.rating ?? "0")} / 10
-            </div>
-        </div>
-
-        <div class="review-content">${escape(text)}</div>
-
-        <div class="review-date">Cập nhật: ${escape(meta.date ?? "")}</div>
-    </div>
-
-</div>
-`;
-}
-
-// Cột "Theo chương" bên trái phần ghi chú
-function renderChapterList(data) {
-  const parts = [`
-<aside class="sidebar">
-<div class="sidebar-card chapter-list">
-<h3>Theo chương</h3>
-`];
-  for (const section of data.sections ?? []) {
-    const sectionId = "chapter-" + slugify(section.title);
-    const count = (section.entries ?? []).length;
-    parts.push(`
-<a href="#${sectionId}" class="sidebar-row chapter-link">
-    <span>${escape(section.title)}</span>
-    <span>${count}</span>
-</a>
-`);
-  }
-  parts.push(`
-</div>
-</aside>
-`);
-  return parts.join("");
-}
-
-// Một thẻ ghi chú: highlight, ghi chú, hoặc cả hai (pair)
+// Một ghi chú: câu highlight (nếu có), lời ghi chú của mình (nếu có), vị trí trong sách
 function renderEntry(entry) {
-  const parts = ['<div class="note-card">'];
-  if (entry.type === "pair") {
-    parts.push(`<div class="highlight">${escape(entry.highlight ?? "")}</div>`);
-    parts.push(`<div class="annotation">💬 ${escape(entry.note ?? "")}</div>`);
-  } else if (entry.type === "highlight") {
-    parts.push(`<div class="highlight">${escape(entry.text ?? "")}</div>`);
-  } else if (entry.type === "note") {
-    parts.push(`<div class="annotation">💬 ${escape(entry.text ?? "")}</div>`);
-  }
-  parts.push(`<div class="location">Loc ${entry.location ?? ""}</div>`);
-  parts.push("</div>");
-  return parts.join("");
+  const highlight = entry.type === "pair" ? entry.highlight : entry.type === "highlight" ? entry.text : "";
+  const note = entry.type === "pair" ? entry.note : entry.type === "note" ? entry.text : "";
+  const parts = ['<article class="note">'];
+  if (highlight) parts.push(`  <blockquote class="hl">${escape(highlight)}</blockquote>`);
+  if (note) parts.push(`  <p class="my-note">${escape(note)}</p>`);
+  parts.push(`  <span class="loc">Loc ${escape(entry.location ?? "")}</span>`);
+  parts.push("</article>");
+  return parts.join("\n");
 }
 
-// Một chương (bấm vào tên chương để mở/đóng)
-function renderSection(section) {
-  const sectionId = "chapter-" + slugify(section.title);
-  const parts = [`<details class="section" id="${sectionId}" open><summary>${escape(section.title)}</summary>`];
-  for (const entry of section.entries ?? []) parts.push(renderEntry(entry));
-  parts.push("</details>");
-  return parts.join("");
+// Một chương: tên chương + các ghi chú
+function renderChapters(sections) {
+  return sections
+    .map((s, i) => `<section class="chapter" id="${chapterId(i)}">
+<h2>${escape(s.title)}</h2>
+${(s.entries ?? []).map(renderEntry).join("\n")}
+</section>`)
+    .join("\n");
 }
 
-// Đoạn script chạy trên trình duyệt để đổi qua lại giữa 2 tab
-const TAB_SCRIPT = `
-</main>
+// Bài review: mỗi đoạn (cách nhau bằng dòng trống) là một <p>, xuống dòng đơn thành <br>
+function renderReviewText(text) {
+  const paragraphs = text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  if (!paragraphs.length) return '<p class="muted">Chưa viết gì cả.</p>';
+  return paragraphs.map((p) => `<p>${escape(p).replace(/\n/g, "<br>")}</p>`).join("\n");
+}
+
+// Tab "Thông tin": thẻ link đọc truyện + thẻ review
+function renderInfo(review) {
+  const meta = review?.meta ?? { links: [] };
+  const links = meta.links.length
+    ? `<p class="links">${meta.links
+        .map((l) => `<a class="btn" href="${escape(l.url)}" target="_blank" rel="noopener">${escape(l.text)} ↗</a>`)
+        .join("")}</p>`
+    : '<p class="muted">Chưa có link.</p>';
+  const noteText = meta.note_text ? `<p class="muted">${escape(meta.note_text)}</p>` : "";
+  return `<div class="info-card read">
+  <h3>Đọc truyện</h3>
+  ${links}
+  ${noteText}
 </div>
-
-<script>
-function switchTab(evt, tabId) {
-    // Ẩn tất cả tab
-    var tabContents = document.getElementsByClassName("tab-content");
-    for (var i = 0; i < tabContents.length; i++) {
-        tabContents[i].classList.remove("active");
-    }
-    // Bỏ chọn tất cả nút tab
-    var tabLinks = document.getElementsByClassName("tab");
-    for (var i = 0; i < tabLinks.length; i++) {
-        tabLinks[i].classList.remove("active");
-    }
-    // Hiện tab đang bấm
-    document.getElementById(tabId).classList.add("active");
-    evt.currentTarget.classList.add("active");
-
-    // YÊU CẦU 3: Ẩn/Hiện cột sidebar (Theo chương)
-    var sidebar = document.querySelector('.sidebar');
-    if (sidebar) {
-        if (tabId === 'tab-info') {
-            sidebar.style.display = 'none'; // Ẩn khi ở tab Thông tin
-        } else {
-            sidebar.style.display = 'block'; // Hiện khi ở tab Annotation
-        }
-    }
-}
-
-// Chạy mặc định khi load trang để ẩn sidebar ngay từ đầu nếu tab Info đang mở
-window.onload = function() {
-    var activeTab = document.querySelector('.tab-content.active');
-    var sidebar = document.querySelector('.sidebar');
-    if (activeTab && activeTab.id === 'tab-info' && sidebar) {
-        sidebar.style.display = 'none';
-    }
-}
-</script>
-`;
-
-const TABS = `
-<div class="tabs">
-    <button class="tab" onclick="switchTab(event, 'tab-info')">
-        <span style="color:var(--primary); margin-right:6px;">ⓘ</span> Thông tin
-    </button>
-    <button class="tab active" onclick="switchTab(event, 'tab-annotation')">
-        <span style="color:var(--primary); margin-right:6px;">💬</span> Annotation
-    </button>
-</div>
-<div class="content">
-`;
-
-function renderPage(data, review) {
-  const { highlights, notes } = countStats(data);
-  const parts = [
-    renderHeader(data.title ?? "", data.author ?? "", highlights, notes),
-    TABS,
-    renderChapterList(data),
-    '<main class="notes-area">',
-    renderInfoTab(review), // Tab 1: Thông tin
-    '<div id="tab-annotation" class="tab-content active">', // Tab 2: Annotation
-  ];
-  for (const section of data.sections ?? []) parts.push(renderSection(section));
-  parts.push("</div>");
-  parts.push(TAB_SCRIPT);
-  return parts.join("");
-}
-
-function buildBook(slug, template) {
-  const bookDir = path.join(NOVELS_DIR, slug);
-  const notesFile = path.join(bookDir, "notes.json");
-  if (!fs.existsSync(notesFile)) return;
-
-  const data = JSON.parse(readText(notesFile));
-  const html = fillTemplate(template, {
-    sidebar: renderAppSidebar("annotation", "../../"),
-    content: renderPage(data, parseReview(bookDir)),
-  });
-
-  writeText(path.join(bookDir, "index.html"), html);
-  console.log(`Đã tạo novels/${slug}/index.html`);
+<div class="info-card review">
+  <h3>Đôi lời muốn lói</h3>
+  ${renderRating(meta.rating ?? "")}
+  ${renderReviewText(review?.text ?? "")}
+  <p class="muted">Cập nhật: ${escape(meta.date || "—")}</p>
+</div>`;
 }
 
 export function buildDetail() {
-  if (!fs.existsSync(NOVELS_DIR)) {
-    console.log("Không thấy thư mục novels.");
-    return;
-  }
   const template = readText(path.join(ROOT_DIR, "templates", "detail.html"));
-  for (const slug of listDirs(NOVELS_DIR)) buildBook(slug, template);
+  for (const book of readBooks()) {
+    const bookDir = path.join(NOVELS_DIR, book.slug);
+    const sections = book.data.sections ?? [];
+    const html = fillTemplate(template, {
+      nav: renderNav("library", "../../"),
+      footer: renderFooter("../../"),
+      title: escape(book.title),
+      author: escape(book.author),
+      rating: renderRating(book.rating),
+      highlight_count: book.highlights,
+      note_count: book.notes,
+      chapter_count: book.chapters,
+      chapter_links: renderChapterLinks(sections),
+      chapters: renderChapters(sections),
+      info: renderInfo(parseReview(bookDir)),
+    });
+    writeText(path.join(bookDir, "index.html"), html);
+    console.log(`Đã tạo novels/${book.slug}/index.html`);
+  }
 }

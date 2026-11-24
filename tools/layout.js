@@ -1,5 +1,6 @@
 // Phần khung của kiểu giao diện 2a, dùng chung cho mọi trang: menu trên cùng, chân trang, biểu tượng.
 // prefix = đường đi từ trang về thư mục gốc: "" (trang chủ), "../" (thư viện), "../../" (trang sách).
+import { escape } from "./utils.js";
 
 // Biểu tượng nét mảnh (vẽ bằng SVG, đổi màu theo chữ)
 const svg = (paths) => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${paths}</svg>`;
@@ -22,6 +23,13 @@ export function renderNav(active, prefix) {
   <span class="soon" title="Sắp có">Đang đọc</span>
   <span class="soon" title="Sắp có">Yêu thích</span>
 </header>`;
+}
+
+// Điểm chấm trong review.md ("rating: 8"). Không phải số thì ghi "chưa chấm".
+export function renderRating(rating) {
+  const score = Number(rating);
+  if (rating === "" || !Number.isFinite(score)) return `<span class="rating none">chưa chấm</span>`;
+  return `<span class="rating">★ ${escape(rating)} / 10</span>`;
 }
 
 export function renderFooter(prefix) {

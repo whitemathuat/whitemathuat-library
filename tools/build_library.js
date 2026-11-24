@@ -5,17 +5,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { ROOT_DIR, readText, writeText, fillTemplate, escape } from "./utils.js";
 import { readBooks } from "./books.js";
-import { renderNav, renderFooter } from "./layout.js";
+import { renderNav, renderFooter, renderRating } from "./layout.js";
 
 const BOOKS_DIR = path.join(ROOT_DIR, "books");
 const SOON_SHELVES = ["Phim", "Anime", "Manga", "Game"];
-
-// Điểm chấm trong review.md ("rating: 8"). Không phải số thì ghi "chưa chấm".
-function renderRating(rating) {
-  const score = Number(rating);
-  if (rating === "" || !Number.isFinite(score)) return `<span class="rating none">chưa chấm</span>`;
-  return `<span class="rating">★ ${escape(rating)} / 10</span>`;
-}
 
 function renderBookCard(book) {
   return `<a class="card" href="../novels/${book.slug}/index.html">

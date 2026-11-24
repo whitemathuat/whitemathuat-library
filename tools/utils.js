@@ -38,13 +38,6 @@ export function fillTemplate(template, values) {
   });
 }
 
-// Tên chương -> mã dùng trong link, ví dụ "Chapter 1 – Hi" -> "chapter-1-hi"
-export function slugify(text) {
-  text = text.toLowerCase().replace(/–/g, "-");
-  text = text.replace(/[^a-z0-9]+/g, "-").replace(/-+/g, "-");
-  return text.replace(/^-+|-+$/g, "");
-}
-
 // Đổi ký tự đặc biệt (< > & " ') để chữ hiện đúng, không làm vỡ trang.
 export function escape(text) {
   if (text === null || text === undefined) return "";
@@ -73,32 +66,4 @@ export function countStats(data) {
     }
   }
   return { highlights, notes };
-}
-
-// Thanh menu bên trái. activeTab = mục đang chọn (tô màu tím),
-// depthPrefix = "../" hoặc "../../" tùy trang nằm sâu bao nhiêu.
-export function renderAppSidebar(activeTab, depthPrefix) {
-  const libActive = activeTab === "library" ? 'class="active"' : "";
-  const annoActive = activeTab === "annotation" ? 'class="active"' : "";
-
-  return `
-    <aside class="app-sidebar">
-        <div class="app-logo">📖 white đọc gây</div>
-        <div class="app-section">THƯ VIỆN</div>
-        <nav class="app-nav">
-            <a href="${depthPrefix}index.html">🏠 Trang chủ</a>
-            <a href="${depthPrefix}books/index.html" ${libActive}>📚 Thư viện</a>
-            <a href="#">📖 Đang đọc</a>
-            <a href="#">🤍 Yêu thích</a>
-            <a href="#" ${annoActive}>📝 Annotation</a>
-            <a href="#">🗂️ Tất cả truyện</a>
-        </nav>
-        <div class="app-section">CÀI ĐẶT</div>
-        <nav class="app-nav">
-            <a href="#">⚙️ Giao diện</a>
-            <a href="#">⚙️ Cài đặt</a>
-        </nav>
-        <div class="app-footer">© white đọc gây</div>
-    </aside>
-    `;
 }

@@ -12,11 +12,11 @@ Taken over 2026-11-24 with `/du-an-cu` (notes only, no code changed).
 Out of date in both files: the generator is now JavaScript, not Python (DECISIONS 4), so "Python" there means the `.js` scripts in `tools/`; `build_index.py` is `build_home.js` + `build_library.js`; `note.json` is really `novels/<book>/notes.json` (one per book).
 
 ## Tech stack (as found)
-- Static site: plain HTML + CSS (`css/global.css` + one CSS per page), font Bookerly (`fonts/`). No JavaScript framework, no npm libraries (`package.json` holds only scripts).
+- Static site: plain HTML + CSS (`css/theme.css` shared look + one CSS per page), fonts stored in `fonts/` (`css/fonts.css`). No JavaScript framework, no npm libraries (`package.json` holds only scripts).
 - Generator: Node.js scripts in `tools/` (plain JS, no libraries) fill the templates in `templates/` and write the pages:
   - `templates/home.html` → `index.html` (book count), `templates/library.html` → `books/index.html`, `templates/detail.html` → `novels/<book>/index.html`.
   - `tools/parse_notebook.js`: `novels/<book>/notebook.html` (Kindle export) → `notes.json`.
-  - Shared helpers: `tools/utils.js` (left sidebar, counts, slug).
+  - Shared helpers: `tools/utils.js` (files, escape, counts), `tools/layout.js` (top menu, footer, icons, rating), `tools/books.js` (book data, `review.md`).
 - Generated pages ARE committed (Cloudflare serves the folder as is, no build step). Edit templates/CSS/`tools/`, then rebuild; never hand-edit generated `index.html` files.
 - One book = one folder `novels/<slug>/`: `notebook.html`, `notes.json`, `cover.jpg`, `review.md` (header lines `link: URL | text`, `note_text:`, `rating:`, then `---`, then the review text).
 - Password gate online: `functions/_middleware.js` (browser login box, Cloudflare variables `USERNAME` and `PASSWORD`; no secret in code).
