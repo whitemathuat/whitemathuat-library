@@ -9,7 +9,7 @@ const bookPage = (book) => `novels/${book.slug}/index.html`;
 
 // Câu trích được ghim: luôn hiện câu này trên trang chủ.
 // Muốn quay lại kiểu "mỗi ngày một câu" thì đặt PINNED_QUOTE = null.
-const PINNED_QUOTE = { book: "unknown_lover_test", highlight: "32: Don’t Make Me Beg" };
+const PINNED_QUOTE = { book: "unknown-lover", highlight: "32: Don’t Make Me Beg" };
 
 // Tìm câu được ghim trong notes.json của cuốn sách đó (không thấy thì trả về null).
 function pinnedQuote(books) {
