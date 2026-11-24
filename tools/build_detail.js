@@ -6,54 +6,7 @@ import {
   ROOT_DIR, NOVELS_DIR, readText, writeText, listDirs, fillTemplate,
   slugify, escape, countStats, renderAppSidebar,
 } from "./utils.js";
-
-// Ngày dạng dd/mm/yyyy
-function formatDate(date) {
-  const dd = String(date.getDate()).padStart(2, "0");
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  return `${dd}/${mm}/${date.getFullYear()}`;
-}
-
-// Đọc review.md: phần đầu (trước dòng ---) là thông tin "khóa: giá trị",
-// phần sau là bài review.
-function parseReview(bookDir) {
-  const reviewFile = path.join(bookDir, "review.md");
-  if (!fs.existsSync(reviewFile)) return null;
-
-  const fileDate = formatDate(fs.statSync(reviewFile).mtime);
-  const content = readText(reviewFile);
-
-  const meta = { links: [] };
-  let text = content;
-
-  const cut = content.indexOf("---");
-  if (cut !== -1) {
-    const metaText = content.slice(0, cut);
-    text = content.slice(cut + 3);
-    for (const line of metaText.trim().split("\n")) {
-      const colon = line.indexOf(":");
-      if (colon === -1) continue;
-      const key = line.slice(0, colon).trim();
-      const value = line.slice(colon + 1).trim();
-
-      if (key === "link") {
-        // "link: URL | chữ hiện ra" (không có chữ thì ghi "Nguồn")
-        const bar = value.indexOf("|");
-        const url = bar === -1 ? value : value.slice(0, bar).trim();
-        const linkText = bar === -1 ? "Nguồn" : value.slice(bar + 1).trim();
-        meta.links.push({ url, text: linkText });
-      } else {
-        meta[key] = value;
-      }
-    }
-  }
-
-  // Ngày "Cập nhật": ưu tiên dòng "date: dd/mm/yyyy" trong review.md
-  // (giữ nguyên khi chuyển máy). Không có thì lấy ngày sửa file.
-  if (!("date" in meta)) meta.date = fileDate;
-
-  return { meta, text: text.trim() };
-}
+import { parseReview } from "./books.js";
 
 function renderHeader(title, author, highlights, notes) {
   return `

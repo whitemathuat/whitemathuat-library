@@ -1,77 +1,35 @@
 <!doctype html>
 <html lang="vi">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>white đọc gây</title>
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/home.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>white đọc gây</title>
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/home.css">
 </head>
 <body>
-
-    <div class="app-container">
-        
-        <nav class="top-nav">
-            <a href="index.html" class="nav-brand">
-                <span style="font-size: 24px; color: var(--primary);">📖</span> 
-                white đọc gây
-            </a>
-        </nav>
-
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Luận văn nghiên cứu về<br> Tương tác song nhiễm sắc thể XY</span></h1>
-                <p>Nghiên cứu hiện tượng hai bộ nhiễm sắc thể XY khi đặt cạnh nhau có khả năng kích thích não bộ tiết ra serotonin, dopamine và oxytocin với nồng độ cao bất thường ở cá thể quan sát.</p>
-            </div>
-            <div class="hero-image">
-                <img src="assets/hero-illustration.png" alt="Sổ tay và cà phê">
-            </div>
-        </section>
-
-        <section>
-            <div class="section-header">
-                <h2>Khám phá thư viện của bạn</h2>
-            </div>
-            
-            <div class="categories-grid">
-                <a href="books/index.html" class="cat-card">
-                    <div class="cat-icon">📚</div>
-                    <div class="cat-name">Sách</div>
-                    <div class="cat-count c-book">{book_count}</div>
-                    <div class="cat-label">tác phẩm</div>
-                </a>
-                
-                <a href="#" class="cat-card disabled">
-                    <div class="cat-icon">🎬</div>
-                    <div class="cat-name">Phim</div>
-                    <div class="cat-count c-movie">-</div>
-                    <div class="cat-label">tác phẩm</div>
-                </a>
-                
-                <a href="#" class="cat-card disabled">
-                    <div class="cat-icon">📺</div>
-                    <div class="cat-name">Anime</div>
-                    <div class="cat-count c-anime">-</div>
-                    <div class="cat-label">tác phẩm</div>
-                </a>
-                
-                <a href="#" class="cat-card disabled">
-                    <div class="cat-icon">📗</div>
-                    <div class="cat-name">Manga</div>
-                    <div class="cat-count c-manga">-</div>
-                    <div class="cat-label">tác phẩm</div>
-                </a>
-
-                <a href="#" class="cat-card disabled">
-                    <div class="cat-icon">🎮</div>
-                    <div class="cat-name">Game</div>
-                    <div class="cat-count c-game">-</div>
-                    <div class="cat-label">tác phẩm</div>
-                </a>
-            </div>
-        </section>
-
-    </div>
-
+{nav}
+<main>
+<section class="hero">
+  <img class="bird b1" src="assets/bird.svg" alt="">
+  <img class="bird b2" src="assets/bird.svg" alt="">
+  <img class="bird b3" src="assets/bird.svg" alt="">
+  <h1>đọc chậm.<br>nhớ lâu.</h1>
+  <p class="script">những câu chữ làm mình dừng lại,<br>và vài lời lảm nhảm bên lề.</p>
+  <a class="readmore" href="{latest_page}">ĐỌC GHI CHÚ MỚI {icon_arrow}</a>
+  <div class="sky">
+    <img class="clouds" src="assets/clouds.svg" alt="">
+    {covers}
+  </div>
+</section>
+<section class="paper">
+  <a href="books/index.html"><span class="ic">{icon_book}</span><span><b>THƯ VIỆN</b>{book_count} cuốn sách,<br>{chapter_count} chương đã đọc.<em>XEM {icon_arrow}</em></span></a>
+  <a href="{latest_page}"><span class="ic">{icon_mountain}</span><span><b>HIGHLIGHT</b>{highlight_count} câu chữ<br>được giữ lại.<em>ĐỌC {icon_arrow}</em></span></a>
+  <a href="{latest_page}"><span class="ic">{icon_pen}</span><span><b>GHI CHÚ</b>{note_count} lời bên lề,<br>viết vội lúc đọc.<em>LƯỚT {icon_arrow}</em></span></a>
+  <div class="quote"><span class="ic">“</span><span><span id="quote-text">{quote_text}</span><i class="sign">— <span id="quote-note">{quote_note}</span></i></span></div>
+</section>
+</main>
+{footer}
+{quote_script}
 </body>
 </html>

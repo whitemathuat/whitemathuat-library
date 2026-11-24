@@ -106,7 +106,11 @@ function checkCss() {
   const files = fs.readdirSync(cssDir).filter((f) => f.endsWith(".css")).sort();
   for (const f of files) {
     const file = path.join(cssDir, f);
-    checkFileLinks(file, findAll(readText(file), /url\(\s*["']?([^"')]+)["']?\s*\)/g));
+    // Bỏ qua hình vẽ nhúng thẳng trong CSS (url("data:...")): bên trong có thể có url() của riêng nó
+    const css = readText(file).replace(/url\(\s*(["'])data:.*?\1\s*\)/g, "");
+    checkFileLinks(file, findAll(css, /url\(\s*["']?([^"')]+)["']?\s*\)/g));
+    // File CSS gọi thêm file CSS khác: @import "ten.css"
+    checkFileLinks(file, findAll(css, /@import\s+["']([^"']+)["']/g));
   }
 }
 

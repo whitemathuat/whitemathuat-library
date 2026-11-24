@@ -1,0 +1,88 @@
+// Đọc dữ liệu sách trong novels/: notes.json (ghi chú) + review.md (nhận xét).
+import fs from "node:fs";
+import path from "node:path";
+import { NOVELS_DIR, readText, listDirs, countStats } from "./utils.js";
+
+// Ngày dạng dd/mm/yyyy
+function formatDate(date) {
+  const dd = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  return `${dd}/${mm}/${date.getFullYear()}`;
+}
+
+// "dd/mm/yyyy" -> số để so sánh ngày nào mới hơn (yyyymmdd). Sai dạng thì 0.
+function dateValue(text) {
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(text ?? "");
+  return m ? Number(m[3]) * 10000 + Number(m[2]) * 100 + Number(m[1]) : 0;
+}
+
+// Đọc review.md: phần đầu (trước dòng ---) là thông tin "khóa: giá trị",
+// phần sau là bài review.
+export function parseReview(bookDir) {
+  const reviewFile = path.join(bookDir, "review.md");
+  if (!fs.existsSync(reviewFile)) return null;
+
+  const fileDate = formatDate(fs.statSync(reviewFile).mtime);
+  const content = readText(reviewFile);
+
+  const meta = { links: [] };
+  let text = content;
+
+  const cut = content.indexOf("---");
+  if (cut !== -1) {
+    const metaText = content.slice(0, cut);
+    text = content.slice(cut + 3);
+    for (const line of metaText.trim().split("\n")) {
+      const colon = line.indexOf(":");
+      if (colon === -1) continue;
+      const key = line.slice(0, colon).trim();
+      const value = line.slice(colon + 1).trim();
+
+      if (key === "link") {
+        // "link: URL | chữ hiện ra" (không có chữ thì ghi "Nguồn")
+        const bar = value.indexOf("|");
+        const url = bar === -1 ? value : value.slice(0, bar).trim();
+        const linkText = bar === -1 ? "Nguồn" : value.slice(bar + 1).trim();
+        meta.links.push({ url, text: linkText });
+      } else {
+        meta[key] = value;
+      }
+    }
+  }
+
+  // Ngày "Cập nhật": ưu tiên dòng "date: dd/mm/yyyy" trong review.md
+  // (giữ nguyên khi chuyển máy). Không có thì lấy ngày sửa file.
+  if (!("date" in meta)) meta.date = fileDate;
+
+  return { meta, text: text.trim() };
+}
+
+// Tất cả sách có notes.json, mới cập nhật nhất đứng đầu.
+// Mỗi cuốn: slug (tên thư mục), title, author, highlights, notes, chapters, date, data (cả notes.json).
+export function readBooks() {
+  const books = [];
+  for (const slug of listDirs(NOVELS_DIR)) {
+    const bookDir = path.join(NOVELS_DIR, slug);
+    const notesFile = path.join(bookDir, "notes.json");
+    if (!fs.existsSync(notesFile)) continue;
+    let data;
+    try {
+      data = JSON.parse(readText(notesFile));
+    } catch (e) {
+      console.log(`Lỗi đọc ${notesFile}: ${e.message}`);
+      continue;
+    }
+    const review = parseReview(bookDir);
+    books.push({
+      slug,
+      title: data.title ?? "Unknown Title",
+      author: data.author ?? "Unknown Author",
+      ...countStats(data),
+      chapters: (data.sections ?? []).length,
+      date: review?.meta.date ?? "",
+      data,
+    });
+  }
+  // Mới nhất trước; cùng ngày thì giữ thứ tự tên thư mục
+  return books.sort((a, b) => dateValue(b.date) - dateValue(a.date));
+}
