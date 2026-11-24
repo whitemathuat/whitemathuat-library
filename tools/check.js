@@ -6,6 +6,7 @@
 // 3. Mọi đường link trong các trang (href/src) và trong CSS (url(...)) phải trỏ tới
 //    file có thật; link "#chuong-x" phải có mục tương ứng trên trang.
 // 4. Cổng mật khẩu (functions/_middleware.js) chặn đúng và không bị lỗi 500 (tools/check_login.js).
+// 5. Chức năng "Lưu sách" (functions/api/save-book.js) chặn dữ liệu sai và lưu đúng (tools/check_save.js).
 // Kết thúc bằng "TẤT CẢ ĐỀU ỔN" hoặc danh sách lỗi (mã thoát 1).
 import fs from "node:fs";
 import path from "node:path";
@@ -13,6 +14,7 @@ import { ROOT_DIR, NOVELS_DIR, listDirs, readText } from "./utils.js";
 import { buildAll } from "./build_all.js";
 import { parseNotebook } from "./parse_notebook.js";
 import { checkLogin } from "./check_login.js";
+import { checkSave } from "./check_save.js";
 
 const errors = [];
 const MAX_COVER_KB = 300; // ảnh bìa nặng hơn mức này là chưa thu nhỏ
@@ -127,10 +129,12 @@ checkBuild();
 checkBooks();
 checkPages();
 checkCss();
+errors.push(...(await checkLogin()));
+errors.push(...(await checkSave()));
 
 if (errors.length) {
   console.log(`CÓ ${errors.length} LỖI:`);
   for (const e of errors) console.log(" -", e);
   process.exit(1);
 }
-console.log("TẤT CẢ ĐỀU ỔN: tạo trang được, sách đủ file, không có link hỏng, cổng mật khẩu ổn.");
+console.log("TẤT CẢ ĐỀU ỔN: tạo trang được, sách đủ file, không có link hỏng, cổng mật khẩu và chức năng lưu sách ổn.");

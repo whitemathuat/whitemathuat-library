@@ -1,0 +1,45 @@
+# Máy dựng tự động trên GitHub.
+# Khi có sách mới/sửa sách trong novels/ (ví dụ lưu từ trang web), GitHub tự:
+#   đọc notebook (npm run parse) -> dựng lại trang + kiểm tra (npm run check)
+#   -> nếu mọi thứ ổn thì lưu các trang mới vào lại kho -> Cloudflare đưa lên mạng.
+# Kiểm tra lỗi thì KHÔNG lưu gì (trang cũ vẫn chạy), xem lỗi ở tab Actions trên GitHub.
+name: Build book pages
+
+on:
+  push:
+    branches: [main, dev]
+    paths: ["novels/**"]
+  workflow_dispatch: # cho phép bấm chạy tay trên GitHub
+
+permissions:
+  contents: write
+
+# Hai lần lưu sát nhau trên cùng nhánh: chạy lần lượt, không chen nhau.
+concurrency:
+  group: build-books-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Read notebooks
+        run: npm run parse
+      - name: Build pages and check
+        run: npm run check
+      - name: Save the new pages
+        run: |
+          git config user.name "whitemathuat"
+          git config user.email "294406544+whitemathuat@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Không có gì thay đổi."
+            exit 0
+          fi
+          git commit -m "Auto-build book pages"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
