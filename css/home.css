@@ -1,4 +1,4 @@
-/* Trang chủ, kiểu 2a: chữ to trên nền trời, chim bay, dải mây hồng có 2 bìa sách,
+/* Trang chủ, kiểu 2a: chữ to trên nền trời, chim bay, dải mây hồng có cuốn sách mở,
    bên dưới là thanh 4 thẻ giấy (Thư viện, Highlight, Ghi chú, câu trích). */
 
 /* Phần đầu: tiêu đề + dòng chữ nghiêng + link đọc ghi chú mới */
@@ -13,13 +13,11 @@
 .bird.b2 { top: 22%; right: 10%; width: 110px; }
 .bird.b3 { top: 36%; right: 22%; width: 76px; }
 
-/* Dải mây bên phải, 2 cuốn sách "ngồi" trên mây */
+/* Dải mây bên phải, cuốn sách mở "ngồi" trên mây, trang giấy bay lên thành chim */
 .sky { position: absolute; right: -6vw; bottom: 0; width: 66vw; height: 250px; }
 .sky .clouds { position: absolute; inset: 0; width: 100%; height: 100%;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%); mask-image: linear-gradient(90deg, transparent, #000 22%); }
-.sky .cover { position: absolute; z-index: 2; bottom: 150px; width: 170px; aspect-ratio: 2/3; object-fit: cover; box-shadow: 0 14px 30px rgba(0, 0, 0, .3); }
-.sky .c1 { left: 22%; width: 150px; transform: rotate(-7deg); }
-.sky .c2 { left: 48%; bottom: 170px; transform: rotate(4deg); }
+.sky .open-book { position: absolute; z-index: 2; left: 24%; bottom: 140px; width: 330px; }
 
 /* Thanh thẻ giấy: navy và kem xen nhau */
 .paper { position: relative; z-index: 3; margin: -40px 2vw 0; display: grid; grid-template-columns: repeat(4, 1fr); overflow: hidden;
@@ -44,9 +42,7 @@
   .script { font-size: 18px; }
   .bird { width: 64px; } .bird.b2 { width: 76px; } .bird.b3 { display: none; }
   .sky { width: 130vw; right: -15vw; height: 200px; }
-  .sky .cover { width: 110px; }
-  .sky .c1 { width: 96px; left: 25%; }
-  .sky .c2 { left: 52%; }
+  .sky .open-book { width: 210px; left: 30%; }
   .paper { grid-template-columns: 1fr; margin: -20px 16px 0; }
   .paper > * { border-left: 0; border-top: 1px solid var(--line); }
 }

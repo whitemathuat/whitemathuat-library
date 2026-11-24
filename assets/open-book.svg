@@ -1,0 +1,23 @@
+<!-- Sách mở trên mây, vài trang giấy bay lên thành chim giấy (thay cho bìa sách, DECISIONS 6). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 210">
+  <!-- trang giấy bay -->
+  <g fill="#fbf7ee" stroke="#c9b6d6" stroke-width="1">
+    <rect x="-13" y="-17" width="26" height="34" rx="2" transform="translate(178 92) rotate(-18)"/>
+    <path d="M-12 -15 L12 -18 L13 14 L-10 17 Z" transform="translate(206 62) rotate(14)"/>
+    <path d="M0 0 L-12 -12 L-2 -1 Z M0 0 L14 -14 L3 1 Z M-2 -1 L3 1 L0 6 Z" transform="translate(236 40) scale(1.25)"/>
+  </g>
+  <g fill="#fbf7ee">
+    <path d="M0 0 C-6 -10 -14 -12 -22 -10 C-14 -6 -8 -2 -2 2 Z M0 0 C6 -12 14 -16 24 -15 C15 -9 8 -3 2 2 Z" transform="translate(272 22)"/>
+    <path d="M0 0 C-5 -8 -11 -9 -17 -8 C-11 -5 -6 -2 -1 2 Z M0 0 C5 -9 11 -12 18 -11 C11 -7 6 -2 1 2 Z" transform="translate(300 6)"/>
+  </g>
+  <!-- bìa sách -->
+  <path d="M160 196 C122 182 66 180 20 190 L18 120 L160 128 L302 120 L300 190 C254 180 198 182 160 196 Z" fill="#1d3586"/>
+  <!-- hai trang mở -->
+  <path d="M160 186 C124 170 74 168 30 178 L30 112 C74 100 124 104 160 122 Z" fill="#fbf7ee"/>
+  <path d="M160 186 C196 170 246 168 290 178 L290 112 C246 100 196 104 160 122 Z" fill="#f3ecf6"/>
+  <path d="M160 122 L160 186" stroke="#c9b6d6" stroke-width="1.5"/>
+  <g stroke="#c9b6d6" stroke-width="1.5" fill="none" stroke-linecap="round">
+    <path d="M48 124 C80 116 116 118 146 130"/><path d="M48 138 C80 130 116 132 146 144"/><path d="M48 152 C80 144 116 146 146 158"/>
+    <path d="M174 130 C204 118 240 116 272 124"/><path d="M174 144 C204 132 240 130 272 138"/>
+  </g>
+</svg>

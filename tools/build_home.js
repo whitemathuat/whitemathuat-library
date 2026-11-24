@@ -43,11 +43,6 @@ export function buildHome() {
   const books = readBooks(); // mới nhất đứng đầu
   const sum = (key) => books.reduce((total, book) => total + book[key], 0);
 
-  // Bìa 2 cuốn mới nhất ngồi trên mây (cuốn mới nhất ở bên phải, nổi hơn)
-  const covers = books.slice(0, 2).reverse()
-    .map((book, i) => `<img class="cover c${i + 1}" src="novels/${book.slug}/cover.jpg" alt="Bìa ${escape(book.title)}">`)
-    .join("\n    ");
-
   const choices = quoteChoices(books);
   const first = choices[0] ?? { text: "Chưa có câu nào.", note: "white đọc gây" };
 
@@ -56,7 +51,6 @@ export function buildHome() {
     nav: renderNav("home", ""),
     footer: renderFooter(""),
     latest_page: books.length ? bookPage(books[0]) : "books/index.html",
-    covers,
     book_count: books.length,
     chapter_count: sum("chapters"),
     highlight_count: sum("highlights"),
