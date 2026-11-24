@@ -7,8 +7,8 @@ Short status page: rewrite it, do not append a diary. Verification details go in
 - Works: home page, library page (2 books: Even Better, Unknown Lover), book pages with Annotation + Info tabs, password gate online.
 - **Moving the generator from Python to JavaScript (DECISIONS 4), 4 steps:**
   1. Page builders in JS (`tools/*.js`, `npm run build`): DONE. `npm run compare` shows they make the same pages as Python.
-  2. Check command in JS (`npm run check`, replacing `tools/check.py`): next.
-  3. Kindle export reader (`parse_notebook.py`) in JS, no extra library; `notes.json` of both books must come out the same.
+  2. Check command in JS (`npm run check`, `tools/check.js`): DONE, `tools/check.py` removed.
+  3. Kindle export reader (`parse_notebook.py`) in JS, no extra library; `notes.json` of both books must come out the same: next.
   4. Remove the Python files, `__pycache__` and `tests/compare_python_js.js`; update CLAUDE.md; look at the Cloudflare preview of `dev`.
 - Unfinished / looks off:
   - Links with no page yet (`#`): Đang đọc, Yêu thích, Annotation, Tất cả truyện, Giao diện, Cài đặt (sidebar in `tools/utils.js`); categories Phim, Anime, Manga, Game are disabled.
@@ -18,7 +18,7 @@ Short status page: rewrite it, do not append a diary. Verification details go in
   - Small code issues: stray `</span>` in the home title (`templates/home.html`); `_middleware.js` can crash (error 500) on a malformed login header.
 
 ## Next steps
-1. Finish the JS move: steps 2-4 above (one new chat).
+1. Finish the JS move: steps 3-4 above (one new chat).
 2. Phone-friendly layout + polish (user's wish).
 3. More code clean-up, in small safe steps.
 
