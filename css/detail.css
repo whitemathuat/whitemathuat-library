@@ -1,4 +1,4 @@
-/* Trang một cuốn sách, kiểu 2a: đầu trang (bìa nghiêng, tên, tác giả, điểm, số liệu, 2 nút tab)
+/* Trang một cuốn sách, kiểu 2a: đầu trang (bìa đặt thẳng, tên, tác giả, điểm, số liệu, 2 nút tab)
    nằm trên nền trời; bên dưới là tờ giấy để đọc.
    Tab "Annotation": cột "Theo chương" bên trái + ghi chú từng chương bên phải.
    Tab "Thông tin": thẻ "Đọc truyện" (link) + thẻ "Đôi lời muốn lói" (review). Màu lấy từ theme.css. */
@@ -7,7 +7,7 @@
 
 /* Đầu trang */
 .book-head { display: grid; grid-template-columns: 240px 1fr; gap: 40px; align-items: end; padding-bottom: 30px; }
-.book-cover img { width: 100%; aspect-ratio: 2/3; object-fit: cover; transform: rotate(-3deg);
+.book-cover img { width: 100%; aspect-ratio: 2/3; object-fit: cover;
   border: 6px solid var(--paper); box-shadow: 0 16px 34px rgba(0, 0, 0, .3); }
 .kicker { font: 500 11px var(--mono); letter-spacing: 3px; text-transform: uppercase; opacity: .85; }
 .book-meta h1 { margin: 6px 0 4px; font: 500 96px/.9 var(--tall); color: var(--title); overflow-wrap: anywhere; }
@@ -59,9 +59,11 @@
 @media (max-width: 760px) {
   .book { padding: 20px 16px 10px; }
   .book-head { grid-template-columns: 1fr; gap: 24px; }
-  .book-cover { width: 170px; }
+  .book-cover { width: 170px; margin: 0 auto; }
+  /* Phần thông tin truyện căn giữa trên điện thoại */
+  .book-meta { text-align: center; }
   .book-meta h1 { font-size: 64px; }
-  .stats { gap: 22px; }
+  .stats { gap: 22px; justify-content: center; }
   .reading, .info { grid-template-columns: 1fr; }
   .chapters { position: static; max-height: 220px; border-right: 0; border-bottom: 1px solid var(--line); }
   .notes { padding: 22px 18px; }
