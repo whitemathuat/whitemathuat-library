@@ -7,6 +7,24 @@ import { icons, renderNav, renderFooter } from "./layout.js";
 
 const bookPage = (book) => `novels/${book.slug}/index.html`;
 
+// Câu trích được ghim: luôn hiện câu này trên trang chủ.
+// Muốn quay lại kiểu "mỗi ngày một câu" thì đặt PINNED_QUOTE = null.
+const PINNED_QUOTE = { book: "unknown_lover_test", highlight: "32: Don’t Make Me Beg" };
+
+// Tìm câu được ghim trong notes.json của cuốn sách đó (không thấy thì trả về null).
+function pinnedQuote(books) {
+  if (!PINNED_QUOTE) return null;
+  const book = books.find((b) => b.slug === PINNED_QUOTE.book);
+  for (const section of book?.data.sections ?? []) {
+    for (const entry of section.entries ?? []) {
+      if (entry.type === "pair" && entry.highlight === PINNED_QUOTE.highlight) {
+        return { text: entry.highlight, note: entry.note };
+      }
+    }
+  }
+  return null;
+}
+
 // Các câu highlight có kèm ghi chú, không quá dài, để làm "câu của hôm nay".
 function quoteChoices(books) {
   const choices = [];
@@ -43,7 +61,8 @@ export function buildHome() {
   const books = readBooks(); // mới nhất đứng đầu
   const sum = (key) => books.reduce((total, book) => total + book[key], 0);
 
-  const choices = quoteChoices(books);
+  const pinned = pinnedQuote(books);
+  const choices = pinned ? [pinned] : quoteChoices(books);
   const first = choices[0] ?? { text: "Chưa có câu nào.", note: "white đọc gây" };
 
   const template = readText(path.join(ROOT_DIR, "templates", "home.html"));

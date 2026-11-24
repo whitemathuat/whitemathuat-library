@@ -34,7 +34,7 @@ export function renderRating(rating) {
 
 export function renderFooter(prefix) {
   return `<footer class="foot">
-  <div><b>white đọc gây</b><p>Góc nhỏ ghi lại những câu chữ làm mình dừng lại.</p></div>
+  <div><b>white đọc gây</b><p>cả đời cống hiến cho nền gây học.</p></div>
   <nav><a href="${prefix}index.html">Trang chủ</a><a href="${prefix}books/index.html">Thư viện</a></nav>
 </footer>`;
 }
