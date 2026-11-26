@@ -30,7 +30,7 @@
   </div>
 </section>
 <section class="tab-panel reading" id="tab-notes">
-  <aside class="chapters"><p class="label">Theo chương</p><nav>
+  <aside class="chapters"><div class="label-row"><p class="label">Theo chương</p><button type="button" class="loc-toggle" id="loc-toggle" aria-pressed="true">Ẩn vị trí</button></div><nav>
 {chapter_links}
   </nav></aside>
   <div class="notes">
@@ -51,5 +51,6 @@ document.querySelectorAll("[data-tab]").forEach(function (btn) {{
   }});
 }});
 </script>
+<script src="../../js/show-location.js"></script>
 </body>
 </html>

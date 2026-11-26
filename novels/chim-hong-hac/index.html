@@ -36,7 +36,7 @@
   </div>
 </section>
 <section class="tab-panel reading" id="tab-notes">
-  <aside class="chapters"><p class="label">Theo chương</p><nav>
+  <aside class="chapters"><div class="label-row"><p class="label">Theo chương</p><button type="button" class="loc-toggle" id="loc-toggle" aria-pressed="true">Ẩn vị trí</button></div><nav>
 <a href="#chuong-1"><span>Chính văn</span><b>87</b></a>
 <a class="sub" href="#chuong-1-1"><span>4</span><b>1</b></a>
 <a class="sub" href="#chuong-1-2"><span>18</span><b>1</b></a>
@@ -622,5 +622,6 @@ document.querySelectorAll("[data-tab]").forEach(function (btn) {
   });
 });
 </script>
+<script src="../../js/show-location.js"></script>
 </body>
 </html>
