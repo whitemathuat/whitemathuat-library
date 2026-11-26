@@ -104,8 +104,11 @@ export function parseNotebook(html) {
 
     // Dòng tiêu đề kiểu "Highlight(yellow) - Page 14 · Location 89", nội dung nằm ở thẻ ngay sau
     if (node.kind === "noteHeading") {
-      if (i + 1 >= nodes.length) break;
       const heading = getText(node.inner, " ");
+      // Dấu trang (Bookmark) không có nội dung: bỏ qua, không lấy nhầm dòng sau
+      if (heading.startsWith("Bookmark")) continue;
+      // Chỉ lấy nội dung khi thẻ ngay sau đúng là thẻ nội dung
+      if (i + 1 >= nodes.length || nodes[i + 1].kind !== "noteText") continue;
       const text = getText(nodes[i + 1].inner, " ");
       i++; // thẻ nội dung đã dùng
 

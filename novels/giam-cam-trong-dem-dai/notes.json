@@ -613,15 +613,11 @@
           "chapter": "35"
         },
         {
-          "type": "note",
-          "text": "Highlight ( yellow ) - 36 >  Location 6208",
-          "location": 6159,
-          "chapter": "35"
-        },
-        {
-          "type": "note",
-          "text": "!!!!",
-          "location": 6209,
+          "type": "pair",
+          "highlight": "cậu đang làm con trai bà ta hay làm chó?”",
+          "note": "!!!!",
+          "color": " yellow ",
+          "location": 6208,
           "chapter": "36"
         },
         {
@@ -633,10 +629,11 @@
           "chapter": "36"
         },
         {
-          "type": "note",
-          "text": "Highlight ( yellow ) - 38 >  Location 6683",
-          "location": 6376,
-          "chapter": "36"
+          "type": "highlight",
+          "text": "cậu chưa từng cảm thấy vui vì mình có thể sống sót như vậy bao giờ.",
+          "color": " yellow ",
+          "location": 6683,
+          "chapter": "38"
         },
         {
           "type": "pair",
@@ -725,14 +722,10 @@
           "chapter": "40"
         },
         {
-          "type": "note",
-          "text": "Highlight ( yellow ) - 40 >  Location 7171",
-          "location": 7169,
-          "chapter": "40"
-        },
-        {
-          "type": "note",
-          "text": "ê m",
+          "type": "pair",
+          "highlight": "lúc tay Cố Quân Trì vòng qua eo cậu,",
+          "note": "ê m",
+          "color": " yellow ",
           "location": 7171,
           "chapter": "40"
         },
@@ -784,15 +777,11 @@
           "chapter": "43"
         },
         {
-          "type": "note",
-          "text": "Highlight ( yellow ) - 43 >  Location 7659",
-          "location": 7578,
-          "chapter": "43"
-        },
-        {
-          "type": "note",
-          "text": "áuuuuuuuu",
-          "location": 7660,
+          "type": "pair",
+          "highlight": "“Nhưng chỉ có thể dạy trên giường.”",
+          "note": "áuuuuuuuu",
+          "color": " yellow ",
+          "location": 7659,
           "chapter": "43"
         },
         {
@@ -804,15 +793,11 @@
           "chapter": "44"
         },
         {
-          "type": "note",
-          "text": "Highlight ( yellow ) - 44 >  Location 7865",
-          "location": 7809,
-          "chapter": "44"
-        },
-        {
-          "type": "note",
-          "text": "😤",
-          "location": 7866,
+          "type": "pair",
+          "highlight": "cậu đã không còn là một alpha trong trắng nữa rồi,",
+          "note": "😤",
+          "color": " yellow ",
+          "location": 7865,
           "chapter": "44"
         },
         {
@@ -1053,14 +1038,10 @@
           "chapter": "63"
         },
         {
-          "type": "note",
-          "text": "Highlight ( yellow ) - 65 >  Location 11677",
-          "location": 11521,
-          "chapter": "64"
-        },
-        {
-          "type": "note",
-          "text": "<3",
+          "type": "pair",
+          "highlight": "“Ngắm.”",
+          "note": "<3",
+          "color": " yellow ",
           "location": 11677,
           "chapter": "65"
         },
@@ -1187,12 +1168,6 @@
           "note": "?",
           "color": " yellow ",
           "location": 14281,
-          "chapter": "79"
-        },
-        {
-          "type": "note",
-          "text": "Bookmark ( blue ) - 79 >  Location 14399",
-          "location": 14300,
           "chapter": "79"
         },
         {

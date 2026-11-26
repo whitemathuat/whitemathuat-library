@@ -41,6 +41,22 @@ Highlight (<span class="annotation_yellow">yellow</span>) - 2: CHƯƠNG HAI &gt;
 Note - 2: CHƯƠNG HAI &gt;  Page 26
 </div><div class="noteText">Ghi chú trang khác</div>`;
 
+// Dấu trang (Bookmark) không có nội dung: phải bỏ qua, không làm lệch cặp phía sau
+const WITH_BOOKMARK = `<div class="bookTitle">Sách dấu trang</div><div class="authors">Tác giả</div>
+<div class="sectionHeading">Chương</div>
+<div class="noteHeading">
+Bookmark (<span class="annotation_blue">blue</span>) - 64 &gt;  Location 11521
+</div>
+<div class="noteHeading">
+Highlight (<span class="annotation_yellow">yellow</span>) - 65 &gt;  Location 11677
+</div><div class="noteText">“Ngắm.”</div>
+<div class="noteHeading">
+Note - 65 &gt;  Location 11677
+</div><div class="noteText">&lt;3</div>
+<div class="noteHeading">
+Bookmark (<span class="annotation_blue">blue</span>) - 79 &gt;  Location 14300
+</div>`;
+
 export function checkNotebook() {
   const errors = [];
   const expect = (name, got, want) => {
@@ -63,6 +79,12 @@ export function checkNotebook() {
     expect("file chỉ có Page: số trang", pageOnly.entries[0].page, 7);
     expect("file chỉ có Page: chương con", pageOnly.entries[1].chapter, "2: CHƯƠNG HAI");
     expect("file chỉ có Page: trang khác thì không ghép", pageOnly.entries[1].type, "highlight");
+
+    // File có dấu trang (như Giam Cầm Trong Đêm Dài)
+    const [marked] = parseNotebook(WITH_BOOKMARK).sections;
+    expect("có dấu trang: số mục (bỏ dấu trang)", marked.entries.length, 1);
+    expect("có dấu trang: highlight + ghi chú vẫn thành cặp", marked.entries[0].type, "pair");
+    expect("có dấu trang: nội dung ghi chú", marked.entries[0].note, "<3");
   } catch (e) {
     errors.push(`Đọc file Kindle bị lỗi: ${e.message}`);
   }
