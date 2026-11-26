@@ -39,23 +39,54 @@
 
     <section class="paper step">
       <h2><span>2</span> Ảnh bìa</h2>
-      <p class="hint">Ảnh JPG hoặc PNG. Trang tự thu nhỏ ảnh cho nhẹ.</p>
+      <p class="hint">Ảnh JPG hoặc PNG. Chọn xong thì kéo ảnh để căn; phóng to bằng thanh trượt, con lăn chuột hoặc hai ngón tay.</p>
       <label class="pick">
         <input type="file" id="cover-file" accept="image/jpeg,image/png,image/webp">
         <span id="cover-name">Chọn ảnh bìa</span>
       </label>
+      <div class="crop" id="crop" hidden>
+        <div class="crop-frame" id="crop-frame" tabindex="0" aria-label="Khung căn ảnh bìa: kéo ảnh, hoặc dùng phím mũi tên và + −">
+          <img id="crop-img" alt="" draggable="false">
+          <!-- Nét đứt: phần ngoài 2 nét bị cắt bớt ở thẻ sách trang Thư viện -->
+          <i class="crop-guide top"></i><i class="crop-guide bottom"></i>
+        </div>
+        <div class="crop-side">
+          <label class="zoom"><span aria-hidden="true">−</span><input type="range" id="crop-zoom" step="0.01" value="1" aria-label="Phóng to ảnh bìa"><span aria-hidden="true">+</span></label>
+          <p class="hint">Khung = bìa ở trang sách. Ở trang Thư viện, phần ngoài hai nét đứt bị cắt bớt.</p>
+        </div>
+      </div>
     </section>
 
     <section class="paper step">
-      <h2><span>3</span> Tên thư mục</h2>
+      <h2><span>3</span> Nguồn đọc &amp; điểm</h2>
+      <p class="hint">Không bắt buộc. Hiện ở tab “Thông tin” của trang sách.</p>
+      <div class="link-rows" id="link-rows"></div>
+      <button class="add-link" type="button" id="add-link">+ Thêm link</button>
+      <div class="fields">
+        <label class="field rating-field"><span>Điểm (0–10)</span>
+          <input class="input" type="text" id="rating" inputmode="decimal" autocomplete="off" placeholder="vd: 8.5"></label>
+        <label class="field"><span>Ghi chú ngắn (hiện dưới link)</span>
+          <input class="input" type="text" id="note-text" autocomplete="off" placeholder="vd: bản dịch của nhà Mèo"></label>
+      </div>
+    </section>
+
+    <section class="paper step">
+      <h2><span>4</span> Review</h2>
+      <p class="hint">Không bắt buộc. Để một dòng trống giữa các đoạn.</p>
+      <textarea class="input review" id="review-text" rows="7" placeholder="Đôi lời muốn lói…"></textarea>
+    </section>
+
+    <section class="paper step">
+      <h2><span>5</span> Tên thư mục</h2>
       <p class="hint">Tự đặt theo tên sách (chữ thường không dấu, gạch ngang). Thường không cần sửa.</p>
-      <input class="slug" type="text" id="slug" autocomplete="off" spellcheck="false" placeholder="ten-sach">
+      <input class="input slug" type="text" id="slug" autocomplete="off" spellcheck="false" placeholder="ten-sach">
     </section>
   </div>
 
   <aside class="preview">
     <div class="paper card">
       <div class="card-cover" id="cover-box"><span>Bìa</span></div>
+      <span class="rating none" id="pv-rating">chưa chấm</span>
       <h3 id="pv-title">Tên sách</h3>
       <p class="author" id="pv-author">Tác giả</p>
       <p class="card-stats" id="pv-stats"><span><b>0</b> highlight</span><span><b>0</b> ghi chú</span><span><b>0</b> chương</span></p>
@@ -77,6 +108,14 @@
   <div><b>white đọc gây</b><p>cả đời cống hiến cho nền gây học.</p></div>
   <nav><a href="../index.html">Trang chủ</a><a href="../books/index.html">Thư viện</a></nav>
 </footer>
+<!-- Mẫu một dòng link (JS nhân bản khi bấm "+ Thêm link") -->
+<template id="link-row">
+  <div class="link-row">
+    <input class="input url" type="url" placeholder="https://…" aria-label="Địa chỉ link" autocomplete="off" spellcheck="false">
+    <input class="input name" type="text" placeholder="Tên hiện ra (vd: Chính văn)" aria-label="Tên link" autocomplete="off">
+    <button class="remove" type="button" aria-label="Bỏ link này">×</button>
+  </div>
+</template>
 <!-- Danh sách sách đã có, để báo khi thêm trùng -->
 <script type="application/json" id="existing-books">[{"slug":"chim-hong-hac","title":"Chim Hồng Hạc Côn Đồ"},{"slug":"even-better","title":"Even Better"},{"slug":"unknown-lover","title":"Unknown Lover"}]</script>
 <script type="module" src="../js/add-book.js"></script>

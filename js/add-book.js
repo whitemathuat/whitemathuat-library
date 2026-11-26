@@ -1,17 +1,16 @@
 // Trang "Thêm sách" (books/add.html): chọn file Kindle + ảnh bìa, xem trước, rồi lưu.
 // Lưu = gửi lên /api/save-book (functions/api/save-book.js) -> GitHub -> trang tự dựng lại.
 import { parseNotebook } from "./notebook.js";
-import { slugify, isValidSlug, bookStats, findExisting, buildPayload, base64Bytes } from "./add-book-helpers.js";
+import { slugify, isValidSlug, bookStats, findExisting, buildPayload, cleanReview, reviewProblem, isValidRating } from "./add-book-helpers.js";
+import { createCropper } from "./cover-crop.js";
 
-const COVER_WIDTH = 600; // giống npm run covers
-const MAX_COVER_BYTES = 300 * 1024; // giống giới hạn của máy chủ
 const MAX_NOTEBOOK_BYTES = 5 * 1024 * 1024;
 
 const $ = (id) => document.getElementById(id);
 const existing = JSON.parse($("existing-books").textContent);
 
 // Những gì người dùng đã chọn
-const state = { notebook: null, data: null, cover: null, slugEdited: false, saving: false, saved: false };
+const state = { notebook: null, data: null, cover: null, coverPicked: false, slugEdited: false, saving: false, saved: false };
 
 // Trang đã chạy được: ẩn dòng "chỉ dùng online", hiện khung nhập
 $("offline").hidden = true;
@@ -44,51 +43,82 @@ $("notebook-file").addEventListener("change", async (e) => {
   update(Boolean(state.data));
 });
 
-// ---------- 2. Ảnh bìa: thu nhỏ còn 600 px ngang, lưu dạng JPEG ----------
-function loadImage(file) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("Trình duyệt không mở được ảnh này. Hãy thử ảnh JPG hoặc PNG."));
-    img.src = URL.createObjectURL(file);
-  });
-}
+// ---------- 2. Ảnh bìa: căn trong khung 2:3, lưu ra JPEG 600 x 900 ----------
+const cropper = createCropper({
+  frame: $("crop-frame"),
+  img: $("crop-img"),
+  zoom: $("crop-zoom"),
+  onChange: refreshCover,
+});
 
-async function shrinkCover(file) {
-  const img = await loadImage(file);
-  const width = Math.min(COVER_WIDTH, img.naturalWidth);
-  const height = Math.round((img.naturalHeight * width) / img.naturalWidth);
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = "#ffffff"; // ảnh PNG trong suốt -> nền trắng
-  ctx.fillRect(0, 0, width, height);
-  ctx.drawImage(img, 0, 0, width, height);
-  URL.revokeObjectURL(img.src);
-  // Còn nặng quá thì giảm chất lượng dần
-  for (let quality = 0.85; quality >= 0.4; quality -= 0.15) {
-    const dataUrl = canvas.toDataURL("image/jpeg", quality);
-    const base64 = dataUrl.split(",")[1];
-    if (base64Bytes(base64) <= MAX_COVER_BYTES) return { dataUrl, base64 };
+// Vẽ lại ảnh bìa (sau mỗi lần căn) cho phần xem trước
+function refreshCover() {
+  if (!state.coverPicked) return;
+  try {
+    state.cover = cropper.toJpeg();
+  } catch (err) {
+    state.cover = null;
+    showMessage(`Ảnh bìa: ${err.message}`, "error");
   }
-  throw new Error("Ảnh vẫn quá nặng sau khi thu nhỏ.");
+  renderPreview();
+  update(Boolean(state.cover));
 }
 
 $("cover-file").addEventListener("change", async (e) => {
   const file = e.target.files[0];
   state.cover = null;
+  state.coverPicked = false;
+  $("crop").hidden = !file;
   if (file) {
     $("cover-name").textContent = file.name;
     try {
-      state.cover = await shrinkCover(file);
+      await cropper.load(file);
+      state.coverPicked = true;
     } catch (err) {
+      $("crop").hidden = true;
       showMessage(`Ảnh bìa: ${err.message}`, "error");
     }
   }
-  renderPreview();
-  update(Boolean(state.cover));
+  if (state.coverPicked) refreshCover();
+  else {
+    renderPreview();
+    update(false);
+  }
 });
+
+// ---------- 3. Nguồn đọc, điểm, ghi chú ngắn; 4. Review ----------
+function addLinkRow() {
+  const row = $("link-row").content.firstElementChild.cloneNode(true);
+  row.querySelector(".remove").addEventListener("click", () => {
+    row.remove();
+    if (!$("link-rows").children.length) addLinkRow(); // luôn còn ít nhất một dòng trống
+    update(true);
+  });
+  $("link-rows").append(row);
+  return row;
+}
+addLinkRow();
+$("add-link").addEventListener("click", () => addLinkRow().querySelector(".url").focus());
+
+// Những gì đang gõ trong phần 3 + 4 (đã dọn khoảng trắng)
+function readReview() {
+  return cleanReview({
+    links: [...$("link-rows").children].map((row) => ({
+      url: row.querySelector(".url").value,
+      text: row.querySelector(".name").value,
+    })),
+    rating: $("rating").value,
+    note_text: $("note-text").value,
+    text: $("review-text").value,
+  });
+}
+
+for (const id of ["link-rows", "rating", "note-text", "review-text"]) {
+  $(id).addEventListener("input", () => {
+    renderPreview();
+    update(true);
+  });
+}
 
 // ---------- 3. Tên thư mục ----------
 $("slug").addEventListener("input", () => {
@@ -108,6 +138,12 @@ function renderPreview() {
   } else {
     box.append(Object.assign(document.createElement("span"), { textContent: "Bìa" }));
   }
+
+  // Điểm, giống thẻ ở Thư viện
+  const rating = readReview().rating;
+  const hasRating = rating !== "" && isValidRating(rating);
+  $("pv-rating").textContent = hasRating ? `★ ${rating} / 10` : "chưa chấm";
+  $("pv-rating").className = hasRating ? "rating" : "rating none";
 
   const data = state.data;
   $("pv-title").textContent = data?.title || "Tên sách";
@@ -142,7 +178,13 @@ function problem() {
   if (!isValidSlug(slug)) return "Tên thư mục chỉ gồm chữ thường không dấu, số và dấu gạch ngang (ví dụ: even-better).";
   const same = findExisting(existing, slug, state.data.title);
   if (same) return `Thư viện đã có cuốn "${same.title}" (thư mục ${same.slug}). Sửa sách cũ sẽ có ở bước sau; muốn thêm bản mới thì đổi tên thư mục.`;
-  return "";
+  return reviewProblem(readReview());
+}
+
+// Người dùng đã gõ gì ở phần 3, 4 chưa (chưa gõ gì thì chưa cần nhắc)
+function hasTyped() {
+  const r = readReview();
+  return Boolean(r.links.length || r.rating || r.note_text || r.text);
 }
 
 // Nút "Lưu sách" chỉ bấm được khi đủ. ok = false: thao tác vừa rồi bị lỗi, giữ lời báo lỗi đó.
@@ -151,7 +193,7 @@ function update(ok) {
   const p = problem();
   $("save").disabled = Boolean(p) || state.saving;
   if (!ok && $("message").classList.contains("error")) return;
-  if (p) showMessage(state.data || state.cover ? p : "", "warn");
+  if (p) showMessage(state.data || state.cover || hasTyped() ? p : "", "warn");
   else showMessage("Sẵn sàng. Bấm “Lưu sách”.", "ready");
 }
 
@@ -165,10 +207,11 @@ $("add-form").addEventListener("submit", async (e) => {
   showMessage("Đang gửi lên GitHub, chờ chút…");
   const slug = $("slug").value.trim();
   try {
+    const cover = cropper.toJpeg(); // lấy đúng chỗ đang căn lúc bấm lưu
     const res = await fetch("../api/save-book", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(buildPayload({ slug, notebook: state.notebook, coverBase64: state.cover.base64 })),
+      body: JSON.stringify(buildPayload({ slug, notebook: state.notebook, coverBase64: cover.base64, review: readReview() })),
     });
     let reply = {};
     try {
