@@ -110,6 +110,7 @@ export function buildDetail() {
     const html = fillTemplate(template, {
       nav: renderNav("library", "../../"),
       footer: renderFooter("../../"),
+      slug: escape(encodeURIComponent(book.slug)), // tên thư mục, cho link nút "Sửa"
       title: escape(book.title),
       author: escape(book.author),
       rating: renderRating(book.rating),

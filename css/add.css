@@ -35,6 +35,9 @@
 .input::placeholder { color: var(--muted); opacity: .7; }
 .input:focus { outline: 2px solid var(--navy); outline-offset: 1px; }
 .slug, .input.url { font-family: var(--mono); font-size: 13px; }
+/* Khi sửa sách: tên thư mục chỉ để xem, không đổi được */
+.slug[readonly] { background: var(--paper-hover); color: var(--muted); cursor: default; }
+.slug[readonly]:focus { outline: none; }
 .review { resize: vertical; min-height: 140px; }
 
 /* Khung căn ảnh bìa: khung 2:3 bên trái, thanh phóng bên phải */

@@ -12,9 +12,9 @@
 {nav}
 <main class="add">
 <header class="page-head">
-  <a class="back" href="index.html">← Thư viện</a>
-  <h1>thêm sách.</h1>
-  <p class="script">thêm một xấp ghi chú mới lên kệ.</p>
+  <a class="back" id="back" href="index.html">← Thư viện</a>
+  <h1 id="page-title">thêm sách.</h1>
+  <p class="script" id="page-sub">thêm một xấp ghi chú mới lên kệ.</p>
 </header>
 
 <!-- Hiện khi trang chưa chạy được (mở file trên máy): JS sẽ ẩn dòng này đi -->
@@ -24,7 +24,7 @@
   <div class="steps">
     <section class="paper step">
       <h2><span>1</span> File ghi chú Kindle</h2>
-      <p class="hint">Trên Kindle: mở sách → Notebook → Export → chọn kiểu HTML, rồi chọn file đó ở đây.</p>
+      <p class="hint" id="notebook-hint">Trên Kindle: mở sách → Notebook → Export → chọn kiểu HTML, rồi chọn file đó ở đây.</p>
       <label class="pick">
         <input type="file" id="notebook-file" accept=".html,.htm,text/html">
         <span id="notebook-name">Chọn file .html</span>
@@ -33,7 +33,7 @@
 
     <section class="paper step">
       <h2><span>2</span> Ảnh bìa</h2>
-      <p class="hint">Ảnh JPG hoặc PNG. Chọn xong thì kéo ảnh để căn; phóng to bằng thanh trượt, con lăn chuột hoặc hai ngón tay.</p>
+      <p class="hint" id="cover-hint">Ảnh JPG hoặc PNG. Chọn xong thì kéo ảnh để căn; phóng to bằng thanh trượt, con lăn chuột hoặc hai ngón tay.</p>
       <label class="pick">
         <input type="file" id="cover-file" accept="image/jpeg,image/png,image/webp">
         <span id="cover-name">Chọn ảnh bìa</span>
@@ -70,7 +70,7 @@
 
     <section class="paper step">
       <h2><span>5</span> Tên thư mục</h2>
-      <p class="hint">Tự đặt theo tên sách (chữ thường không dấu, gạch ngang). Thường không cần sửa.</p>
+      <p class="hint" id="slug-hint">Tự đặt theo tên sách (chữ thường không dấu, gạch ngang). Thường không cần sửa.</p>
       <input class="input slug" type="text" id="slug" autocomplete="off" spellcheck="false" placeholder="ten-sach">
     </section>
   </div>

@@ -84,10 +84,37 @@ export function reviewProblem(review) {
 }
 
 // Dữ liệu gửi lên /api/save-book. Review trống vẫn gửi: máy chủ tạo review.md có ngày hôm nay,
-// để sách mới đứng đầu thư viện.
+// để sách mới (hoặc sách vừa sửa) đứng đầu thư viện.
+// Khi sửa sách: notebook / coverBase64 để trống (undefined) = giữ file cũ, không gửi.
 export function buildPayload({ slug, notebook, coverBase64, review = {} }) {
-  return { slug, notebook, cover: coverBase64, review: cleanReview(review) };
+  const payload = { slug };
+  if (notebook != null) payload.notebook = notebook;
+  if (coverBase64 != null) payload.cover = coverBase64;
+  payload.review = cleanReview(review);
+  return payload;
 }
+
+// ---------- Sửa sách đã có (trang add.html?sua=ten-thu-muc) ----------
+// Tên thư mục sách cần sửa, lấy từ địa chỉ trang. Không có hoặc sai luật -> "".
+export function editSlugFromSearch(search) {
+  const slug = new URLSearchParams(search).get("sua") ?? "";
+  return isValidSlug(slug) ? slug : "";
+}
+
+// review.md đã đọc (js/review.js) -> giá trị cho các ô nhập, đã dọn như cleanReview.
+export const reviewToForm = (review) =>
+  cleanReview({
+    links: review?.meta.links ?? [],
+    rating: review?.meta.rating ?? "",
+    note_text: review?.meta.note_text ?? "",
+    text: review?.text ?? "",
+  });
+
+// Hai bản review (đã dọn) có giống hệt nhau không
+export const sameReview = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+// File Kindle mới có đúng là của cuốn đang sửa không (so tên sách, không phân biệt hoa thường)
+export const sameTitle = (a, b) => String(a ?? "").trim().toLowerCase() === String(b ?? "").trim().toLowerCase();
 
 // ---------- Khung căn ảnh bìa (chỉ tính toán; phần kéo/chạm nằm ở js/cover-crop.js) ----------
 // Khung tính theo cỡ ảnh lưu ra: 600 x 900 (tỉ lệ 2:3 như bìa ở trang sách).

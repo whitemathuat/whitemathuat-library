@@ -1,7 +1,13 @@
 // Trang "Thêm sách" (books/add.html): chọn file Kindle + ảnh bìa, xem trước, rồi lưu.
 // Lưu = gửi lên /api/save-book (functions/api/save-book.js) -> GitHub -> trang tự dựng lại.
+// Chế độ "Sửa sách" (books/add.html?sua=ten-thu-muc, mở từ nút "Sửa" ở trang sách):
+// điền sẵn bìa + review cũ; file Kindle không bắt buộc; chỉ gửi những phần đã đổi.
 import { parseNotebook } from "./notebook.js";
-import { slugify, isValidSlug, bookStats, findExisting, buildPayload, cleanReview, reviewProblem, isValidRating } from "./add-book-helpers.js";
+import { parseReviewText } from "./review.js";
+import {
+  slugify, isValidSlug, bookStats, findExisting, buildPayload, cleanReview, reviewProblem, isValidRating,
+  editSlugFromSearch, reviewToForm, sameReview, sameTitle,
+} from "./add-book-helpers.js";
 import { createCropper } from "./cover-crop.js";
 
 const MAX_NOTEBOOK_BYTES = 5 * 1024 * 1024;
@@ -9,8 +15,14 @@ const MAX_NOTEBOOK_BYTES = 5 * 1024 * 1024;
 const $ = (id) => document.getElementById(id);
 const existing = JSON.parse($("existing-books").textContent);
 
-// Những gì người dùng đã chọn
-const state = { notebook: null, data: null, cover: null, coverPicked: false, slugEdited: false, saving: false, saved: false };
+// Những gì người dùng đã chọn.
+// coverChanged: bìa đã được chọn mới hoặc căn lại (khi sửa sách: chưa đổi thì giữ bìa cũ, không gửi).
+const state = { notebook: null, data: null, cover: null, coverPicked: false, coverChanged: false, slugEdited: false, saving: false, saved: false };
+
+// Khi sửa sách: { slug, ready, oldData (notes.json), original (review cũ đã dọn) }. Thêm sách mới: null.
+const editSlug = editSlugFromSearch(location.search);
+const edit = editSlug ? { slug: editSlug, ready: false, oldData: null, original: null } : null;
+const saveLabel = edit ? "Lưu thay đổi" : "Lưu sách";
 
 // Trang đã chạy được: ẩn dòng "chỉ dùng online", hiện khung nhập
 $("offline").hidden = true;
@@ -25,16 +37,17 @@ function showMessage(text, kind = "") {
 $("notebook-file").addEventListener("change", async (e) => {
   const file = e.target.files[0];
   state.notebook = null;
-  state.data = null;
+  state.data = edit?.oldData ?? null; // sửa sách: không chọn được file mới thì giữ ghi chú cũ
   if (file) {
     $("notebook-name").textContent = file.name;
     try {
       if (file.size > MAX_NOTEBOOK_BYTES) throw new Error("File quá lớn (tối đa 5 MB).");
       const html = await file.text();
       if (!html.includes("bookTitle")) throw new Error("File này không giống file notebook xuất từ Kindle.");
-      state.data = parseNotebook(html);
+      const data = parseNotebook(html);
+      state.data = data;
       state.notebook = html;
-      if (!state.slugEdited) $("slug").value = slugify(state.data.title);
+      if (!edit && !state.slugEdited) $("slug").value = slugify(data.title);
     } catch (err) {
       showMessage(`Không đọc được file: ${err.message}`, "error");
     }
@@ -54,6 +67,7 @@ const cropper = createCropper({
 // Vẽ lại ảnh bìa (sau mỗi lần căn) cho phần xem trước
 function refreshCover() {
   if (!state.coverPicked) return;
+  state.coverChanged = true;
   try {
     state.cover = cropper.toJpeg();
   } catch (err) {
@@ -66,6 +80,7 @@ function refreshCover() {
 
 $("cover-file").addEventListener("change", async (e) => {
   const file = e.target.files[0];
+  if (!file && edit) return; // sửa sách: bấm chọn rồi bỏ ngang thì giữ bìa đang có
   state.cover = null;
   state.coverPicked = false;
   $("crop").hidden = !file;
@@ -172,6 +187,7 @@ function renderPreview() {
 
 // Còn thiếu gì để lưu? Trả về lời nhắc, hoặc "" nếu đã đủ.
 function problem() {
+  if (edit) return editProblem();
   if (!state.data) return "Chưa chọn file ghi chú Kindle.";
   if (!state.cover) return "Chưa chọn ảnh bìa.";
   const slug = $("slug").value.trim();
@@ -179,6 +195,20 @@ function problem() {
   const same = findExisting(existing, slug, state.data.title);
   if (same) return `Thư viện đã có cuốn "${same.title}" (thư mục ${same.slug}). Sửa sách cũ sẽ có ở bước sau; muốn thêm bản mới thì đổi tên thư mục.`;
   return reviewProblem(readReview());
+}
+
+// Như problem(), nhưng khi sửa sách đã có
+function editProblem() {
+  if (!edit.ready) return "Đang mở sách…";
+  if (state.notebook && !sameTitle(state.data.title, edit.oldData.title)) {
+    return `File Kindle này là của sách “${state.data.title}”, không phải “${edit.oldData.title}”.`;
+  }
+  if (!state.cover) return "Chưa chọn ảnh bìa.";
+  const r = readReview();
+  const p = reviewProblem(r);
+  if (p) return p;
+  if (!state.notebook && !state.coverChanged && sameReview(r, edit.original)) return "Chưa sửa gì.";
+  return "";
 }
 
 // Người dùng đã gõ gì ở phần 3, 4 chưa (chưa gõ gì thì chưa cần nhắc)
@@ -194,7 +224,7 @@ function update(ok) {
   $("save").disabled = Boolean(p) || state.saving;
   if (!ok && $("message").classList.contains("error")) return;
   if (p) showMessage(state.data || state.cover || hasTyped() ? p : "", "warn");
-  else showMessage("Sẵn sàng. Bấm “Lưu sách”.", "ready");
+  else showMessage(`Sẵn sàng. Bấm “${saveLabel}”.`, "ready");
 }
 
 // ---------- Lưu ----------
@@ -207,11 +237,12 @@ $("add-form").addEventListener("submit", async (e) => {
   showMessage("Đang gửi lên GitHub, chờ chút…");
   const slug = $("slug").value.trim();
   try {
-    const cover = cropper.toJpeg(); // lấy đúng chỗ đang căn lúc bấm lưu
+    // Bìa: lấy đúng chỗ đang căn lúc bấm lưu. Sửa sách mà chưa đổi bìa thì không gửi (giữ bìa cũ).
+    const coverBase64 = !edit || state.coverChanged ? cropper.toJpeg().base64 : undefined;
     const res = await fetch("../api/save-book", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(buildPayload({ slug, notebook: state.notebook, coverBase64: cover.base64, review: readReview() })),
+      body: JSON.stringify(buildPayload({ slug, notebook: state.notebook ?? undefined, coverBase64, review: readReview() })),
     });
     let reply = {};
     try {
@@ -227,9 +258,78 @@ $("add-form").addEventListener("submit", async (e) => {
     $("message").replaceChildren(`${reply.message} `, link, " (bấm sau 1–2 phút).");
   } catch (err) {
     showMessage(`Chưa lưu được: ${err.message}`, "error");
-    $("save").textContent = "Lưu sách";
+    $("save").textContent = saveLabel;
     $("save").disabled = false;
   } finally {
     state.saving = false;
   }
 });
+
+// ---------- Sửa sách: mở sách cũ và điền sẵn ----------
+// Đọc một file của sách trên trang web (không lấy bản cũ trong bộ nhớ trình duyệt).
+async function fetchBookFile(name) {
+  const res = await fetch(`../novels/${edit.slug}/${name}`, { cache: "no-store" });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`không mở được ${name} (lỗi ${res.status})`);
+  return res;
+}
+
+async function openForEdit() {
+  document.title = "Sửa sách - white đọc gây";
+  $("page-title").textContent = "sửa sách.";
+  $("page-sub").textContent = "sửa lại bìa, link, điểm hay đôi lời muốn lói.";
+  $("back").textContent = "← Trang sách";
+  $("back").href = `../novels/${edit.slug}/index.html`;
+  $("notebook-hint").textContent = "Không bắt buộc. Chỉ chọn khi có file Kindle mới (ví dụ đọc thêm, có highlight mới): ghi chú cũ sẽ được thay bằng file mới.";
+  $("notebook-name").textContent = "Giữ ghi chú cũ (bấm để chọn file mới)";
+  $("cover-hint").textContent = "Bìa hiện tại nằm sẵn trong khung. Kéo / phóng để căn lại, hoặc chọn ảnh khác. Không đụng vào thì giữ nguyên bìa cũ.";
+  $("cover-name").textContent = "Chọn ảnh bìa khác";
+  $("slug-hint").textContent = "Tên thư mục của sách, không đổi được khi sửa.";
+  $("slug").value = edit.slug;
+  $("slug").readOnly = true;
+  $("save").textContent = saveLabel;
+  showMessage("Đang mở sách…");
+
+  try {
+    if (!existing.some((b) => b.slug === edit.slug)) throw new Error(`thư viện không có sách “${edit.slug}”`);
+
+    // Ghi chú cũ (cho phần xem trước)
+    const notes = await fetchBookFile("notes.json");
+    if (!notes) throw new Error("không thấy notes.json của sách");
+    edit.oldData = await notes.json();
+    if (!state.notebook) state.data = edit.oldData;
+
+    // Review cũ -> điền vào các ô
+    const reviewRes = await fetchBookFile("review.md");
+    const form = reviewToForm(reviewRes ? parseReviewText(await reviewRes.text()) : null);
+    $("link-rows").replaceChildren();
+    for (const link of form.links) {
+      const row = addLinkRow();
+      row.querySelector(".url").value = link.url;
+      row.querySelector(".name").value = link.text;
+    }
+    if (!form.links.length) addLinkRow();
+    $("rating").value = form.rating;
+    $("note-text").value = form.note_text;
+    $("review-text").value = form.text;
+    edit.original = readReview();
+
+    // Bìa cũ -> vào khung căn (phần xem trước hiện bìa gốc cho tới khi căn lại)
+    const coverRes = await fetchBookFile("cover.jpg");
+    if (coverRes) {
+      const blob = await coverRes.blob();
+      $("crop").hidden = false;
+      await cropper.load(blob);
+      state.coverPicked = true;
+      state.cover = { dataUrl: URL.createObjectURL(blob) };
+    }
+
+    edit.ready = true;
+    renderPreview();
+    update(true);
+  } catch (err) {
+    showMessage(`Không mở được sách để sửa: ${err.message}`, "error");
+  }
+}
+
+if (edit) openForEdit();

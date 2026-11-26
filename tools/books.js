@@ -2,6 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { NOVELS_DIR, readText, listDirs, countStats } from "./utils.js";
+import { parseReviewText } from "../js/review.js";
 
 // Ngày dạng dd/mm/yyyy
 function formatDate(date) {
@@ -16,45 +17,18 @@ function dateValue(text) {
   return m ? Number(m[3]) * 10000 + Number(m[2]) * 100 + Number(m[1]) : 0;
 }
 
-// Đọc review.md: phần đầu (trước dòng ---) là thông tin "khóa: giá trị",
-// phần sau là bài review.
+// Đọc review.md (cách đọc nằm ở js/review.js, dùng chung với trang "Sửa sách").
 export function parseReview(bookDir) {
   const reviewFile = path.join(bookDir, "review.md");
   if (!fs.existsSync(reviewFile)) return null;
 
-  const fileDate = formatDate(fs.statSync(reviewFile).mtime);
-  const content = readText(reviewFile);
-
-  const meta = { links: [] };
-  let text = content;
-
-  const cut = content.indexOf("---");
-  if (cut !== -1) {
-    const metaText = content.slice(0, cut);
-    text = content.slice(cut + 3);
-    for (const line of metaText.trim().split("\n")) {
-      const colon = line.indexOf(":");
-      if (colon === -1) continue;
-      const key = line.slice(0, colon).trim();
-      const value = line.slice(colon + 1).trim();
-
-      if (key === "link") {
-        // "link: URL | chữ hiện ra" (không có chữ thì ghi "Nguồn")
-        const bar = value.indexOf("|");
-        const url = bar === -1 ? value : value.slice(0, bar).trim();
-        const linkText = bar === -1 ? "Nguồn" : value.slice(bar + 1).trim();
-        meta.links.push({ url, text: linkText });
-      } else {
-        meta[key] = value;
-      }
-    }
-  }
+  const { meta, text } = parseReviewText(readText(reviewFile));
 
   // Ngày "Cập nhật": ưu tiên dòng "date: dd/mm/yyyy" trong review.md
   // (giữ nguyên khi chuyển máy). Không có thì lấy ngày sửa file.
-  if (!("date" in meta)) meta.date = fileDate;
+  if (!("date" in meta)) meta.date = formatDate(fs.statSync(reviewFile).mtime);
 
-  return { meta, text: text.trim() };
+  return { meta, text };
 }
 
 // Số chương của một cuốn: chương cha có chương con thì đếm từng chương con (khác tên),
