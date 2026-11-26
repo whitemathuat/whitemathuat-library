@@ -57,6 +57,17 @@ export function parseReview(bookDir) {
   return { meta, text: text.trim() };
 }
 
+// Số chương của một cuốn: chương cha có chương con thì đếm từng chương con (khác tên),
+// không có thì đếm là 1. Ví dụ "Chính văn" (38 chương con) + "Ngoại truyện" (3) = 41.
+export function countChapters(data) {
+  let total = 0;
+  for (const section of data.sections ?? []) {
+    const names = new Set((section.entries ?? []).map((e) => e.chapter).filter(Boolean));
+    total += names.size || 1;
+  }
+  return total;
+}
+
 // Tất cả sách có notes.json, mới cập nhật nhất đứng đầu.
 // Mỗi cuốn: slug (tên thư mục), title, author, highlights, notes, chapters, date, rating, data (cả notes.json).
 export function readBooks() {
@@ -78,7 +89,7 @@ export function readBooks() {
       title: data.title ?? "Unknown Title",
       author: data.author ?? "Unknown Author",
       ...countStats(data),
-      chapters: (data.sections ?? []).length,
+      chapters: countChapters(data),
       date: review?.meta.date ?? "",
       rating: review?.meta.rating ?? "",
       data,

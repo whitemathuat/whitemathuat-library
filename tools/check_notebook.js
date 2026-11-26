@@ -3,6 +3,7 @@
 // - sách thường: "Highlight(yellow) - Page 14 · Location 89" -> không có chapter.
 // Trả về danh sách lỗi (rỗng = ổn). Được gọi từ check.js.
 import { parseNotebook } from "./parse_notebook.js";
+import { countChapters } from "./books.js";
 
 // Một file Kindle nhỏ giả lập, viết giống file thật (có xuống dòng giữa tiêu đề)
 const SAMPLE = `<div class="bookTitle">Sách thử</div><div class="authors">Tác giả</div>
@@ -36,6 +37,8 @@ export function checkNotebook() {
     expect("mục 1 là cặp highlight + ghi chú", main.entries[0].type, "pair");
     expect("chương con mục 2", main.entries[1].chapter, "18");
     expect("sách thường không có chương con", "chapter" in plain.entries[0], false);
+    // 2 chương con (4, 18) + 1 chương thường = 3 chương
+    expect("số chương đếm cả chương con", countChapters(parseNotebook(SAMPLE)), 3);
   } catch (e) {
     errors.push(`Đọc file Kindle bị lỗi: ${e.message}`);
   }
