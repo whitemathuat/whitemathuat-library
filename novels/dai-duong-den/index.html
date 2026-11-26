@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đại Dương Đen - white đọc gây</title>
+<link rel="icon" type="image/png" href="../../assets/icon.png">
+<link rel="stylesheet" href="../../css/theme.css">
+<link rel="stylesheet" href="../../css/detail.css">
+</head>
+<body>
+<header class="nav">
+  <a href="../../index.html">Trang chủ</a>
+  <a href="../../books/index.html" class="on">Thư viện</a>
+  <a class="logo" href="../../index.html" aria-label="white đọc gây"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9M12 13c-3 0-5-2-6-5 3 0 5 1 6 4M12 10c2-3 4-4 7-4-1 3-3 5-7 5M12 16c3 0 5-1 6-4"/></svg></a>
+  <span class="soon" title="Sắp có">Đang đọc</span>
+  <span class="soon" title="Sắp có">Yêu thích</span>
+</header>
+<main class="book">
+<section class="book-head">
+  <div class="book-cover"><img src="cover.jpg" alt="Bìa Đại Dương Đen"></div>
+  <div class="book-meta">
+    <p class="kicker">sổ tay đọc</p>
+    <h1>Đại Dương Đen</h1>
+    <p class="author">Đặng Hoàng Giang</p>
+    <span class="rating none">chưa chấm</span>
+    <ul class="stats">
+      <li><b>0</b><span>highlight</span></li>
+      <li><b>0</b><span>ghi chú</span></li>
+      <li><b>1</b><span>chương</span></li>
+    </ul>
+    <div class="tabs"><button data-tab="tab-notes" class="active">Annotation</button><button data-tab="tab-info">Thông tin</button></div>
+  </div>
+</section>
+<section class="tab-panel reading" id="tab-notes">
+  <aside class="chapters"><p class="label">Theo chương</p><nav>
+<a href="#chuong-1"><span>PHẦN I</span><b>0</b></a>
+  </nav></aside>
+  <div class="notes">
+<section class="chapter" id="chuong-1">
+<h2>PHẦN I</h2>
+
+</section>
+  </div>
+</section>
+<section class="tab-panel info" id="tab-info" hidden>
+<div class="info-card read">
+  <h3>Đọc truyện</h3>
+  <p class="muted">Chưa có link.</p>
+  
+</div>
+<div class="info-card review">
+  <h3>Đôi lời muốn lói</h3>
+  <span class="rating none">chưa chấm</span>
+  <p class="muted">Chưa viết gì cả.</p>
+  <p class="muted">Cập nhật: 26/11/2026</p>
+</div>
+</section>
+</main>
+<footer class="foot">
+  <div><b>white đọc gây</b><p>cả đời cống hiến cho nền gây học.</p></div>
+  <nav><a href="../../index.html">Trang chủ</a><a href="../../books/index.html">Thư viện</a></nav>
+</footer>
+<script>
+// Bấm nút tab: tô nút được bấm, hiện phần của nút đó, ẩn phần còn lại
+document.querySelectorAll("[data-tab]").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    document.querySelectorAll("[data-tab]").forEach(function (b) { b.classList.toggle("active", b === btn); });
+    document.querySelectorAll(".tab-panel").forEach(function (p) { p.hidden = p.id !== btn.dataset.tab; });
+  });
+});
+</script>
+</body>
+</html>
