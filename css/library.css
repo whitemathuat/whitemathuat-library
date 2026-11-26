@@ -14,6 +14,14 @@
 .add-book { flex-shrink: 0; padding: 8px 16px; border-radius: 99px; background: var(--navy); color: var(--text); font: 500 11px var(--mono); letter-spacing: 2px; text-transform: uppercase; }
 .add-book:hover { background: var(--navy-hover); }
 
+/* Nút xếp sách "Mới thêm" / "A → Z" (js/library-sort.js): chữ nhỏ, nút đang chọn có gạch chân */
+.page-head .head-row { flex-wrap: wrap; }
+.sort { display: flex; gap: 14px; margin-left: auto; }
+.sort button { padding: 4px 0; border: 0; border-bottom: 1px solid transparent; background: none; color: inherit; opacity: .65; cursor: pointer;
+  font: 500 11px var(--mono); letter-spacing: 2px; text-transform: uppercase; }
+.sort button:hover { opacity: 1; }
+.sort button[aria-pressed="true"] { opacity: 1; border-bottom-color: currentColor; }
+
 /* Lưới thẻ: tự chia cột theo bề ngang màn hình */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
 
@@ -40,6 +48,7 @@ a.card:hover { transform: translateY(-4px) rotate(-.5deg); }
   .library { padding: 20px 16px 10px; }
   .page-head h1 { font-size: 72px; }
   .page-head .script { font-size: 18px; }
+  .sort { order: 3; width: 100%; margin-left: 0; } /* nút xếp xuống hàng riêng, dưới "Tất cả · n cuốn" */
   .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
   .card { padding: 10px; gap: 8px; }
   .card h3 { font-size: 24px; }

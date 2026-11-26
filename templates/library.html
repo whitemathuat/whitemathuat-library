@@ -16,13 +16,18 @@
   <p class="script">mỗi cuốn là một xấp ghi chú nhỏ.</p>
   <div class="head-row">
     <p class="count">Tất cả · {book_count} cuốn</p>
+    <div class="sort" role="group" aria-label="Sắp xếp sách">
+      <button type="button" data-sort="new" aria-pressed="true">Mới thêm</button>
+      <button type="button" data-sort="az" aria-pressed="false">A → Z</button>
+    </div>
     <a class="add-book" href="add.html">+ Thêm sách</a>
   </div>
 </header>
-<div class="grid">
+<div class="grid" id="book-grid">
 {cards}
 </div>
 </main>
 {footer}
+<script src="../js/library-sort.js"></script>
 </body>
 </html>

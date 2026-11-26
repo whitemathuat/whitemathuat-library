@@ -42,8 +42,18 @@ export function countChapters(data) {
   return total;
 }
 
+// So tên sách theo thứ tự chữ tiếng Việt (D trước Đ), không phân biệt hoa thường.
+const viCollator = new Intl.Collator("vi", { sensitivity: "base", numeric: true });
+const byTitle = (a, b) => viCollator.compare(a.title, b.title) || a.slug.localeCompare(b.slug);
+
+// Hai kiểu xếp ở trang thư viện (nút "Mới thêm" / "A → Z"):
+// - "Mới thêm": ngày thêm mới nhất trước; cùng ngày thì theo tên A → Z.
+// - "A → Z": theo tên sách.
+export const sortNewest = (books) => [...books].sort((a, b) => dateValue(b.added) - dateValue(a.added) || byTitle(a, b));
+export const sortByTitle = (books) => [...books].sort(byTitle);
+
 // Tất cả sách có notes.json, mới cập nhật nhất đứng đầu.
-// Mỗi cuốn: slug (tên thư mục), title, author, highlights, notes, chapters, date, rating, data (cả notes.json).
+// Mỗi cuốn: slug (tên thư mục), title, author, highlights, notes, chapters, date, added, rating, data (cả notes.json).
 export function readBooks() {
   const books = [];
   for (const slug of listDirs(NOVELS_DIR)) {
@@ -65,6 +75,8 @@ export function readBooks() {
       ...countStats(data),
       chapters: countChapters(data),
       date: review?.meta.date ?? "",
+      // Ngày thêm sách ("added: dd/mm/yyyy", không đổi khi sửa). Thiếu thì lấy ngày cập nhật.
+      added: review?.meta.added || review?.meta.date || "",
       rating: review?.meta.rating ?? "",
       data,
     });

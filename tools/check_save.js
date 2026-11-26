@@ -2,7 +2,7 @@
 // không gửi gì lên mạng. Thử các trường hợp sai (phải bị chặn) và một lần lưu đúng
 // (phải tạo đúng một commit với đúng các file, đúng nhánh).
 // Trả về danh sách lỗi (rỗng = ổn). Được gọi từ check.js.
-import { handleSave, branchForHost, makeReviewMd } from "../functions/api/save-book.js";
+import { handleSave, branchForHost, makeReviewMd, todayVN } from "../functions/api/save-book.js";
 
 const ENV = { GITHUB_TOKEN: "token-thu" }; // chìa khóa giả
 const MAIN = "https://whitemathuat-library.pages.dev/api/save-book";
@@ -11,7 +11,8 @@ const NOTEBOOK = '<div class="bookTitle">Sách thử</div>';
 const JPEG = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3]).toString("base64");
 
 // GitHub giả: ghi lại mọi lần gọi, trả lời như GitHub thật. (Dùng cả trong check_add.js)
-export function fakeGithub({ existingBooks = [], refConflicts = 0 } = {}) {
+// reviews = { "ten-sach": "nội dung review.md cũ" } (để thử việc giữ ngày thêm sách khi sửa).
+export function fakeGithub({ existingBooks = [], refConflicts = 0, reviews = {} } = {}) {
   const calls = [];
   const fetchFn = async (url, opts) => {
     const path = url.replace("https://api.github.com/repos/whitemathuat/whitemathuat-library", "");
@@ -26,6 +27,10 @@ export function fakeGithub({ existingBooks = [], refConflicts = 0 } = {}) {
       if (!existingBooks.includes(dirMatch[1])) return reply({ message: "Not Found" }, 404);
       const dir = `novels/${dirMatch[1]}`;
       return reply(["cover.jpg", "index.html", "notebook.html", "notes.json", "review.md"].map((n) => ({ type: "file", path: `${dir}/${n}` })));
+    }
+    const reviewMatch = opts.method === "GET" && path.match(/^\/contents\/novels\/([^/?]+)\/review\.md\?/);
+    if (reviewMatch && reviews[reviewMatch[1]] != null) {
+      return reply({ content: Buffer.from(reviews[reviewMatch[1]]).toString("base64").replace(/(.{60})/g, "$1\n") });
     }
     if (opts.method === "GET" && path.startsWith("/contents/")) {
       const found = existingBooks.some((b) => path.startsWith(`/contents/novels/${b}/`));
@@ -140,7 +145,25 @@ export async function checkSave() {
 
   // review.md đúng mẫu mà tools/books.js đọc
   const md = makeReviewMd({ links: [{ url: "https://a.com/x", text: "Chính văn" }], rating: "9.5", text: "Bài\n---\nhay" }, "01/02/2026");
-  expect("mẫu review.md", md, "link: https://a.com/x | Chính văn\nrating: 9.5\ndate: 01/02/2026\n---\nBài\n---\nhay\n");
+  expect("mẫu review.md", md, "link: https://a.com/x | Chính văn\nrating: 9.5\nadded: 01/02/2026\ndate: 01/02/2026\n---\nBài\n---\nhay\n");
+
+  // Ngày thêm sách: sách mới = hôm nay; sửa sách đã có = giữ ngày cũ, chỉ ngày cập nhật đổi
+  const reviewSent = (r) => {
+    const blobs = r.calls.filter((c) => c.path === "/git/blobs");
+    return blobs.length ? blobs[blobs.length - 1].body.content : "";
+  };
+  const today = todayVN();
+  const fresh = await save({ slug: "sach-thu", notebook: NOTEBOOK, review: { text: "" } });
+  expect("sách mới: ngày thêm = hôm nay", reviewSent(fresh).includes(`added: ${today}\ndate: ${today}\n`), true);
+  const oldReview = "link: https://a.com | Nguồn\nrating: 9\nadded: 23/06/2026\ndate: 29/06/2026\n---\nhay lắm, đọc lại\n";
+  const kept = await save({ slug: "even-better", review: { rating: "10", text: "Mới" } },
+    { github: fakeGithub({ existingBooks: ["even-better"], reviews: { "even-better": oldReview } }) });
+  expect("sửa sách: giữ ngày thêm cũ", kept.status, 200);
+  expect("sửa sách: nội dung review.md", reviewSent(kept), `rating: 10\nadded: 23/06/2026\ndate: ${today}\n---\nMới\n`);
+  // review.md cũ không có dòng "added:" -> dùng hôm nay
+  const noAdded = await save({ slug: "even-better", review: { text: "x" } },
+    { github: fakeGithub({ existingBooks: ["even-better"], reviews: { "even-better": "date: 01/01/2026\n---\n" } }) });
+  expect("sửa sách cũ chưa có ngày thêm", reviewSent(noAdded).includes(`added: ${today}\n`), true);
 
   return errors;
 }

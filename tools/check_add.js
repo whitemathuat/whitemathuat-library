@@ -114,7 +114,8 @@ export async function checkAdd() {
     expect("các file được lưu", files, "notebook.html,cover.jpg,review.md");
     const reviewMd = github.calls.filter((c) => c.path === "/git/blobs").pop()?.body.content ?? "";
     const [head, body] = reviewMd.split("\n---\n");
-    expect("review.md: thông tin", head.replace(/\ndate: .*/, ""), "link: https://a.com/x | Chính văn\nnote_text: bản dịch\nrating: 9");
+    expect("review.md: thông tin", head.replace(/\nadded: .*\ndate: .*/, ""), "link: https://a.com/x | Chính văn\nnote_text: bản dịch\nrating: 9");
+    expect("review.md: có ngày thêm sách", /\nadded: \d{2}\/\d{2}\/\d{4}\ndate: /.test(head), true);
     expect("review.md: bài review", body, "hay\n");
   }
 

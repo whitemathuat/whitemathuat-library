@@ -6,7 +6,8 @@
 //   link: https://... | Chính văn      (có thể nhiều dòng link; không có chữ thì hiện "Nguồn")
 //   note_text: ghi chú ngắn
 //   rating: 9.5
-//   date: 26/11/2026
+//   added: 20/11/2026                 (ngày thêm sách, không đổi khi sửa)
+//   date: 26/11/2026                  (ngày cập nhật)
 //   ---
 //   bài review...
 //

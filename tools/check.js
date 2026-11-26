@@ -10,6 +10,7 @@
 // 6. Trang "Thêm sách" đặt tên thư mục đúng và gửi dữ liệu máy chủ nhận được (tools/check_add.js).
 // 7. Đọc file Kindle lấy đúng chương con (sách có chương con) (tools/check_notebook.js).
 // 8. Trang chủ: "câu của hôm nay" lấy đúng câu của các sách hiện có, mỗi ngày một câu (tools/check_home.js).
+// 9. Trang thư viện: nút "Mới thêm" / "A → Z" xếp đúng, mỗi sách có ngày thêm (tools/check_library.js).
 // Kết thúc bằng "TẤT CẢ ĐỀU ỔN" hoặc danh sách lỗi (mã thoát 1).
 import fs from "node:fs";
 import path from "node:path";
@@ -21,6 +22,7 @@ import { checkSave } from "./check_save.js";
 import { checkAdd } from "./check_add.js";
 import { checkNotebook } from "./check_notebook.js";
 import { checkHome } from "./check_home.js";
+import { checkLibrary } from "./check_library.js";
 
 const errors = [];
 const MAX_COVER_KB = 300; // ảnh bìa nặng hơn mức này là chưa thu nhỏ
@@ -140,6 +142,7 @@ errors.push(...(await checkSave()));
 errors.push(...(await checkAdd()));
 errors.push(...checkNotebook());
 errors.push(...checkHome());
+errors.push(...checkLibrary());
 
 if (errors.length) {
   console.log(`CÓ ${errors.length} LỖI:`);

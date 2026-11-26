@@ -1,17 +1,19 @@
 // Tạo trang thư viện: templates/library.html -> books/index.html
-// Mỗi cuốn sách một thẻ giấy (bìa, điểm, tên, tác giả, số liệu), mới cập nhật đứng đầu.
+// Mỗi cuốn sách một thẻ giấy (bìa, điểm, tên, tác giả, số liệu), xếp sẵn theo "Mới thêm".
+// Mỗi thẻ ghi số thứ tự của nó ở cả 2 kiểu xếp (data-new, data-az); nút "Mới thêm" / "A → Z"
+// trên trang (js/library-sort.js) chỉ việc xếp lại theo số đó.
 // Sau đó là các kệ "sắp có" (Phim, Anime, Manga, Game), chưa bấm được.
 import fs from "node:fs";
 import path from "node:path";
 import { ROOT_DIR, readText, writeText, fillTemplate, escape } from "./utils.js";
-import { readBooks } from "./books.js";
+import { readBooks, sortNewest, sortByTitle } from "./books.js";
 import { renderNav, renderFooter, renderRating } from "./layout.js";
 
 const BOOKS_DIR = path.join(ROOT_DIR, "books");
 const SOON_SHELVES = ["Phim", "Anime", "Manga", "Game"];
 
-function renderBookCard(book) {
-  return `<a class="card" href="../novels/${book.slug}/index.html">
+function renderBookCard(book, order) {
+  return `<a class="card" data-new="${order.new}" data-az="${order.az}" href="../novels/${book.slug}/index.html">
   <div class="card-cover"><img src="../novels/${book.slug}/cover.jpg" alt="Bìa ${escape(book.title)}" loading="lazy"></div>
   ${renderRating(book.rating)}
   <h3>${escape(book.title)}</h3>
@@ -31,8 +33,10 @@ function renderSoonCard(name) {
 }
 
 export function buildLibrary() {
-  const books = readBooks(); // mới nhất đứng đầu
-  const cards = [...books.map(renderBookCard), ...SOON_SHELVES.map(renderSoonCard)].join("\n");
+  const books = sortNewest(readBooks());
+  const azIndex = new Map(sortByTitle(books).map((b, i) => [b.slug, i]));
+  const bookCards = books.map((b, i) => renderBookCard(b, { new: i, az: azIndex.get(b.slug) }));
+  const cards = [...bookCards, ...SOON_SHELVES.map(renderSoonCard)].join("\n");
 
   const template = readText(path.join(ROOT_DIR, "templates", "library.html"));
   const html = fillTemplate(template, {

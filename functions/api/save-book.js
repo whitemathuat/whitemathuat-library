@@ -76,7 +76,8 @@ export function todayVN(now = new Date()) {
 }
 
 // Tạo nội dung review.md đúng mẫu mà tools/books.js đọc.
-export function makeReviewMd(review, date) {
+// date = ngày cập nhật (hôm nay); added = ngày thêm sách (sách mới: cũng là hôm nay).
+export function makeReviewMd(review, date, added = date) {
   const lines = [];
   for (const link of review.links ?? []) {
     const url = oneLine(link.url, "Link");
@@ -91,6 +92,7 @@ export function makeReviewMd(review, date) {
     if (!/^(10|[0-9])(\.[0-9])?$/.test(rating) || Number(rating) > 10) throw new UserError("Điểm phải từ 0 đến 10");
     lines.push(`rating: ${rating}`);
   }
+  lines.push(`added: ${added}`);
   lines.push(`date: ${date}`);
   const text = String(review.text ?? "").trim();
   if (text.length > MAX_REVIEW_CHARS) throw new UserError("Bài review quá dài");
@@ -139,6 +141,21 @@ function filesFromBody(body) {
 
   if (!files.length) throw new UserError("Chưa có gì để lưu");
   return { slug, dir, files };
+}
+
+// Ngày thêm sách ghi trong review.md cũ trên GitHub ("added: dd/mm/yyyy"). Không có -> null.
+// Dùng khi sửa sách: ngày thêm giữ nguyên, chỉ ngày cập nhật đổi thành hôm nay.
+export async function readAdded(fetchFn, token, branch, dir) {
+  const file = await github(fetchFn, token, "GET", `/contents/${dir}/review.md?ref=${branch}`);
+  if (!file?.content) return null;
+  let text;
+  try {
+    text = atob(String(file.content).replace(/\s/g, "")); // chỉ cần dòng "added:" (chữ số), không cần giải mã tiếng Việt
+  } catch {
+    return null;
+  }
+  const m = /^added:\s*(\d{1,2}\/\d{1,2}\/\d{4})\s*$/m.exec(text.split("---")[0]);
+  return m ? m[1] : null;
 }
 
 // Liệt kê mọi file trong một thư mục trên GitHub (kể cả thư mục con). Không có thư mục -> [].
@@ -236,6 +253,13 @@ export async function handleSave(request, env, fetchFn = fetch) {
     if (!files.some((f) => f.path.endsWith("/notebook.html"))) {
       const existing = await github(fetchFn, token, "GET", `/contents/${dir}/notebook.html?ref=${branch}`);
       if (!existing) throw new UserError("Sách mới cần có file notebook");
+    }
+
+    // Sửa sách đã có: giữ ngày thêm sách cũ (để nút "Mới thêm" không đẩy cuốn vừa sửa lên đầu).
+    const reviewFile = files.find((f) => f.path.endsWith("/review.md"));
+    if (reviewFile) {
+      const added = await readAdded(fetchFn, token, branch, dir);
+      if (added) reviewFile.content = makeReviewMd(body.review, todayVN(), added);
     }
 
     const names = files.map((f) => f.path.split("/").pop()).join(", ");
