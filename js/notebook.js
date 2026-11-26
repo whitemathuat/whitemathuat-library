@@ -4,7 +4,9 @@
 // File Kindle rất đều (mỗi mục là một <div class="...">), nên chỉ cần tìm các thẻ đó.
 
 // Highlight và Note cách nhau tối đa 3 "Location" thì ghép thành một cặp.
+// File chỉ ghi "Page" (không có Location): phải cùng trang mới ghép.
 const PAIR_DISTANCE = 3;
+const PAIR_DISTANCE_PAGE = 0;
 
 // Đổi các ký hiệu đặc biệt của HTML (&amp; &#39; ...) về chữ thường.
 function decodeEntities(text) {
@@ -43,19 +45,27 @@ function getSubchapter(heading) {
 function buildEntries(events) {
   const entries = [];
   const withChapter = (entry, event) => (event.chapter ? { ...entry, chapter: event.chapter } : entry);
+  // Vị trí lưu vào notes.json: "location" nếu file có, không thì "page"
+  const where = (event) => (event.location != null ? { location: event.location } : { page: event.page });
   for (let j = 0; j < events.length; j++) {
     const event = events[j];
     const next = events[j + 1];
     if (event.type === "highlight") {
-      const gap = next ? next.location - event.location : -1;
-      if (next && next.type === "note" && gap >= 0 && gap <= PAIR_DISTANCE) {
-        entries.push(withChapter({ type: "pair", highlight: event.text, note: next.text, color: event.color, location: event.location }, event));
+      let gap = -1;
+      let maxGap = PAIR_DISTANCE;
+      if (next && event.location != null && next.location != null) gap = next.location - event.location;
+      else if (next && event.page != null && next.page != null) {
+        gap = next.page - event.page;
+        maxGap = PAIR_DISTANCE_PAGE;
+      }
+      if (next && next.type === "note" && gap >= 0 && gap <= maxGap) {
+        entries.push(withChapter({ type: "pair", highlight: event.text, note: next.text, color: event.color, ...where(event) }, event));
         j++; // bỏ qua ghi chú vừa ghép
       } else {
-        entries.push(withChapter({ type: "highlight", text: event.text, color: event.color, location: event.location }, event));
+        entries.push(withChapter({ type: "highlight", text: event.text, color: event.color, ...where(event) }, event));
       }
     } else {
-      entries.push(withChapter({ type: "note", text: event.text, location: event.location }, event));
+      entries.push(withChapter({ type: "note", text: event.text, ...where(event) }, event));
     }
   }
   return entries;
@@ -99,16 +109,20 @@ export function parseNotebook(html) {
       const text = getText(nodes[i + 1].inner, " ");
       i++; // thẻ nội dung đã dùng
 
+      // Có file ghi "Page 7 · Location 89", có file (vd sách có số trang thật) chỉ ghi "Page 7"
       const locationMatch = heading.match(/Location\s+(\d+)/);
-      if (!locationMatch) continue;
-      const location = parseInt(locationMatch[1], 10);
+      const pageMatch = heading.match(/Page\s+(\d+)/);
+      if (!locationMatch && !pageMatch) continue;
+      const pos = locationMatch
+        ? { location: parseInt(locationMatch[1], 10) }
+        : { page: parseInt(pageMatch[1], 10) };
       const chapter = getSubchapter(heading);
 
       if (heading.startsWith("Highlight")) {
         const colorMatch = heading.match(/\((.*?)\)/);
-        events.push({ type: "highlight", text, color: colorMatch ? colorMatch[1] : "yellow", location, chapter });
+        events.push({ type: "highlight", text, color: colorMatch ? colorMatch[1] : "yellow", ...pos, chapter });
       } else {
-        events.push({ type: "note", text, location, chapter });
+        events.push({ type: "note", text, ...pos, chapter });
       }
     }
   }

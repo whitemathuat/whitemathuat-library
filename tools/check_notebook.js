@@ -25,6 +25,22 @@ const SAMPLE = `<div class="bookTitle">Sách thử</div><div class="authors">Tá
   - Page 14 · Location 89
 </div><div class="noteText">Câu ba</div>`;
 
+// File chỉ ghi số trang: "Highlight(yellow) - 1: TÊN CHƯƠNG > Page 7"
+const PAGE_ONLY = `<div class="bookTitle">Sách trang</div><div class="authors">Tác giả</div>
+<div class="sectionHeading">PHẦN I</div>
+<div class="noteHeading">
+Highlight (<span class="annotation_yellow">yellow</span>) - 1: CHƯƠNG MỘT &gt;  Page 7
+</div><div class="noteText">Câu một</div>
+<div class="noteHeading">
+Note - 1: CHƯƠNG MỘT &gt;  Page 7
+</div><div class="noteText">Ghi chú một</div>
+<div class="noteHeading">
+Highlight (<span class="annotation_yellow">yellow</span>) - 2: CHƯƠNG HAI &gt;  Page 24
+</div><div class="noteText">Câu hai</div>
+<div class="noteHeading">
+Note - 2: CHƯƠNG HAI &gt;  Page 26
+</div><div class="noteText">Ghi chú trang khác</div>`;
+
 export function checkNotebook() {
   const errors = [];
   const expect = (name, got, want) => {
@@ -39,6 +55,14 @@ export function checkNotebook() {
     expect("sách thường không có chương con", "chapter" in plain.entries[0], false);
     // 2 chương con (4, 18) + 1 chương thường = 3 chương
     expect("số chương đếm cả chương con", countChapters(parseNotebook(SAMPLE)), 3);
+
+    // File chỉ ghi "Page" (không có Location), như Đại Dương Đen
+    const [pageOnly] = parseNotebook(PAGE_ONLY).sections;
+    expect("file chỉ có Page: số mục (cặp, highlight, ghi chú lẻ)", pageOnly.entries.length, 3);
+    expect("file chỉ có Page: mục 1 là cặp (cùng trang)", pageOnly.entries[0].type, "pair");
+    expect("file chỉ có Page: số trang", pageOnly.entries[0].page, 7);
+    expect("file chỉ có Page: chương con", pageOnly.entries[1].chapter, "2: CHƯƠNG HAI");
+    expect("file chỉ có Page: trang khác thì không ghép", pageOnly.entries[1].type, "highlight");
   } catch (e) {
     errors.push(`Đọc file Kindle bị lỗi: ${e.message}`);
   }

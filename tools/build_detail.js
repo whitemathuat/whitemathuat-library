@@ -45,7 +45,9 @@ function renderEntry(entry) {
   const parts = ['<article class="note">'];
   if (highlight) parts.push(`  <blockquote class="hl">${escape(highlight)}</blockquote>`);
   if (note) parts.push(`  <p class="my-note">${escape(note)}</p>`);
-  parts.push(`  <span class="loc">Loc ${escape(entry.location ?? "")}</span>`);
+  // Vị trí: "Loc 89", hoặc "Trang 7" khi file Kindle chỉ ghi số trang
+  const loc = entry.location != null ? `Loc ${entry.location}` : entry.page != null ? `Trang ${entry.page}` : "Loc";
+  parts.push(`  <span class="loc">${escape(loc)}</span>`);
   parts.push("</article>");
   return parts.join("\n");
 }
