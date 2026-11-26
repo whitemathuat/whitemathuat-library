@@ -16,12 +16,11 @@ Short status page: rewrite it, do not append a diary. Verification details go in
 - Sub-chapters (on `dev`): Kindle headings like "- 4 > Page 27" give each entry a `chapter` ("4"); the book page shows them as small headings under the parent chapter (and indented in "Theo chương"), name only, no "Chương" prefix. Books without them are unchanged. First such book: `novels/chim-hong-hac` (saved by the user from the website on `dev`, re-parsed). Loose Kindle copies in the project root were deleted (2026-11-26, user asked).
 - Reviews: user said they do not matter for now (Unknown Lover text kept, Even Better empty).
 
-## Next steps (user OK'd the plan on 2026-11-26; do it in a NEW chat)
-1. **Home quote: a random highlight each day** (user asked; replaces the pinned "Don't Make Me Beg" quote, DECISIONS 7):
-   - Set `PINNED_QUOTE = null` in `tools/build_home.js`. Today the daily pick is in order (day number % list length); make it look random: pick by a hash of today's date (Vietnam time), same quote all day for everyone.
-   - The list = highlights with a note, 25–120 letters, from ALL books, built by `buildHome()` on every rebuild. So a new book (added from the website → GitHub Action rebuilds) joins the list automatically, and a deleted book leaves it automatically. Add a check that the list in `index.html` holds exactly the current books' quotes.
-2. User tries adding (3a+3b), editing (3c) and deleting (DECISIONS 15) a book on the dev preview (real phone: two-finger zoom was not tested by machine; a real save of an edit and a real delete were not tested; delete a test book, e.g. add one first).
-3. `/len-mang` when the user wants.
+- Home quote (on `dev`, DECISIONS 16): one random highlight-with-note per day (Vietnam time) from all books; the pinned quote is gone. New/deleted books join/leave the list on the next rebuild.
+
+## Next steps
+1. User tries adding (3a+3b), editing (3c) and deleting (DECISIONS 15) a book on the dev preview (real phone: two-finger zoom was not tested by machine; a real save of an edit and a real delete were not tested; delete a test book, e.g. add one first).
+2. `/len-mang` when the user wants.
 
 ## Waiting for the user
 - Library and book pages on a real phone.
