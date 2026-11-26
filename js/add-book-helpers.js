@@ -20,21 +20,31 @@ export function slugify(title) {
 export const isValidSlug = (slug) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug) && slug.length <= 60;
 
 // Đếm chương / highlight / ghi chú (giống countStats trong tools/utils.js).
+// Chương có chương con thì mỗi chương con tính là một chương (giống countChapters
+// trong tools/books.js), nên danh sách "chapters" liệt kê từng chương con.
 export function bookStats(data) {
   let highlights = 0;
   let notes = 0;
-  const chapters = (data.sections ?? []).map((section) => {
-    let h = 0;
-    let n = 0;
+  const chapters = [];
+  for (const section of data.sections ?? []) {
+    const groups = new Map(); // tên chương con (hoặc "" nếu không có) -> số đếm
     for (const entry of section.entries ?? []) {
-      if (entry.type === "pair") (h++, n++);
-      else if (entry.type === "highlight") h++;
-      else if (entry.type === "note") n++;
+      const key = entry.chapter ?? "";
+      if (!groups.has(key)) groups.set(key, { h: 0, n: 0 });
+      const g = groups.get(key);
+      if (entry.type === "pair") (g.h++, g.n++);
+      else if (entry.type === "highlight") g.h++;
+      else if (entry.type === "note") g.n++;
     }
-    highlights += h;
-    notes += n;
-    return { title: section.title, highlights: h, notes: n };
-  });
+    if (groups.size === 0) groups.set("", { h: 0, n: 0 }); // chương trống vẫn là 1 chương
+    for (const [sub, g] of groups) {
+      highlights += g.h;
+      notes += g.n;
+      // Tên chương con chỉ là số (vd "4") thì ghi kèm tên chương cha cho dễ hiểu
+      const title = !sub ? section.title : /^\d+$/.test(sub) ? `${section.title} · ${sub}` : sub;
+      chapters.push({ title, highlights: g.h, notes: g.n });
+    }
+  }
   return { chapters, highlights, notes };
 }
 

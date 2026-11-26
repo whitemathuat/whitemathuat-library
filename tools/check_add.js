@@ -11,7 +11,7 @@ import path from "node:path";
 import { ROOT_DIR, NOVELS_DIR, listDirs, readText } from "./utils.js";
 import { readBooks } from "./books.js";
 import {
-  slugify, isValidSlug, findExisting, buildPayload, base64Bytes, cleanReview, reviewProblem,
+  slugify, isValidSlug, findExisting, bookStats, buildPayload, base64Bytes, cleanReview, reviewProblem,
   CROP_W, CROP_H, startView, zoomView, moveView, cropRect,
 } from "../js/add-book-helpers.js";
 import { handleSave } from "../functions/api/save-book.js";
@@ -22,6 +22,14 @@ export async function checkAdd() {
   const expect = (name, got, want) => {
     if (got !== want) errors.push(`Trang Thêm sách, "${name}": ra ${JSON.stringify(got)}, cần ${JSON.stringify(want)}`);
   };
+
+  // Ô xem trước đếm chương, highlight, ghi chú giống hệt trang Thư viện (tính cả chương con)
+  for (const book of readBooks()) {
+    const stats = bookStats(book.data);
+    expect(`số chương xem trước của ${book.slug}`, stats.chapters.length, book.chapters);
+    expect(`số highlight xem trước của ${book.slug}`, stats.highlights, book.highlights);
+    expect(`số ghi chú xem trước của ${book.slug}`, stats.notes, book.notes);
+  }
 
   // Tên thư mục từ tên sách
   const slugs = [
