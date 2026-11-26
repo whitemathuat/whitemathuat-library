@@ -78,6 +78,21 @@
 .save:hover:not(:disabled) { background: var(--navy-hover); }
 .save:disabled { opacity: .45; cursor: default; }
 
+/* Xóa sách (chỉ khi sửa): nút chữ nhỏ, lặng, tách xa nút lưu; hộp hỏi lại trước khi xóa */
+.delete-zone { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); }
+.delete { padding: 6px 2px; border: 0; background: none; color: inherit; opacity: .75; font: 500 11px var(--mono); letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+.delete:hover:not(:disabled) { opacity: 1; text-decoration: underline; text-underline-offset: 5px; }
+.delete:disabled { opacity: .45; cursor: default; }
+.confirm { max-width: 460px; padding: 16px 18px; }
+.confirm p { font: 500 14px/1.5 var(--sans); }
+.confirm-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.delete-yes, .delete-no { padding: 10px 22px; border-radius: 99px; font: 500 11px var(--mono); letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+.delete-yes { border: 0; background: var(--error); color: #fff; }
+.delete-yes:hover:not(:disabled) { filter: brightness(.92); }
+.delete-no { border: 1px solid var(--line); background: none; color: var(--ink); }
+.delete-no:hover:not(:disabled) { background: var(--paper-hover); }
+.delete-yes:disabled, .delete-no:disabled { opacity: .45; cursor: default; }
+
 /* Xem trước: thẻ sách giống Thư viện, nhưng bìa theo khổ trang sách (2:3),
    đúng như ảnh sẽ được lưu */
 .preview { grid-area: preview; display: flex; flex-direction: column; gap: 14px; position: sticky; top: 20px; }

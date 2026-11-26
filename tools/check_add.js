@@ -14,7 +14,7 @@ import { readBooks } from "./books.js";
 import {
   slugify, isValidSlug, findExisting, bookStats, buildPayload, base64Bytes, cleanReview, reviewProblem,
   CROP_W, CROP_H, startView, zoomView, moveView, cropRect,
-  editSlugFromSearch, reviewToForm, sameReview, sameTitle,
+  editSlugFromSearch, reviewToForm, sameReview, sameTitle, deletePayload, deleteQuestion,
 } from "../js/add-book-helpers.js";
 import { parseReviewText } from "../js/review.js";
 import { parseReview } from "./books.js";
@@ -144,20 +144,39 @@ export async function checkAdd() {
   // Sửa mà chỉ đổi review: chỉ gửi review, máy chủ chỉ ghi review.md
   const onlyReview = buildPayload({ slug: "even-better", review: { rating: "9" } });
   expect("sửa: không gửi notebook/bìa khi không đổi", Object.keys(onlyReview).join(","), "slug,review");
-  const editSave = async (existingBooks) => {
+  const editSave = async (existingBooks, payload = onlyReview) => {
     const github = fakeGithub({ existingBooks });
     const req = new Request("https://dev.whitemathuat-library.pages.dev/api/save-book", {
       method: "POST",
       headers: { "Content-Type": "application/json", Origin: "https://dev.whitemathuat-library.pages.dev" },
-      body: JSON.stringify(onlyReview),
+      body: JSON.stringify(payload),
     });
     const res = await handleSave(req, { GITHUB_TOKEN: "token-thu" }, github.fetchFn);
-    return { status: res.status, files: github.calls.find((c) => c.path === "/git/trees")?.body.tree.map((t) => t.path).join(",") };
+    const tree = github.calls.find((c) => c.path === "/git/trees")?.body.tree ?? [];
+    return { status: res.status, files: tree.map((t) => t.path).join(","), deletes: tree.filter((t) => t.sha === null).length };
   };
   const ok = await editSave(["even-better"]);
   expect("sửa: máy chủ nhận", ok.status, 200);
   expect("sửa: chỉ ghi review.md", ok.files, "novels/even-better/review.md");
   expect("sửa: sách không có thì không lưu", (await editSave([])).status, 400);
+
+  // Nút "Xóa sách": dữ liệu trang gửi đi được máy chủ hiểu là xóa cả thư mục sách
+  expect("xóa: dữ liệu gửi đi", JSON.stringify(deletePayload("even-better")), '{"slug":"even-better","delete":true}');
+  const gone = await editSave(["even-better"], deletePayload("even-better"));
+  expect("xóa: máy chủ nhận", gone.status, 200);
+  expect("xóa: bỏ hết file của sách", gone.deletes, 5);
+  expect("xóa: chỉ đụng thư mục sách", gone.files.split(",").every((f) => f.startsWith("novels/even-better/")), true);
+  expect("xóa: sách không có", (await editSave([], deletePayload("even-better"))).status, 404);
+  expect("xóa: câu hỏi lại", deleteQuestion("Even Better"), "Xóa hẳn cuốn “Even Better”? Mất cả ghi chú, bìa, review.");
+  // Trang có nút Xóa và hộp hỏi lại (ẩn sẵn, chỉ hiện khi sửa)
+  const addPage = path.join(ROOT_DIR, "books", "add.html");
+  if (fs.existsSync(addPage)) {
+    const html = readText(addPage);
+    for (const id of ["delete-zone", "delete", "delete-confirm", "delete-yes", "delete-no"]) {
+      if (!html.includes(`id="${id}"`)) errors.push(`Trang Thêm sách: thiếu phần "${id}" của nút Xóa sách`);
+    }
+    if (!/id="delete-zone" hidden/.test(html)) errors.push("Trang Thêm sách: nút Xóa sách phải ẩn sẵn (chỉ hiện khi sửa)");
+  }
 
   // Danh sách sách đã có trong books/add.html khớp với thư viện
   const page = path.join(ROOT_DIR, "books", "add.html");

@@ -2,11 +2,12 @@
 // Lưu = gửi lên /api/save-book (functions/api/save-book.js) -> GitHub -> trang tự dựng lại.
 // Chế độ "Sửa sách" (books/add.html?sua=ten-thu-muc, mở từ nút "Sửa" ở trang sách):
 // điền sẵn bìa + review cũ; file Kindle không bắt buộc; chỉ gửi những phần đã đổi.
+// Cũng ở chế độ sửa: nút "Xóa sách" (hỏi lại trước, rồi xóa hẳn cả thư mục sách).
 import { parseNotebook } from "./notebook.js";
 import { parseReviewText } from "./review.js";
 import {
   slugify, isValidSlug, bookStats, findExisting, buildPayload, cleanReview, reviewProblem, isValidRating,
-  editSlugFromSearch, reviewToForm, sameReview, sameTitle,
+  editSlugFromSearch, reviewToForm, sameReview, sameTitle, deletePayload, deleteQuestion,
 } from "./add-book-helpers.js";
 import { createCropper } from "./cover-crop.js";
 
@@ -17,7 +18,7 @@ const existing = JSON.parse($("existing-books").textContent);
 
 // Những gì người dùng đã chọn.
 // coverChanged: bìa đã được chọn mới hoặc căn lại (khi sửa sách: chưa đổi thì giữ bìa cũ, không gửi).
-const state = { notebook: null, data: null, cover: null, coverPicked: false, coverChanged: false, slugEdited: false, saving: false, saved: false };
+const state = { notebook: null, data: null, cover: null, coverPicked: false, coverChanged: false, slugEdited: false, saving: false, saved: false, deleting: false };
 
 // Khi sửa sách: { slug, ready, oldData (notes.json), original (review cũ đã dọn) }. Thêm sách mới: null.
 const editSlug = editSlugFromSearch(location.search);
@@ -221,36 +222,44 @@ function hasTyped() {
 function update(ok) {
   if (state.saved) return; // đã lưu xong: giữ nguyên lời báo
   const p = problem();
-  $("save").disabled = Boolean(p) || state.saving;
+  $("save").disabled = Boolean(p) || state.saving || state.deleting;
   if (!ok && $("message").classList.contains("error")) return;
   if (p) showMessage(state.data || state.cover || hasTyped() ? p : "", "warn");
   else showMessage(`Sẵn sàng. Bấm “${saveLabel}”.`, "ready");
 }
 
+// ---------- Gửi lên máy chủ (dùng cho cả Lưu và Xóa) ----------
+// Trả về lời đáp của máy chủ, hoặc báo lỗi có lời giải thích.
+async function postBook(payload) {
+  const res = await fetch("../api/save-book", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  let reply = {};
+  try {
+    reply = await res.json();
+  } catch {
+    // máy chủ không trả JSON (ví dụ chưa đăng nhập)
+  }
+  if (!res.ok || !reply.ok) throw new Error(reply.message || `Máy chủ trả lỗi ${res.status}`);
+  return reply;
+}
+
 // ---------- Lưu ----------
 $("add-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (problem() || state.saving) return;
+  if (problem() || state.saving || state.deleting) return;
   state.saving = true;
   $("save").disabled = true;
   $("save").textContent = "Đang lưu…";
+  $("delete").disabled = true;
   showMessage("Đang gửi lên GitHub, chờ chút…");
   const slug = $("slug").value.trim();
   try {
     // Bìa: lấy đúng chỗ đang căn lúc bấm lưu. Sửa sách mà chưa đổi bìa thì không gửi (giữ bìa cũ).
     const coverBase64 = !edit || state.coverChanged ? cropper.toJpeg().base64 : undefined;
-    const res = await fetch("../api/save-book", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(buildPayload({ slug, notebook: state.notebook ?? undefined, coverBase64, review: readReview() })),
-    });
-    let reply = {};
-    try {
-      reply = await res.json();
-    } catch {
-      // máy chủ không trả JSON (ví dụ chưa đăng nhập)
-    }
-    if (!res.ok || !reply.ok) throw new Error(reply.message || `Máy chủ trả lỗi ${res.status}`);
+    const reply = await postBook(buildPayload({ slug, notebook: state.notebook ?? undefined, coverBase64, review: readReview() }));
     state.saved = true;
     $("save").textContent = "Đã lưu";
     showMessage("", "ok");
@@ -260,8 +269,51 @@ $("add-form").addEventListener("submit", async (e) => {
     showMessage(`Chưa lưu được: ${err.message}`, "error");
     $("save").textContent = saveLabel;
     $("save").disabled = false;
+    $("delete").disabled = false;
   } finally {
     state.saving = false;
+  }
+});
+
+// ---------- Xóa sách (chỉ khi sửa) ----------
+// Bấm "Xóa sách" chỉ mở hộp hỏi lại; phải bấm "Xóa hẳn" mới xóa.
+function showConfirm(open) {
+  $("delete-confirm").hidden = !open;
+  $("delete").hidden = open;
+  if (open) $("delete-no").focus();
+  else $("delete").focus();
+}
+$("delete").addEventListener("click", () => {
+  if (!state.saving) showConfirm(true);
+});
+$("delete-no").addEventListener("click", () => showConfirm(false));
+
+$("delete-yes").addEventListener("click", async () => {
+  if (!edit?.ready || state.saving || state.deleting) return;
+  state.deleting = true;
+  $("delete-yes").disabled = true;
+  $("delete-no").disabled = true;
+  $("delete-yes").textContent = "Đang xóa…";
+  $("save").disabled = true;
+  showMessage("Đang xóa trên GitHub, chờ chút…");
+  try {
+    const reply = await postBook(deletePayload(edit.slug));
+    state.saved = true; // khóa trang: sách không còn để lưu nữa
+    $("delete-zone").hidden = true;
+    $("save").textContent = "Đã xóa";
+    $("back").textContent = "← Thư viện";
+    $("back").href = "index.html";
+    showMessage("", "ok");
+    const link = Object.assign(document.createElement("a"), { href: "index.html", textContent: "Về Thư viện" });
+    $("message").replaceChildren(`${reply.message} `, link, " (sách biến mất sau 1–2 phút).");
+  } catch (err) {
+    showMessage(`Chưa xóa được: ${err.message}`, "error");
+    $("delete-yes").textContent = "Xóa hẳn";
+    $("delete-yes").disabled = false;
+    $("delete-no").disabled = false;
+    update(false);
+  } finally {
+    state.deleting = false;
   }
 });
 
@@ -325,6 +377,8 @@ async function openForEdit() {
     }
 
     edit.ready = true;
+    $("delete-question").textContent = deleteQuestion(edit.oldData.title || edit.slug);
+    $("delete-zone").hidden = false;
     renderPreview();
     update(true);
   } catch (err) {

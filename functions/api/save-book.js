@@ -11,6 +11,8 @@
 //       notebook: "<html...>"            (file Kindle; bắt buộc với sách mới)
 //       cover: "base64 của ảnh JPEG"      (không bắt buộc)
 //       review: { links: [{url, text}], rating: "10", note_text: "", text: "bài review" } (không bắt buộc) }
+//   POST /api/save-book  -> xóa hẳn một cuốn: { slug: "ten-sach", delete: true }
+//     (xóa cả thư mục novels/ten-sach trong một lần lưu; vẫn lấy lại được từ lịch sử Git)
 
 const REPO = "whitemathuat/whitemathuat-library";
 const PRODUCTION_HOST = "whitemathuat-library.pages.dev"; // trang chính -> nhánh main (lên mạng)
@@ -95,13 +97,19 @@ export function makeReviewMd(review, date) {
   return `${lines.join("\n")}\n---\n${text}\n`;
 }
 
-// Kiểm tra dữ liệu gửi lên, trả về danh sách file cần ghi: [{ path, content, encoding }]
-function filesFromBody(body) {
+// Tên thư mục sách phải đúng luật (chặn cả kiểu "../functions").
+function checkSlug(body) {
   if (!body || typeof body !== "object") throw new UserError("Dữ liệu gửi lên không đúng dạng");
   const slug = String(body.slug ?? "");
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug) || slug.length > 60) {
     throw new UserError("Tên thư mục sách chỉ gồm chữ thường không dấu, số và dấu gạch ngang (ví dụ: even-better)");
   }
+  return slug;
+}
+
+// Kiểm tra dữ liệu gửi lên, trả về danh sách file cần ghi: [{ path, content, encoding }]
+function filesFromBody(body) {
+  const slug = checkSlug(body);
   const dir = `novels/${slug}`;
   const files = [];
 
@@ -133,7 +141,19 @@ function filesFromBody(body) {
   return { slug, dir, files };
 }
 
-// Ghi các file lên nhánh thành một lần lưu. Nếu đúng lúc đó nhánh vừa đổi, thử lại một lần.
+// Liệt kê mọi file trong một thư mục trên GitHub (kể cả thư mục con). Không có thư mục -> [].
+async function listFiles(fetchFn, token, branch, dir) {
+  const items = await github(fetchFn, token, "GET", `/contents/${dir}?ref=${branch}`);
+  if (!Array.isArray(items)) return [];
+  const paths = [];
+  for (const item of items) {
+    if (item.type === "dir") paths.push(...(await listFiles(fetchFn, token, branch, item.path)));
+    else paths.push(item.path);
+  }
+  return paths;
+}
+
+// Ghi các file lên nhánh thành một lần lưu. File có delete: true thì bị xóa. Nếu đúng lúc đó nhánh vừa đổi, thử lại một lần.
 async function commitFiles(fetchFn, token, branch, message, files) {
   for (let attempt = 1; ; attempt++) {
     const ref = await github(fetchFn, token, "GET", `/git/ref/heads/${branch}`);
@@ -143,6 +163,10 @@ async function commitFiles(fetchFn, token, branch, message, files) {
 
     const tree = [];
     for (const f of files) {
+      if (f.delete) {
+        tree.push({ path: f.path, mode: "100644", type: "blob", sha: null }); // sha null = xóa file này
+        continue;
+      }
       const blob = await github(fetchFn, token, "POST", "/git/blobs", { content: f.content, encoding: f.encoding });
       tree.push({ path: f.path, mode: "100644", type: "blob", sha: blob.sha });
     }
@@ -195,6 +219,17 @@ export async function handleSave(request, env, fetchFn = fetch) {
     } catch {
       throw new UserError("Dữ liệu gửi lên không đọc được");
     }
+
+    // Xóa hẳn một cuốn sách: bỏ cả thư mục của nó trong một lần lưu.
+    if (body?.delete === true) {
+      const slug = checkSlug(body);
+      const paths = await listFiles(fetchFn, token, branch, `novels/${slug}`);
+      if (!paths.length) throw new UserError(`Thư viện không có sách “${slug}”`, 404);
+      const files = paths.map((path) => ({ path, delete: true }));
+      const sha = await commitFiles(fetchFn, token, branch, `Website: delete book ${slug}`, files);
+      return json({ ok: true, message: "Đã xóa. Thư viện sẽ cập nhật sau khoảng 1–2 phút.", branch, commit: sha });
+    }
+
     const { slug, dir, files } = filesFromBody(body);
 
     // Sách mới (chưa có notebook trên GitHub) thì bắt buộc phải gửi kèm notebook.

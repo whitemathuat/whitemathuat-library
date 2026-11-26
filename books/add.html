@@ -99,6 +99,17 @@
   <div class="actions">
     <p class="message" id="message" role="status"></p>
     <button class="save" type="submit" id="save" disabled>Lưu sách</button>
+    <!-- Chỉ hiện khi sửa sách. Bấm lần đầu chỉ mở hộp hỏi lại, chưa xóa gì. -->
+    <div class="delete-zone" id="delete-zone" hidden>
+      <button class="delete" type="button" id="delete">Xóa sách</button>
+      <div class="paper confirm" id="delete-confirm" hidden>
+        <p id="delete-question">Xóa hẳn cuốn này? Mất cả ghi chú, bìa, review.</p>
+        <div class="confirm-buttons">
+          <button class="delete-yes" type="button" id="delete-yes">Xóa hẳn</button>
+          <button class="delete-no" type="button" id="delete-no">Thôi</button>
+        </div>
+      </div>
+    </div>
   </div>
 </form>
 </main>

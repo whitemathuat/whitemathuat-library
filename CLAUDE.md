@@ -21,7 +21,7 @@ Out of date in both files: the generator is now JavaScript, not Python (DECISION
 - Generated pages ARE committed (Cloudflare serves the folder as is, no build step). Edit templates/CSS/`tools/`, then rebuild; never hand-edit generated `index.html` files.
 - One book = one folder `novels/<slug>/`: `notebook.html`, `notes.json`, `cover.jpg`, `review.md` (header lines `link: URL | text`, `note_text:`, `rating:`, then `---`, then the review text).
 - Password gate online: `functions/_middleware.js` (browser login box, Cloudflare variables `USERNAME` and `PASSWORD`; no secret in code).
-- Save books from the website: `functions/api/save-book.js` (GET = test the token, POST = commit book files to GitHub; Cloudflare secret `GITHUB_TOKEN`, a fine-grained token for this repo only, Contents read/write). `.github/workflows/build-books.yml` (GitHub Action) then runs parse + check and commits the built pages (DECISIONS 11). Website saves land on `main` directly, so run `git pull origin main` into `dev` at the start of a session.
+- Save books from the website: `functions/api/save-book.js` (GET = test the token, POST = commit book files to GitHub, or `{ slug, delete: true }` = remove the whole book folder in one commit; Cloudflare secret `GITHUB_TOKEN`, a fine-grained token for this repo only, Contents read/write). `.github/workflows/build-books.yml` (GitHub Action) then runs parse + check and commits the built pages (DECISIONS 11). Website saves land on `main` directly, so run `git pull origin main` into `dev` at the start of a session.
 
 ## Commands
 - View locally: double-click `index.html` (opens in the browser, no server needed; no password locally). No dev server, no port.

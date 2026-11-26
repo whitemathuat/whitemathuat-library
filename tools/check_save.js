@@ -20,6 +20,13 @@ export function fakeGithub({ existingBooks = [], refConflicts = 0 } = {}) {
     const reply = (data, status = 200) => new Response(JSON.stringify(data), { status });
     if (opts.method === "GET" && path.startsWith("/git/ref/heads/")) return reply({ object: { sha: "cha" } });
     if (opts.method === "GET" && path.startsWith("/git/commits/")) return reply({ tree: { sha: "cay-cu" } });
+    // Liệt kê thư mục một cuốn sách (khi xóa sách): trả về các file của nó
+    const dirMatch = opts.method === "GET" && path.match(/^\/contents\/novels\/([^/?]+)\?/);
+    if (dirMatch) {
+      if (!existingBooks.includes(dirMatch[1])) return reply({ message: "Not Found" }, 404);
+      const dir = `novels/${dirMatch[1]}`;
+      return reply(["cover.jpg", "index.html", "notebook.html", "notes.json", "review.md"].map((n) => ({ type: "file", path: `${dir}/${n}` })));
+    }
     if (opts.method === "GET" && path.startsWith("/contents/")) {
       const found = existingBooks.some((b) => path.startsWith(`/contents/novels/${b}/`));
       return found ? reply({}) : reply({ message: "Not Found" }, 404);
@@ -96,6 +103,33 @@ export async function checkSave() {
   // Nhánh vừa bị lần lưu khác chen vào -> tự thử lại và thành công
   const retry = await save({ slug: "a", notebook: NOTEBOOK }, { github: fakeGithub({ refConflicts: 1 }) });
   expect("thử lại khi bị chen", retry.status, 200);
+
+  // Xóa sách: các trường hợp phải bị chặn (không được ghi gì)
+  const badDelete = [
+    ["xóa với tên thư mục kiểu ../", { slug: "../functions", delete: true }, {}, 400],
+    ["xóa sách không có", { slug: "khong-co", delete: true }, {}, 404],
+    ["xóa từ trang khác", { slug: "even-better", delete: true }, { headers: { Origin: "https://trang-la.com" } }, 403],
+    ["xóa khi chạy trên máy", { slug: "even-better", delete: true }, { url: "http://localhost/api/save-book" }, 403],
+  ];
+  for (const [name, body, opts, want] of badDelete) {
+    const r = await save(body, { github: fakeGithub({ existingBooks: ["even-better"] }), ...opts });
+    expect(name, r.status, want);
+    if (r.calls.some((c) => c.method !== "GET")) errors.push(`Lưu sách, trường hợp "${name}": lẽ ra không được ghi gì lên GitHub`);
+  }
+
+  // Xóa đúng: một commit bỏ hết các file trong thư mục sách, không tạo file mới, đúng nhánh
+  const del = await save({ slug: "even-better", delete: true }, { url: DEV, github: fakeGithub({ existingBooks: ["even-better"] }) });
+  expect("xóa sách", del.status, 200);
+  const delTree = del.calls.find((c) => c.path === "/git/trees")?.body.tree ?? [];
+  expect("xóa đủ file trong thư mục", delTree.map((t) => t.path).join(","),
+    "novels/even-better/cover.jpg,novels/even-better/index.html,novels/even-better/notebook.html,novels/even-better/notes.json,novels/even-better/review.md");
+  expect("xóa = sha null", delTree.every((t) => t.sha === null), true);
+  expect("xóa không tạo file mới", del.calls.some((c) => c.path === "/git/blobs"), false);
+  expect("xóa đúng nhánh", del.calls.find((c) => c.method === "PATCH")?.path, "/git/refs/heads/dev");
+  expect("lời lưu khi xóa", del.calls.find((c) => c.path === "/git/commits")?.body.message, "Website: delete book even-better");
+  // "delete" phải đúng là true: chữ "yes" không được hiểu là xóa
+  const notDelete = await save({ slug: "even-better", delete: "yes" }, { github: fakeGithub({ existingBooks: ["even-better"] }) });
+  expect("delete khác true thì không xóa", notDelete.status, 400);
 
   // Kiểm tra chìa khóa (GET) không ghi gì
   const status = await save(null, { method: "GET" });

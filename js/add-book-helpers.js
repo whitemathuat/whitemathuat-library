@@ -94,6 +94,12 @@ export function buildPayload({ slug, notebook, coverBase64, review = {} }) {
   return payload;
 }
 
+// Dữ liệu gửi lên /api/save-book để xóa hẳn một cuốn (nút "Xóa sách" khi sửa).
+export const deletePayload = (slug) => ({ slug, delete: true });
+
+// Câu hỏi lại trước khi xóa
+export const deleteQuestion = (title) => `Xóa hẳn cuốn “${title}”? Mất cả ghi chú, bìa, review.`;
+
 // ---------- Sửa sách đã có (trang add.html?sua=ten-thu-muc) ----------
 // Tên thư mục sách cần sửa, lấy từ địa chỉ trang. Không có hoặc sai luật -> "".
 export function editSlugFromSearch(search) {
