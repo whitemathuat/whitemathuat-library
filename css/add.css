@@ -44,10 +44,6 @@
 .crop-frame:active { cursor: grabbing; }
 .crop-frame:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 .crop-frame img { position: absolute; top: 0; left: 0; max-width: none; transform-origin: 0 0; pointer-events: none; }
-/* 2 nét đứt: thẻ ở Thư viện (tỉ lệ 4:5) cắt bớt 1/12 chiều cao ở trên và dưới */
-.crop-guide { position: absolute; left: 0; right: 0; border-top: 1px dashed rgba(255, 255, 255, .9); box-shadow: 0 0 0 .5px rgba(29, 42, 92, .35); pointer-events: none; }
-.crop-guide.top { top: 8.333%; }
-.crop-guide.bottom { bottom: 8.333%; }
 .crop-side { flex: 1 1 200px; }
 .crop-side .hint { margin-bottom: 0; }
 .zoom { display: flex; align-items: center; gap: 10px; font: 500 18px var(--mono); color: var(--muted); }
@@ -79,10 +75,11 @@
 .save:hover:not(:disabled) { background: var(--navy-hover); }
 .save:disabled { opacity: .45; cursor: default; }
 
-/* Xem trước: thẻ sách giống Thư viện */
+/* Xem trước: thẻ sách giống Thư viện, nhưng bìa theo khổ trang sách (2:3),
+   đúng như ảnh sẽ được lưu */
 .preview { grid-area: preview; display: flex; flex-direction: column; gap: 14px; position: sticky; top: 20px; }
 .card { display: flex; flex-direction: column; gap: 10px; padding: 14px; }
-.card-cover { display: grid; place-items: center; aspect-ratio: 4/5; overflow: hidden; border-radius: 8px; background: var(--line); font: 500 40px var(--tall); color: var(--muted); }
+.card-cover { display: grid; place-items: center; aspect-ratio: 2/3; overflow: hidden; border-radius: 8px; background: var(--line); font: 500 40px var(--tall); color: var(--muted); }
 .card-cover img { width: 100%; height: 100%; object-fit: cover; }
 .card .rating { font: 400 11px var(--mono); letter-spacing: 1px; color: var(--navy); }
 .card .rating.none { color: var(--muted); }
