@@ -11,7 +11,8 @@
 // 7. Đọc file Kindle lấy đúng chương con (sách có chương con) (tools/check_notebook.js).
 // 8. Trang chủ: "câu của hôm nay" lấy đúng câu của các sách hiện có, mỗi ngày một câu (tools/check_home.js).
 // 9. Trang thư viện: nút "Mới thêm" / "A → Z" xếp đúng, mỗi sách có ngày thêm (tools/check_library.js).
-// 10. Trang sách: nút "Ẩn vị trí" có trên mọi trang, mỗi ghi chú có dòng vị trí (tools/check_location.js).
+// 10. Trang sách: đọc cài đặt "Hiện vị trí highlight", mỗi ghi chú có dòng vị trí (tools/check_location.js).
+// 11. Trang Cài đặt + settings.json + chức năng "Lưu cài đặt" (functions/api/save-settings.js) (tools/check_settings.js).
 // Kết thúc bằng "TẤT CẢ ĐỀU ỔN" hoặc danh sách lỗi (mã thoát 1).
 import fs from "node:fs";
 import path from "node:path";
@@ -25,6 +26,7 @@ import { checkNotebook } from "./check_notebook.js";
 import { checkHome } from "./check_home.js";
 import { checkLibrary } from "./check_library.js";
 import { checkLocation } from "./check_location.js";
+import { checkSettings } from "./check_settings.js";
 
 const errors = [];
 const MAX_COVER_KB = 300; // ảnh bìa nặng hơn mức này là chưa thu nhỏ
@@ -101,7 +103,7 @@ function checkFileLinks(file, links) {
 
 // Bước 3a: link trong các trang HTML đã tạo.
 function checkPages() {
-  const pages = [path.join(ROOT_DIR, "index.html"), path.join(ROOT_DIR, "books", "index.html"), path.join(ROOT_DIR, "books", "add.html")];
+  const pages = [path.join(ROOT_DIR, "index.html"), path.join(ROOT_DIR, "books", "index.html"), path.join(ROOT_DIR, "books", "add.html"), path.join(ROOT_DIR, "settings", "index.html")];
   for (const book of listDirs(NOVELS_DIR)) {
     const page = path.join(NOVELS_DIR, book, "index.html");
     if (fs.existsSync(page)) pages.push(page);
@@ -146,6 +148,7 @@ errors.push(...checkNotebook());
 errors.push(...checkHome());
 errors.push(...checkLibrary());
 errors.push(...checkLocation());
+errors.push(...(await checkSettings()));
 
 if (errors.length) {
   console.log(`CÓ ${errors.length} LỖI:`);

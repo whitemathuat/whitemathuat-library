@@ -4,6 +4,7 @@ import { buildHome } from "./build_home.js";
 import { buildLibrary } from "./build_library.js";
 import { buildDetail } from "./build_detail.js";
 import { buildAdd } from "./build_add.js";
+import { buildSettings } from "./build_settings.js";
 
 export function buildAll() {
   console.log("--- Trang chủ ---");
@@ -14,6 +15,8 @@ export function buildAll() {
   buildDetail();
   console.log("--- Trang Thêm sách ---");
   buildAdd();
+  console.log("--- Trang Cài đặt ---");
+  buildSettings();
 }
 
 // Chỉ tự chạy khi gọi thẳng file này (không chạy khi file khác import nó)

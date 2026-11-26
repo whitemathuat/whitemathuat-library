@@ -18,11 +18,11 @@ Short status page: rewrite it, do not append a diary. Verification details go in
 
 - Home quote (on `dev`, DECISIONS 16): one random highlight-with-note per day (Vietnam time) from all books; the pinned quote is gone. New/deleted books join/leave the list on the next rebuild.
 - Library sort (on `dev`, DECISIONS 17): buttons "Mới thêm" / "A → Z" on the library page; `review.md` keeps the date a book was added (`added:`), editing does not change it. Checked by machine (desktop + 375 px); not yet tried by the user.
-- Show/hide locations (on `dev`, DECISIONS 18): button "Ẩn vị trí" / "Hiện vị trí" at the top of "Theo chương" on each book page; remembered per browser. Checked by machine (desktop); not yet tried by the user.
+- "Cài đặt" page (on `dev`, DECISIONS 19): gear icon in the top menu of every page; switch "Hiện vị trí highlight" saved to `settings.json` on GitHub, shared by all devices (other devices after 1–2 min, this one at once). Replaces the "Ẩn vị trí" button of DECISIONS 18. Checked by machine (desktop + 375 px, fake save); a real save on the dev preview not yet tried.
 - Kindle Bookmarks (on `dev`): bookmark lines (no text) are skipped; before, they stole the next heading and broke highlight+note pairs (Giam Cầm Trong Đêm Dài re-parsed: 137 pairs, 0 loose notes).
 
 ## Next steps
-1. User tries adding (3a+3b), editing (3c) and deleting (DECISIONS 15) a book on the dev preview, the sort buttons and the "Ẩn vị trí" button (real phone: two-finger zoom was not tested by machine; a real save of an edit and a real delete were not tested; delete a test book, e.g. add one first).
+1. User tries adding (3a+3b), editing (3c) and deleting (DECISIONS 15) a book on the dev preview, the sort buttons and the "Cài đặt" page (switch off, then open a book on another device after 1–2 min) (real phone: two-finger zoom was not tested by machine; a real save of an edit and a real delete were not tested; delete a test book, e.g. add one first).
 2. `/len-mang` when the user wants.
 
 ## Waiting for the user

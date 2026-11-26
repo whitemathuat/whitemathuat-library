@@ -1,0 +1,37 @@
+/* Trang "Cài đặt" (settings/index.html), kiểu 2a: tiêu đề lớn + một thẻ giấy chứa các dòng cài đặt.
+   Màu lấy từ theme.css. */
+
+.settings { max-width: 720px; margin: 0 auto; padding: 30px 24px 20px; }
+
+/* Đầu trang (giống trang Thêm sách) */
+.page-head h1 { font: 500 96px/.9 var(--tall); letter-spacing: -1px; color: var(--title); }
+.page-head .script { margin: 6px 0 28px; font: italic 500 21px/1.5 var(--hand); color: var(--script); }
+
+/* Thẻ giấy chứa các dòng cài đặt */
+.paper { background: var(--paper); color: var(--ink); border-radius: 16px; box-shadow: var(--shadow); }
+.row { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 18px 22px; }
+.row + .row { border-top: 1px solid var(--line); }
+.row h2 { font: 600 24px/1.15 var(--tall); }
+.hint { margin-top: 4px; font: italic 500 14px/1.5 var(--hand); color: var(--muted); }
+
+/* Công tắc bật/tắt: nền navy khi bật, nút tròn chạy sang phải */
+.switch { flex: none; position: relative; width: 52px; height: 30px; padding: 0; border: 0; border-radius: 99px; background: var(--line); cursor: pointer; transition: background .2s; }
+.switch .knob { position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: var(--paper); box-shadow: 0 1px 4px rgba(29, 53, 134, .3); transition: transform .2s; }
+.switch[aria-checked="true"] { background: var(--navy); }
+.switch[aria-checked="true"] .knob { transform: translateX(22px); }
+.switch:disabled { opacity: .6; cursor: default; }
+.switch:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; }
+
+/* Lời báo dưới thẻ: "Đã lưu..." / lỗi */
+.message { margin-top: 14px; padding: 12px 16px; border-radius: 12px; background: var(--paper); box-shadow: var(--shadow); font: 500 14px/1.5 var(--sans); color: var(--ink); }
+.message:empty { display: none; }
+.message.ok { color: var(--ok); }
+.message.error { color: var(--error); }
+
+/* Điện thoại */
+@media (max-width: 760px) {
+  .settings { padding: 20px 16px 10px; }
+  .page-head h1 { font-size: 64px; }
+  .page-head .script { font-size: 18px; margin-bottom: 20px; }
+  .row { padding: 16px 18px; }
+}

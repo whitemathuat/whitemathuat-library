@@ -24,14 +24,14 @@ const MAX_COVER_BYTES = 300 * 1024; // giống giới hạn của npm run check
 const MAX_REVIEW_CHARS = 50000;
 
 // Lỗi có lời giải thích cho người dùng (hiện ra trên trang web).
-class UserError extends Error {
+export class UserError extends Error {
   constructor(message, status = 400) {
     super(message);
     this.status = status;
   }
 }
 
-const json = (data, status = 200) =>
+export const json = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json; charset=utf-8" } });
 
 // Trang nào thì lưu vào nhánh đó. Địa chỉ lạ (chạy trên máy, bản thử khác) -> không cho lưu.
@@ -42,7 +42,7 @@ export function branchForHost(host) {
 }
 
 // Gọi GitHub. Trả về dữ liệu JSON, hoặc báo lỗi dễ hiểu.
-async function github(fetchFn, token, method, apiPath, body) {
+export async function github(fetchFn, token, method, apiPath, body) {
   const res = await fetchFn(`https://api.github.com/repos/${REPO}${apiPath}`, {
     method,
     headers: {
@@ -171,7 +171,7 @@ async function listFiles(fetchFn, token, branch, dir) {
 }
 
 // Ghi các file lên nhánh thành một lần lưu. File có delete: true thì bị xóa. Nếu đúng lúc đó nhánh vừa đổi, thử lại một lần.
-async function commitFiles(fetchFn, token, branch, message, files) {
+export async function commitFiles(fetchFn, token, branch, message, files) {
   for (let attempt = 1; ; attempt++) {
     const ref = await github(fetchFn, token, "GET", `/git/ref/heads/${branch}`);
     if (!ref) throw new UserError(`Không thấy nhánh ${branch} trên GitHub`, 502);
@@ -207,6 +207,21 @@ async function commitFiles(fetchFn, token, branch, message, files) {
   }
 }
 
+// Đọc dữ liệu gửi lên. Chống trang lạ gửi lệnh lưu thay bạn: phải gửi JSON, và (nếu có) từ chính trang này.
+// Dùng chung với functions/api/save-settings.js.
+export async function readJsonBody(request, url) {
+  const origin = request.headers.get("Origin");
+  if (origin && origin !== url.origin) throw new UserError("Yêu cầu đến từ trang khác", 403);
+  if (!(request.headers.get("Content-Type") || "").startsWith("application/json")) {
+    throw new UserError("Dữ liệu phải gửi dạng JSON", 415);
+  }
+  try {
+    return await request.json();
+  } catch {
+    throw new UserError("Dữ liệu gửi lên không đọc được");
+  }
+}
+
 // Phần chính, tách riêng để tools/check_save.js thử được với GitHub giả.
 export async function handleSave(request, env, fetchFn = fetch) {
   try {
@@ -224,18 +239,7 @@ export async function handleSave(request, env, fetchFn = fetch) {
     }
     if (request.method !== "POST") throw new UserError("Cách gọi không được hỗ trợ", 405);
 
-    // Chống trang lạ gửi lệnh lưu thay bạn: phải gửi JSON, và (nếu có) từ chính trang này.
-    const origin = request.headers.get("Origin");
-    if (origin && origin !== url.origin) throw new UserError("Yêu cầu đến từ trang khác", 403);
-    if (!(request.headers.get("Content-Type") || "").startsWith("application/json")) {
-      throw new UserError("Dữ liệu phải gửi dạng JSON", 415);
-    }
-    let body;
-    try {
-      body = await request.json();
-    } catch {
-      throw new UserError("Dữ liệu gửi lên không đọc được");
-    }
+    const body = await readJsonBody(request, url);
 
     // Xóa hẳn một cuốn sách: bỏ cả thư mục của nó trong một lần lưu.
     if (body?.delete === true) {

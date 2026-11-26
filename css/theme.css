@@ -51,6 +51,12 @@ svg.icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-w
 .nav a.on, .nav a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 6px; }
 .nav .soon { opacity: .5; cursor: default; }
 .nav .logo .icon { width: 30px; height: 30px; }
+/* Khối cuối menu: "Yêu thích" + bánh răng (trang Cài đặt) */
+.nav-end { display: flex; align-items: center; gap: 18px; }
+.nav .gear { display: grid; place-items: center; }
+.nav .gear .icon { width: 18px; height: 18px; }
+.nav .gear.on, .nav .gear:hover { opacity: 1; text-decoration: none; }
+.nav .gear.on .icon { stroke-width: 2; }
 
 /* Chân trang */
 .foot { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding: 50px 34px 34px; font: 400 12px var(--mono); }
@@ -61,5 +67,7 @@ svg.icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-w
 @media (max-width: 760px) {
   .nav { padding: 16px; letter-spacing: 1px; font-size: 10px; white-space: nowrap; }
   .nav .logo .icon { width: 24px; height: 24px; }
+  .nav-end { gap: 10px; }
+  .nav .gear .icon { width: 16px; height: 16px; }
   .foot { padding: 40px 16px 30px; }
 }

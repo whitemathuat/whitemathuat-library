@@ -14,7 +14,7 @@
   <a href="../../books/index.html" class="on">Thư viện</a>
   <a class="logo" href="../../index.html" aria-label="white đọc gây"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9M12 13c-3 0-5-2-6-5 3 0 5 1 6 4M12 10c2-3 4-4 7-4-1 3-3 5-7 5M12 16c3 0 5-1 6-4"/></svg></a>
   <span class="soon" title="Sắp có">Đang đọc</span>
-  <span class="soon" title="Sắp có">Yêu thích</span>
+  <span class="nav-end"><span class="soon" title="Sắp có">Yêu thích</span><a class="gear" href="../../settings/index.html" aria-label="Cài đặt" title="Cài đặt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/><circle cx="12" cy="12" r="6.5"/></svg></a></span>
 </header>
 <main class="book">
 <section class="book-head">
@@ -36,7 +36,7 @@
   </div>
 </section>
 <section class="tab-panel reading" id="tab-notes">
-  <aside class="chapters"><div class="label-row"><p class="label">Theo chương</p><button type="button" class="loc-toggle" id="loc-toggle" aria-pressed="true">Ẩn vị trí</button></div><nav>
+  <aside class="chapters"><p class="label">Theo chương</p><nav>
 <a href="#chuong-1"><span>00 – Trước khi bầu trời sáng rõ</span><b>1</b></a>
 <a href="#chuong-2"><span>01 – Trước khi hơi ấm của nắng trở nên gần gũi</span><b>8</b></a>
 <a href="#chuong-3"><span>02 – Trước khi hoa nở</span><b>3</b></a>
@@ -507,6 +507,8 @@ document.querySelectorAll("[data-tab]").forEach(function (btn) {
   });
 });
 </script>
+<!-- Ẩn/hiện vị trí highlight theo trang Cài đặt (settings.json) -->
+<script src="../../js/settings.js"></script>
 <script src="../../js/show-location.js"></script>
 </body>
 </html>

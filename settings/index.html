@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cài đặt - white đọc gây</title>
+<link rel="icon" type="image/png" href="../assets/icon.png">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/settings.css">
+</head>
+<body>
+<header class="nav">
+  <a href="../index.html">Trang chủ</a>
+  <a href="../books/index.html">Thư viện</a>
+  <a class="logo" href="../index.html" aria-label="white đọc gây"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9M12 13c-3 0-5-2-6-5 3 0 5 1 6 4M12 10c2-3 4-4 7-4-1 3-3 5-7 5M12 16c3 0 5-1 6-4"/></svg></a>
+  <span class="soon" title="Sắp có">Đang đọc</span>
+  <span class="nav-end"><span class="soon" title="Sắp có">Yêu thích</span><a class="gear on" href="../settings/index.html" aria-label="Cài đặt" title="Cài đặt"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/><circle cx="12" cy="12" r="6.5"/></svg></a></span>
+</header>
+<main class="settings">
+<header class="page-head">
+  <h1>cài đặt.</h1>
+  <p class="script">đổi một lần, mọi máy cùng theo.</p>
+</header>
+
+<section class="paper rows">
+  <!-- Một dòng cài đặt: chữ bên trái, công tắc bên phải (js/settings-page.js) -->
+  <div class="row">
+    <div class="row-text">
+      <h2 id="show-location-label">Hiện vị trí highlight</h2>
+      <p class="hint">Dòng “Loc 343” / “Trang 7” dưới mỗi ghi chú ở trang sách.</p>
+    </div>
+    <button class="switch" type="button" role="switch" id="show-location" data-key="show_location"
+      aria-checked="true" aria-labelledby="show-location-label"><span class="knob"></span></button>
+  </div>
+</section>
+<p class="message" id="message" role="status"></p>
+</main>
+<footer class="foot">
+  <div><b>white đọc gây</b><p>cả đời cống hiến cho nền gây học.</p></div>
+  <nav><a href="../index.html">Trang chủ</a><a href="../books/index.html">Thư viện</a></nav>
+</footer>
+<script src="../js/settings.js"></script>
+<script src="../js/settings-page.js"></script>
+</body>
+</html>

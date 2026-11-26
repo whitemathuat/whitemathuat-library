@@ -10,18 +10,21 @@ export const icons = {
   mountain: svg('<path d="M2 19l7-11 4 6 2-3 7 8z"/>'),
   pen: svg('<path d="M4 20l4-1 11-11-3-3L5 16zM14 7l3 3"/>'),
   arrow: svg('<path d="M4 12h15M14 7l5 5-5 5"/>'),
+  gear: svg('<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/><circle cx="12" cy="12" r="6.5"/>'),
 };
 
-// Menu trên cùng. active = "home" | "library" | "" (mục đang chọn được gạch chân).
+// Menu trên cùng. active = "home" | "library" | "settings" | "" (mục đang chọn được gạch chân).
 // "Đang đọc" và "Yêu thích" chưa có trang nên hiện mờ.
+// Bánh răng (trang Cài đặt) đi chung một khối với "Yêu thích" để lá vẫn nằm giữa menu.
 export function renderNav(active, prefix) {
   const on = (name) => (active === name ? ' class="on"' : "");
+  const gearClass = active === "settings" ? "gear on" : "gear";
   return `<header class="nav">
   <a href="${prefix}index.html"${on("home")}>Trang chủ</a>
   <a href="${prefix}books/index.html"${on("library")}>Thư viện</a>
   <a class="logo" href="${prefix}index.html" aria-label="white đọc gây">${icons.leaf}</a>
   <span class="soon" title="Sắp có">Đang đọc</span>
-  <span class="soon" title="Sắp có">Yêu thích</span>
+  <span class="nav-end"><span class="soon" title="Sắp có">Yêu thích</span><a class="${gearClass}" href="${prefix}settings/index.html" aria-label="Cài đặt" title="Cài đặt">${icons.gear}</a></span>
 </header>`;
 }
 

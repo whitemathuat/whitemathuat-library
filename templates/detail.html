@@ -30,7 +30,7 @@
   </div>
 </section>
 <section class="tab-panel reading" id="tab-notes">
-  <aside class="chapters"><div class="label-row"><p class="label">Theo chương</p><button type="button" class="loc-toggle" id="loc-toggle" aria-pressed="true">Ẩn vị trí</button></div><nav>
+  <aside class="chapters"><p class="label">Theo chương</p><nav>
 {chapter_links}
   </nav></aside>
   <div class="notes">
@@ -51,6 +51,8 @@ document.querySelectorAll("[data-tab]").forEach(function (btn) {{
   }});
 }});
 </script>
+<!-- Ẩn/hiện vị trí highlight theo trang Cài đặt (settings.json) -->
+<script src="../../js/settings.js"></script>
 <script src="../../js/show-location.js"></script>
 </body>
 </html>
