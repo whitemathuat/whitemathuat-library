@@ -31,11 +31,15 @@
 .chapters a { display: flex; justify-content: space-between; gap: 8px; padding: 6px 20px; font: 400 12px/1.5 var(--mono); }
 .chapters a:hover { background: var(--paper-hover); }
 .chapters b { font-weight: 400; color: var(--muted); }
+/* Chương con: thụt vào, chữ nhạt hơn */
+.chapters a.sub { padding: 3px 20px 3px 36px; font-size: 11px; color: var(--muted); }
 
 /* Ghi chú từng chương */
 .notes { min-width: 0; padding: 34px 44px; }
 .chapter { margin-bottom: 36px; scroll-margin-top: 16px; }
 .chapter h2 { margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); font: 600 38px/1 var(--tall); color: var(--navy); }
+/* Tên chương con (sách có chương con): nhỏ hơn tên chương cha */
+.subchapter { margin-top: 26px; scroll-margin-top: 16px; font: 600 24px/1 var(--tall); color: var(--navy); }
 .note { padding: 14px 0 16px; border-bottom: 1px dashed var(--line); }
 /* Highlight: tô nền như bút dạ quang, từng dòng một */
 .hl { display: inline; padding: 2px 4px; border-radius: 3px; font: 400 17px/1.75 var(--sans);

@@ -8,6 +8,7 @@
 // 4. Cổng mật khẩu (functions/_middleware.js) chặn đúng và không bị lỗi 500 (tools/check_login.js).
 // 5. Chức năng "Lưu sách" (functions/api/save-book.js) chặn dữ liệu sai và lưu đúng (tools/check_save.js).
 // 6. Trang "Thêm sách" đặt tên thư mục đúng và gửi dữ liệu máy chủ nhận được (tools/check_add.js).
+// 7. Đọc file Kindle lấy đúng chương con (sách có chương con) (tools/check_notebook.js).
 // Kết thúc bằng "TẤT CẢ ĐỀU ỔN" hoặc danh sách lỗi (mã thoát 1).
 import fs from "node:fs";
 import path from "node:path";
@@ -17,6 +18,7 @@ import { parseNotebook } from "./parse_notebook.js";
 import { checkLogin } from "./check_login.js";
 import { checkSave } from "./check_save.js";
 import { checkAdd } from "./check_add.js";
+import { checkNotebook } from "./check_notebook.js";
 
 const errors = [];
 const MAX_COVER_KB = 300; // ảnh bìa nặng hơn mức này là chưa thu nhỏ
@@ -134,6 +136,7 @@ checkCss();
 errors.push(...(await checkLogin()));
 errors.push(...(await checkSave()));
 errors.push(...(await checkAdd()));
+errors.push(...checkNotebook());
 
 if (errors.length) {
   console.log(`CÓ ${errors.length} LỖI:`);

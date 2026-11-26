@@ -10,6 +10,7 @@ Short status page: rewrite it, do not append a diary. Verification details go in
   - Step 1 (backend) done: `functions/api/save-book.js` + GitHub Action `build-books.yml`. Secrets set for Production and Preview; token check on the dev preview OK.
   - Step 2 done on `dev` (DECISIONS 12): page `books/add.html` ("+ Thêm sách" button on the library page). Tested on this PC with a fake save; a real save on the dev preview has NOT run yet.
   - The dev preview is behind Cloudflare Access (email code) before the site's own login. Cloudflare loads changed variables only on a new deployment.
+- Sub-chapters (on `dev`): Kindle headings like "- 4 > Page 27" give each entry a `chapter` ("4"); the book page shows them as small headings under the parent chapter (and indented in "Theo chương"), name only, no "Chương" prefix. Books without them are unchanged. "Chim Hồng Hạc Côn Đồ - Notebook.html" sits in the project root, not added as a book yet.
 - Reviews: user said they do not matter for now (Unknown Lover text kept, Even Better empty).
 
 ## Next steps

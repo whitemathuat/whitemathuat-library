@@ -8,10 +8,33 @@ import { renderNav, renderFooter, renderRating } from "./layout.js";
 // Mã của chương i (dùng cho link "Theo chương" nhảy tới chương đó)
 const chapterId = (i) => `chuong-${i + 1}`;
 
-// Cột "Theo chương": tên chương + số ghi chú
+// Mã của chương con thứ k trong chương i, ví dụ "chuong-1-2"
+const subchapterId = (i, k) => `${chapterId(i)}-${k + 1}`;
+
+// Chia ghi chú của một chương cha theo chương con (các mục liền nhau cùng tên chương con).
+// Sách không có chương con -> một nhóm duy nhất, name = null.
+function groupBySubchapter(entries) {
+  const groups = [];
+  for (const entry of entries) {
+    const name = entry.chapter ?? null;
+    const last = groups[groups.length - 1];
+    if (last && last.name === name) last.entries.push(entry);
+    else groups.push({ name, entries: [entry] });
+  }
+  return groups;
+}
+
+// Cột "Theo chương": tên chương + số ghi chú; chương con (nếu có) thụt vào bên dưới
 function renderChapterLinks(sections) {
   return sections
-    .map((s, i) => `<a href="#${chapterId(i)}"><span>${escape(s.title)}</span><b>${(s.entries ?? []).length}</b></a>`)
+    .map((s, i) => {
+      const entries = s.entries ?? [];
+      const links = [`<a href="#${chapterId(i)}"><span>${escape(s.title)}</span><b>${entries.length}</b></a>`];
+      groupBySubchapter(entries).forEach((g, k) => {
+        if (g.name !== null) links.push(`<a class="sub" href="#${subchapterId(i, k)}"><span>${escape(g.name)}</span><b>${g.entries.length}</b></a>`);
+      });
+      return links.join("\n");
+    })
     .join("\n");
 }
 
@@ -27,12 +50,23 @@ function renderEntry(entry) {
   return parts.join("\n");
 }
 
+// Các ghi chú của một chương cha: có chương con thì mỗi chương con có tên nhỏ (h3) ở trên
+function renderChapterBody(entries, i) {
+  return groupBySubchapter(entries)
+    .map((g, k) => {
+      const notes = g.entries.map(renderEntry).join("\n");
+      if (g.name === null) return notes;
+      return `<h3 class="subchapter" id="${subchapterId(i, k)}">${escape(g.name)}</h3>\n${notes}`;
+    })
+    .join("\n");
+}
+
 // Một chương: tên chương + các ghi chú
 function renderChapters(sections) {
   return sections
     .map((s, i) => `<section class="chapter" id="${chapterId(i)}">
 <h2>${escape(s.title)}</h2>
-${(s.entries ?? []).map(renderEntry).join("\n")}
+${renderChapterBody(s.entries ?? [], i)}
 </section>`)
     .join("\n");
 }

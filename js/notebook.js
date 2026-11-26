@@ -28,23 +28,34 @@ function getText(innerHtml, separator) {
     .join(separator);
 }
 
+// Tên chương con trong dòng tiêu đề, nếu sách có chương con.
+// Ví dụ "Highlight(yellow) - 4 > Page 27 · Location 343" -> "4" (chương 4 nằm trong chương cha).
+// Sách không có chương con ghi "Highlight(yellow) - Page 14 · Location 89" -> null.
+function getSubchapter(heading) {
+  const oneLine = heading.replace(/\s+/g, " "); // file Kindle có xuống dòng giữa tiêu đề
+  const m = oneLine.match(/^.*? - (.+) > (?:Page|Location)\b/);
+  return m ? m[1].trim() : null;
+}
+
 // Ghép các highlight/ghi chú của một chương thành danh sách mục.
 // Highlight có ghi chú ngay sau (gần nhau) -> một mục "pair".
+// Mục chỉ có "chapter" (tên chương con) khi file Kindle có ghi, để sách cũ giữ nguyên notes.json.
 function buildEntries(events) {
   const entries = [];
+  const withChapter = (entry, event) => (event.chapter ? { ...entry, chapter: event.chapter } : entry);
   for (let j = 0; j < events.length; j++) {
     const event = events[j];
     const next = events[j + 1];
     if (event.type === "highlight") {
       const gap = next ? next.location - event.location : -1;
       if (next && next.type === "note" && gap >= 0 && gap <= PAIR_DISTANCE) {
-        entries.push({ type: "pair", highlight: event.text, note: next.text, color: event.color, location: event.location });
+        entries.push(withChapter({ type: "pair", highlight: event.text, note: next.text, color: event.color, location: event.location }, event));
         j++; // bỏ qua ghi chú vừa ghép
       } else {
-        entries.push({ type: "highlight", text: event.text, color: event.color, location: event.location });
+        entries.push(withChapter({ type: "highlight", text: event.text, color: event.color, location: event.location }, event));
       }
     } else {
-      entries.push({ type: "note", text: event.text, location: event.location });
+      entries.push(withChapter({ type: "note", text: event.text, location: event.location }, event));
     }
   }
   return entries;
@@ -91,12 +102,13 @@ export function parseNotebook(html) {
       const locationMatch = heading.match(/Location\s+(\d+)/);
       if (!locationMatch) continue;
       const location = parseInt(locationMatch[1], 10);
+      const chapter = getSubchapter(heading);
 
       if (heading.startsWith("Highlight")) {
         const colorMatch = heading.match(/\((.*?)\)/);
-        events.push({ type: "highlight", text, color: colorMatch ? colorMatch[1] : "yellow", location });
+        events.push({ type: "highlight", text, color: colorMatch ? colorMatch[1] : "yellow", location, chapter });
       } else {
-        events.push({ type: "note", text, location });
+        events.push({ type: "note", text, location, chapter });
       }
     }
   }
