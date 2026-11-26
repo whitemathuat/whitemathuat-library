@@ -22,6 +22,9 @@
   --pink: #e389ad;
   --yellow: #f6e7a1;
   --highlight: #eee8f3; /* màu bút dạ quang tô highlight (người dùng chọn) */
+  /* Lời báo trên trang Thêm sách */
+  --error: #a8325e;
+  --ok: #2f6b4f;
   /* Phông chữ */
   --tall: "Barlow Condensed", "Be Vietnam Pro", sans-serif; /* chữ cao, hẹp: tiêu đề */
   --hand: "Lora", serif;                                   /* chữ nghiêng: lời nhỏ, ghi chú */

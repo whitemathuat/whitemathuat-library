@@ -7,7 +7,12 @@
 /* Đầu trang */
 .page-head h1 { font: 500 110px/.9 var(--tall); letter-spacing: -1px; color: var(--title); }
 .page-head .script { margin-top: 6px; font: italic 500 21px/1.5 var(--hand); color: var(--script); }
-.page-head .count { display: inline-block; margin: 24px 0 28px; padding-bottom: 4px; border-bottom: 1px solid; font: 500 11px var(--mono); letter-spacing: 2px; text-transform: uppercase; }
+.page-head .head-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 24px 0 28px; }
+.page-head .count { display: inline-block; padding-bottom: 4px; border-bottom: 1px solid; font: 500 11px var(--mono); letter-spacing: 2px; text-transform: uppercase; }
+
+/* Nút "+ Thêm sách" (mở books/add.html) */
+.add-book { flex-shrink: 0; padding: 8px 16px; border-radius: 99px; background: var(--navy); color: var(--text); font: 500 11px var(--mono); letter-spacing: 2px; text-transform: uppercase; }
+.add-book:hover { background: var(--navy-hover); }
 
 /* Lưới thẻ: tự chia cột theo bề ngang màn hình */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }

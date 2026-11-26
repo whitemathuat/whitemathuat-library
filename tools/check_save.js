@@ -10,8 +10,8 @@ const DEV = "https://dev.whitemathuat-library.pages.dev/api/save-book";
 const NOTEBOOK = '<div class="bookTitle">Sách thử</div>';
 const JPEG = Buffer.from([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3]).toString("base64");
 
-// GitHub giả: ghi lại mọi lần gọi, trả lời như GitHub thật.
-function fakeGithub({ existingBooks = [], refConflicts = 0 } = {}) {
+// GitHub giả: ghi lại mọi lần gọi, trả lời như GitHub thật. (Dùng cả trong check_add.js)
+export function fakeGithub({ existingBooks = [], refConflicts = 0 } = {}) {
   const calls = [];
   const fetchFn = async (url, opts) => {
     const path = url.replace("https://api.github.com/repos/whitemathuat/whitemathuat-library", "");

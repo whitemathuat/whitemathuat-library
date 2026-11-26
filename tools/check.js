@@ -7,6 +7,7 @@
 //    file có thật; link "#chuong-x" phải có mục tương ứng trên trang.
 // 4. Cổng mật khẩu (functions/_middleware.js) chặn đúng và không bị lỗi 500 (tools/check_login.js).
 // 5. Chức năng "Lưu sách" (functions/api/save-book.js) chặn dữ liệu sai và lưu đúng (tools/check_save.js).
+// 6. Trang "Thêm sách" đặt tên thư mục đúng và gửi dữ liệu máy chủ nhận được (tools/check_add.js).
 // Kết thúc bằng "TẤT CẢ ĐỀU ỔN" hoặc danh sách lỗi (mã thoát 1).
 import fs from "node:fs";
 import path from "node:path";
@@ -15,6 +16,7 @@ import { buildAll } from "./build_all.js";
 import { parseNotebook } from "./parse_notebook.js";
 import { checkLogin } from "./check_login.js";
 import { checkSave } from "./check_save.js";
+import { checkAdd } from "./check_add.js";
 
 const errors = [];
 const MAX_COVER_KB = 300; // ảnh bìa nặng hơn mức này là chưa thu nhỏ
@@ -91,7 +93,7 @@ function checkFileLinks(file, links) {
 
 // Bước 3a: link trong các trang HTML đã tạo.
 function checkPages() {
-  const pages = [path.join(ROOT_DIR, "index.html"), path.join(ROOT_DIR, "books", "index.html")];
+  const pages = [path.join(ROOT_DIR, "index.html"), path.join(ROOT_DIR, "books", "index.html"), path.join(ROOT_DIR, "books", "add.html")];
   for (const book of listDirs(NOVELS_DIR)) {
     const page = path.join(NOVELS_DIR, book, "index.html");
     if (fs.existsSync(page)) pages.push(page);
@@ -131,6 +133,7 @@ checkPages();
 checkCss();
 errors.push(...(await checkLogin()));
 errors.push(...(await checkSave()));
+errors.push(...(await checkAdd()));
 
 if (errors.length) {
   console.log(`CÓ ${errors.length} LỖI:`);
